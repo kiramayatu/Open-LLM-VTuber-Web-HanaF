@@ -2677,7 +2677,9 @@ function ChatHistoryPanel(){const{t:i}=useTranslation(),{messages:o}=useChatHist
     try{
       const r=await fetch(`${baseUrl}/workspaces`,{headers:authHeaders()});
       if(!r.ok)throw new Error(`Workspace request failed (${r.status})`);
-      const next=await r.json();setData(next);
+      const next=await r.json();
+      next.workspaces=[...(next.workspaces||[])].sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")));
+      setData(next);
       if(selected && !(next.workspaces||[]).some(w=>w.workspace_id===selected)){setSelected("");setFiles([])}
     }catch(e){console.error("Workspace list failed:",e);toaster.create({title:"Workspace list failed",type:"error",duration:3000})}
     finally{setLoading(false)}
@@ -2687,7 +2689,9 @@ function ChatHistoryPanel(){const{t:i}=useTranslation(),{messages:o}=useChatHist
     try{
       const r=await fetch(`${baseUrl}/workspaces/${encodeURIComponent(id)}/files`,{headers:authHeaders()});
       if(!r.ok)throw new Error(`File list failed (${r.status})`);
-      const next=await r.json();setFiles(next.files||[]);
+      const next=await r.json();
+      const ordered=[...(next.files||[])].sort((a,b)=>String(b.created_at||b.updated_at||"").localeCompare(String(a.created_at||a.updated_at||"")));
+      setFiles(ordered);
     }catch(e){console.error("Workspace file list failed:",e);toaster.create({title:"Workspace file list failed",type:"error",duration:3000})}
   },[baseUrl]);
   const downloadArtifactFromWorkspace=async file=>{
@@ -2786,7 +2790,7 @@ function ChatHistoryPanel(){const{t:i}=useTranslation(),{messages:o}=useChatHist
           jsxRuntimeExports.jsx(Box,{h:"6px",bg:"whiteAlpha.200",borderRadius:"full",overflow:"hidden",children:jsxRuntimeExports.jsx(Box,{h:"full",w:`${pct}%`,bg:pct>90?"red.400":"blue.400"})})
         ]}),
         jsxRuntimeExports.jsx(Box,{px:3,py:2,borderBottomWidth:"1px",borderColor:"whiteAlpha.200",children:
-          jsxRuntimeExports.jsx(Input,{size:"sm",placeholder:"Search all workspace files...",value:search,onChange:e=>setSearch(e.target.value),color:"gray.100",bg:"gray.800",borderColor:"whiteAlpha.300",_placeholder:{color:"gray.500"}})
+          jsxRuntimeExports.jsx(Input,{size:"sm",placeholder:"Search all workspace files...",value:search,onChange:e=>setSearch(e.target.value),color:"gray.900",bg:"white",borderColor:"whiteAlpha.400",_placeholder:{color:"gray.500",opacity:1}})
         }),
         search.trim()?jsxRuntimeExports.jsx(Box,{flex:1,overflowY:"auto",p:3,children:
           searching
@@ -2812,12 +2816,17 @@ function ChatHistoryPanel(){const{t:i}=useTranslation(),{messages:o}=useChatHist
                 jsxRuntimeExports.jsx(Button,{size:"xs",variant:"outline",onClick:()=>downloadWorkspace(w),children:"ZIP"}),
                 jsxRuntimeExports.jsx(IconButton,{size:"sm",variant:"ghost",colorScheme:"red","aria-label":"Delete workspace",onClick:()=>deleteWorkspace(w),children:jsxRuntimeExports.jsx(FiTrash2,{size:14})})
               ]}),
-              jsxRuntimeExports.jsx(Text,{fontSize:"xs",color:"whiteAlpha.600",px:2,children:`${w.file_count} files · ${(w.size/1024).toFixed(1)} KB`}),
+              jsxRuntimeExports.jsx(Text,{fontSize:"xs",color:"gray.400",px:2,children:`${w.file_count} files · ${(w.size/1024).toFixed(1)} KB`}),
+              w.created_at&&jsxRuntimeExports.jsx(Text,{fontSize:"xs",color:"gray.500",px:2,children:`Created ${new Date(w.created_at).toLocaleString()}`}),
+              w.conversation_created_at&&jsxRuntimeExports.jsx(Text,{fontSize:"xs",color:"gray.500",px:2,children:`Conversation created ${w.conversation_created_at}`}),
               selected===w.workspace_id&&jsxRuntimeExports.jsx(Box,{mt:2,pl:2,children:
                 files.length
                 ?jsxRuntimeExports.jsx(VStack,{align:"stretch",gap:1,children:files.map(f=>
                   jsxRuntimeExports.jsxs(Flex,{align:"center",justify:"space-between",gap:2,p:1,borderRadius:"sm",_hover:{bg:"whiteAlpha.100"},children:[
-                    jsxRuntimeExports.jsx(Text,{fontSize:"sm",color:"gray.100",wordBreak:"break-word",flex:1,children:f.path}),
+                    jsxRuntimeExports.jsxs(Box,{minW:0,flex:1,children:[
+                      jsxRuntimeExports.jsx(Text,{fontSize:"sm",color:"gray.100",wordBreak:"break-word",children:f.path}),
+                      f.created_at&&jsxRuntimeExports.jsx(Text,{fontSize:"xs",color:"gray.500",children:`Created ${new Date(f.created_at).toLocaleString()}`})
+                    ]}),
                     jsxRuntimeExports.jsxs(Flex,{gap:1,flexShrink:0,children:[
                       f.artifact_id&&jsxRuntimeExports.jsx(Button,{size:"xs",variant:"ghost",onClick:()=>downloadArtifactFromWorkspace(f),children:"Download"}),
                       f.artifact_id&&jsxRuntimeExports.jsx(IconButton,{size:"xs",variant:"ghost",colorScheme:"red","aria-label":"Delete file",onClick:()=>deleteFile(f),children:jsxRuntimeExports.jsx(FiTrash2,{size:12})})
