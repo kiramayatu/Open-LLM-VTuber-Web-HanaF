@@ -2073,6 +2073,7 @@ function LLMProviders() {
   const [notice, setNotice] = reactExports.useState(null);
   const [loaded, setLoaded] = reactExports.useState(false);
   const [dirty, setDirty] = reactExports.useState(false);
+  const importInputRef = reactExports.useRef(null);
 
   const e = React.createElement;
 
@@ -2109,7 +2110,7 @@ function LLMProviders() {
     }
     if (!response.ok) {
       if (response.status === 405 && path.startsWith("/llm/providers")) {
-        throw new Error("LLM Provider API is unavailable. Restart the Open-LLM-VTuber backend after applying the provider patch.");
+        throw new Error(`The LLM Provider endpoint rejected ${options.method || "GET"} (HTTP 405). The provider list endpoint is reachable, but this provider action is not available on the running backend. Restart the backend with the latest cumulative provider patch. For saved providers, model discovery also has a GET fallback.`);
       }
       throw new Error(
         typeof data.detail === "string"
@@ -2286,10 +2287,47 @@ function LLMProviders() {
     setBusy("models");
     setNotice(null);
     try {
-      const data = await request("/llm/providers/models", {
-        method: "POST",
-        body: JSON.stringify(buildProbePayload()),
-      });
+      let data;
+      try {
+        data = await request("/llm/providers/models", {
+          method: "POST",
+          body: JSON.stringify(buildProbePayload()),
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "";
+        if (message.includes("HTTP 405")) {
+          if (form.provider_id) {
+            data = await request(`/llm/providers/models/${encodeURIComponent(form.provider_id)}`);
+          } else {
+            // Draft discovery normally stays in-memory. When a deployment/proxy
+            // rejects the JSON POST with 405, persist the draft first (without a
+            // model) and use the credential-safe saved-provider GET fallback.
+            if (!form.name.trim() || !form.base_url.trim()) {
+              throw new Error("Provider name and Base URL are required before model discovery can be retried.");
+            }
+            showNotice("success", "Draft model discovery is unavailable on this backend. Saving the provider first, then retrying model discovery…");
+            const payload = {
+              name: form.name.trim(),
+              provider_type: form.provider_type,
+              base_url: form.base_url.trim(),
+              model: form.model.trim() || null,
+              enabled: form.enabled !== false,
+              settings: form.settings || {},
+            };
+            if (apiKeyTouched) payload.api_key = apiKeyDraft || null;
+            const savedResponse = await request("/llm/providers", {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            if (!savedResponse.provider?.provider_id) throw new Error("Provider was saved but no provider ID was returned.");
+            await loadProviders(false);
+            applyProviderToForm(savedResponse.provider);
+            data = await request(`/llm/providers/models/${encodeURIComponent(savedResponse.provider.provider_id)}`);
+          }
+        } else {
+          throw error;
+        }
+      }
       const nextModels = Array.isArray(data.models) ? data.models : [];
       setModels(nextModels);
       if (nextModels.length === 0) {
@@ -2314,10 +2352,6 @@ function LLMProviders() {
       showNotice("error", "Base URL is required");
       return;
     }
-    if (!form.model.trim()) {
-      showNotice("error", "Model is required. Use Fetch Models or enter it manually.");
-      return;
-    }
     setBusy("save");
     setNotice(null);
     try {
@@ -2325,7 +2359,7 @@ function LLMProviders() {
         name: form.name.trim(),
         provider_type: form.provider_type,
         base_url: form.base_url.trim(),
-        model: form.model.trim(),
+        model: form.model.trim() || null,
         enabled: form.enabled !== false,
         settings: form.settings || {},
       };
@@ -2351,6 +2385,10 @@ function LLMProviders() {
   const activateProvider = async () => {
     if (!form.provider_id) {
       showNotice("error", "Save this provider before activating it");
+      return;
+    }
+    if (!form.model.trim()) {
+      showNotice("error", "Select or enter a model before activating this provider");
       return;
     }
     setBusy("activate");
@@ -2414,6 +2452,38 @@ function LLMProviders() {
     }
   };
 
+  const importYamlFile = async (event) => {
+    const file = event?.target?.files?.[0];
+    if (event?.target) event.target.value = "";
+    if (!file) return;
+    const lowerName = String(file.name || "").toLowerCase();
+    if (!lowerName.endsWith(".yaml") && !lowerName.endsWith(".yml")) {
+      showNotice("error", "Please choose a .yaml or .yml configuration file.");
+      return;
+    }
+    if (file.size > 512 * 1024) {
+      showNotice("error", "Configuration file is too large. Maximum size is 512 KiB.");
+      return;
+    }
+    if (dirty && !window.confirm("Discard your unsaved provider changes and import this YAML configuration?")) return;
+    setBusy("import-file");
+    setNotice(null);
+    try {
+      const content = await file.text();
+      const data = await request("/llm/providers/import-file", {
+        method: "POST",
+        body: JSON.stringify({ filename: file.name, content }),
+      });
+      await loadProviders(false);
+      if (data.provider) applyProviderToForm(data.provider);
+      showNotice("success", `Imported LLM provider from ${file.name}`);
+    } catch (error) {
+      showNotice("error", error instanceof Error ? error.message : "Could not import YAML configuration");
+    } finally {
+      setBusy("");
+    }
+  };
+
   const fieldLabel = (label, helper = null) =>
     e("div", { style: { marginBottom: 6 } },
       e("div", { style: { fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,.94)" } }, label),
@@ -2465,7 +2535,7 @@ function LLMProviders() {
   const providerList = providers.length === 0
     ? e("div", { style: { padding: 14, color: "rgba(255,255,255,.55)", fontSize: 12, lineHeight: 1.55 } },
         e("div", { style: { fontWeight: 700, color: "rgba(255,255,255,.82)", marginBottom: 4 } }, "No saved providers"),
-        "Create a provider below, or use Import YAML to bring in the current LLM configuration.",
+        "Create a provider below, or import a .yaml/.yml file from your computer.",
       )
     : e("div", { style: { display: "grid", gap: 6, maxHeight: 190, overflowY: "auto", padding: 7 } },
         providers.map((provider) => e("button", {
@@ -2487,7 +2557,7 @@ function LLMProviders() {
           e("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 } },
             e("div", { style: { minWidth: 0 } },
               e("div", { style: { fontSize: 13, fontWeight: 750, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, provider.name || "Unnamed provider"),
-              e("div", { style: { fontSize: 10, color: "rgba(255,255,255,.46)", marginTop: 3 } }, provider.provider_type || "custom"),
+              e("div", { style: { fontSize: 10, color: "rgba(255,255,255,.46)", marginTop: 3 } }, `${provider.provider_type || "custom"}${provider.model ? ` • ${provider.model}` : " • model not selected"}`),
             ),
             provider.provider_id === activeProviderId
               ? e("span", { style: { flexShrink: 0, fontSize: 9, padding: "3px 6px", borderRadius: 999, background: "rgba(34,197,94,.18)", color: "#86efac" } }, "ACTIVE")
@@ -2498,15 +2568,35 @@ function LLMProviders() {
 
   if (!loaded) return e("div", { style: { padding: 18, color: "rgba(255,255,255,.7)", fontSize: 13 } }, "Loading LLM providers…");
 
+  const apiKeyType = apiKeyVisible ? "text" : "password";
+  const apiKeyValue = apiKeyDraft;
+  const importBusy = busy === "import" || busy === "import-file";
+
   return e("div", { style: { color: "white", width: "100%", minWidth: 0, boxSizing: "border-box", padding: "2px 0 8px", overflowX: "hidden" } },
+    e("input", {
+      ref: importInputRef,
+      type: "file",
+      accept: ".yaml,.yml,text/yaml,text/x-yaml,text/plain",
+      onChange: importYamlFile,
+      style: { display: "none" },
+    }),
     e("div", { style: { display: "grid", gap: 10, marginBottom: 12 } },
       e("div", { style: { minWidth: 0 } },
         e("div", { style: { fontSize: 19, fontWeight: 800, lineHeight: 1.15 } }, "LLM Providers"),
         e("div", { style: { fontSize: 12, lineHeight: 1.45, color: "rgba(255,255,255,.55)", marginTop: 4 } }, "Manage local and cloud LLM connections without editing YAML."),
       ),
-      e("div", { style: { display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, auto)", gap: 7 } },
-        actionButton(busy === "import" ? "Importing…" : "Import YAML", importCurrent, Boolean(busy)),
+      e("div", { style: { display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 7 } },
+        actionButton(importBusy ? "Importing…" : "Import YAML", () => importInputRef.current?.click(), Boolean(busy)),
         actionButton("+ New", newProvider, Boolean(busy)),
+      ),
+      e("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" } },
+        e("span", { style: { fontSize: 10.5, color: "rgba(255,255,255,.4)" } }, "Upload an existing conf.yaml / .yml file, or"),
+        e("button", {
+          type: "button",
+          onClick: importCurrent,
+          disabled: Boolean(busy),
+          style: { border: 0, background: "transparent", padding: 0, color: "#a5b4fc", fontSize: 10.5, fontWeight: 700, cursor: busy ? "not-allowed" : "pointer", opacity: busy ? .5 : 1 },
+        }, "import the current running YAML"),
       ),
     ),
     e("div", { style: { borderRadius: 11, border: "1px solid rgba(255,255,255,.1)", background: "rgba(0,0,0,.13)", overflow: "hidden", marginBottom: 10 } },
@@ -2525,36 +2615,23 @@ function LLMProviders() {
             value: form.provider_type,
             onChange: (event) => changeType(event.target.value),
             style: { width: "100%", minWidth: 0, boxSizing: "border-box", height: 38, borderRadius: 8, border: "1px solid rgba(255,255,255,.14)", background: "#17171c", color: "white", padding: "0 11px", fontSize: 13 },
-          }, LLM_PROVIDER_TYPE_OPTIONS.map(([value, label]) => e("option", { key: value, value }, label))),
-        ),
-        e("div", null,
-          fieldLabel("Base URL", "HTTP and HTTPS are supported. Do not put credentials or API keys in the URL."),
-          textInput(form.base_url || "", (value) => updateField("base_url", value), "https://api.example.com/v1"),
-        ),
-        e("div", null,
-          fieldLabel("API key", apiKeyConfigured ? "Stored encrypted on the backend. Test Connection verifies it; the eye reveals it briefly when needed." : "Optional for providers that do not require authentication."),
-          e("div", { style: { display: "grid", gridTemplateColumns: "minmax(0, 1fr) 42px", gap: 7, minWidth: 0 } },
-            e("input", {
-              value: apiKeyDraft,
-              type: apiKeyVisible ? "text" : "password",
-              autoComplete: "new-password",
-              placeholder: apiKeyConfigured && !apiKeyTouched ? "Configured securely — click the eye to view" : "Enter API key",
-              onChange: (event) => { setApiKeyDraft(event.target.value); setApiKeyTouched(true); setApiKeyRevealed(false); setDirty(true); setNotice(null); },
-              style: { width: "100%", minWidth: 0, boxSizing: "border-box", height: 38, borderRadius: 8, border: "1px solid rgba(255,255,255,.14)", background: "rgba(255,255,255,.05)", color: "white", padding: "0 11px", outline: "none", fontSize: 13 },
-            }),
-            e("button", {
-              type: "button",
-              onClick: revealApiKey,
-              disabled: busy === "reveal",
-              title: apiKeyVisible ? "Hide API key" : apiKeyConfigured && !apiKeyTouched ? "Reveal stored API key" : "Show API key",
-              "aria-label": apiKeyVisible ? "Hide API key" : apiKeyConfigured && !apiKeyTouched ? "Reveal stored API key" : "Show API key",
-              "aria-pressed": apiKeyVisible,
-              style: { width: 42, height: 38, boxSizing: "border-box", borderRadius: 8, border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.06)", color: "rgba(255,255,255,.86)", display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: busy === "reveal" ? "wait" : "pointer" },
-            }, e(LLMProviderEyeIcon, { hidden: !apiKeyVisible })),
+          },
+            LLM_PROVIDER_TYPE_OPTIONS.map(([value, label]) => e("option", { key: value, value }, label)),
           ),
         ),
         e("div", null,
-          fieldLabel("Model", "Fetch models from the provider or enter a model name manually."),
+          fieldLabel("Base URL", "HTTP and HTTPS are supported. Do not put credentials or API keys in the URL."),
+          textInput(form.base_url, (value) => updateField("base_url", value), "http://127.0.0.1:11434"),
+        ),
+        e("div", null,
+          fieldLabel("API key", "Optional for providers that do not require authentication."),
+          e("div", { style: { display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 7, minWidth: 0 } },
+            textInput(apiKeyValue, (value) => { setApiKeyDraft(value); setApiKeyTouched(true); setApiKeyVisible(true); setApiKeyRevealed(false); setDirty(true); setNotice(null); }, apiKeyConfigured ? "Stored key (click eye to reveal)" : "API key", apiKeyType),
+            actionButton(apiKeyVisible ? "🙈" : "👁", revealApiKey, Boolean(busy), "default"),
+          ),
+        ),
+        e("div", null,
+          fieldLabel("Model", "Fetch models from the provider or enter a model name manually. You can save before selecting a model."),
           e("div", { style: { display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 7, minWidth: 0 } },
             models.length > 0
               ? e("select", {
@@ -2606,7 +2683,6 @@ function LLMProviders() {
     ),
   );
 }
-
 function SettingUI({open:i,onClose:o}){const{t:s}=useTranslation(),[a,_]=reactExports.useState([]),[$,_e]=reactExports.useState([]),[tt,st]=reactExports.useState("general"),it=reactExports.useCallback(ot=>(_(at=>[...at,ot]),()=>{_(at=>at.filter(lt=>lt!==ot))}),[]),nt=reactExports.useCallback(ot=>(_e(at=>[...at,ot]),()=>{_e(at=>at.filter(lt=>lt!==ot))}),[]),et=reactExports.useCallback(()=>{a.forEach(ot=>ot()),o()},[a,o]),j=reactExports.useCallback(()=>{$.forEach(ot=>ot()),o()},[$,o]),rt=reactExports.useMemo(()=>jsxRuntimeExports.jsxs(TabsContentGroup,{children:[jsxRuntimeExports.jsx(TabsContent,{value:"general",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(General,{onSave:it,onCancel:nt})}),jsxRuntimeExports.jsx(TabsContent,{value:"live2d",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(live2D,{onSave:it,onCancel:nt})}),jsxRuntimeExports.jsx(TabsContent,{value:"asr",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(ASR,{onSave:it,onCancel:nt})}),jsxRuntimeExports.jsx(TabsContent,{value:"tts",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(TTS,{})}),jsxRuntimeExports.jsx(TabsContent,{value:"agent",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(Agent,{onSave:it,onCancel:nt})}),jsxRuntimeExports.jsx(TabsContent,{value:"llm",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(LLMProviders,{})}),jsxRuntimeExports.jsx(TabsContent,{value:"about",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(About,{})})]}),[it,nt]);return jsxRuntimeExports.jsxs(DrawerRoot$1,{open:i,onOpenChange:ot=>ot.open?null:o(),placement:"start",children:[jsxRuntimeExports.jsx(DrawerBackdrop$1,{}),jsxRuntimeExports.jsxs(DrawerContent$1,{...settingStyles.settingUI.drawerContent,children:[jsxRuntimeExports.jsxs(DrawerHeader$1,{...settingStyles.settingUI.drawerHeader,children:[jsxRuntimeExports.jsx(DrawerTitle$1,{...settingStyles.settingUI.drawerTitle,children:s("common.settings")}),jsxRuntimeExports.jsx("div",{...settingStyles.settingUI.closeButton,children:jsxRuntimeExports.jsx(DrawerCloseTrigger$1,{asChild:!0,onClick:j,children:jsxRuntimeExports.jsx(CloseButton,{size:"sm",color:"white"})})})]}),jsxRuntimeExports.jsx(DrawerBody$1,{children:jsxRuntimeExports.jsxs(TabsRoot,{defaultValue:"general",value:tt,onValueChange:ot=>st(ot.value),...settingStyles.settingUI.tabs.root,children:[jsxRuntimeExports.jsxs(TabsList,{...settingStyles.settingUI.tabs.list,children:[jsxRuntimeExports.jsx(TabsTrigger,{value:"general",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.general")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"live2d",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.live2d")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"asr",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.asr")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"tts",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.tts")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"agent",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.agent")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"llm",...settingStyles.settingUI.tabs.trigger,children:"LLM Providers"}),jsxRuntimeExports.jsx(TabsTrigger,{value:"about",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.about")})]}),rt]})}),tt==="llm"?null:jsxRuntimeExports.jsxs(DrawerFooter$1,{children:[jsxRuntimeExports.jsx(Button$2,{colorPalette:"red",onClick:j,children:s("common.cancel")}),jsxRuntimeExports.jsx(Button$2,{colorPalette:"blue",onClick:et,children:s("common.save")})]})]})]})}var propTypes={exports:{}},ReactPropTypesSecret$1="SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED",ReactPropTypesSecret_1=ReactPropTypesSecret$1,ReactPropTypesSecret=ReactPropTypesSecret_1;function emptyFunction(){}function emptyFunctionWithReset(){}emptyFunctionWithReset.resetWarningCache=emptyFunction;var factoryWithThrowingShims=function(){function i(a,_,$,_e,tt,st){if(st!==ReactPropTypesSecret){var it=new Error("Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. Read more at http://fb.me/use-check-prop-types");throw it.name="Invariant Violation",it}}i.isRequired=i;function o(){return i}var s={array:i,bigint:i,bool:i,func:i,number:i,object:i,string:i,symbol:i,any:i,arrayOf:o,element:i,elementType:i,instanceOf:o,node:i,objectOf:o,oneOf:o,oneOfType:o,shape:o,exact:o,checkPropTypes:emptyFunctionWithReset,resetWarningCache:emptyFunction};return s.PropTypes=s,s};propTypes.exports=factoryWithThrowingShims();var propTypesExports=propTypes.exports;const PropTypes=getDefaultExportFromCjs(propTypesExports);var prefix="cs",classnames={exports:{}};/*!
 	Copyright (c) 2018 Jed Watson.
 	Licensed under the MIT License (MIT), see
