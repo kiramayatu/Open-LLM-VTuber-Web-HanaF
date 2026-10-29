@@ -2153,9 +2153,9 @@ Live2DDebug.playRandomMotion("")  // Play random motion from default group
         })
       )
     ) : null,
-    e("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "6px" } }, "VTuber Avatar Models (2D Live2D / PNGTuber / 3D VRM / glTF)"),
+    e("div", { style: { fontWeight: 600, fontSize: "14px", marginBottom: "6px" } }, "VTuber Avatar Models (2D Live2D / PNGTuber / 3D VRM / glTF / MQO)"),
     e("div", { style: { fontSize: "12px", color: "rgba(255,255,255,0.7)", marginBottom: "10px" } },
-      "Upload a .zip package (Live2D Cubism 3/4/5 .model3.json, Cubism 2.1 .model.json, PNGTuber sprites) or a 3D .vrm / .glb file directly."
+      "Upload a .zip package (Live2D Cubism 3/4/5, Cubism 2.1, 3D VRM/glTF/MQO, PNGTuber sprites) or a .vrm / .glb / .mqo file directly."
     ),
     e("div", { style: { display: "flex", gap: "8px", marginBottom: "10px" } },
       e("input", {
@@ -2192,7 +2192,7 @@ Live2DDebug.playRandomMotion("")  // Play random motion from default group
     e("input", {
       ref: fileRef,
       type: "file",
-      accept: ".zip,.vrm,.glb,.png,.webp,.gif",
+      accept: ".zip,.vrm,.glb,.mqo,.png,.webp,.gif",
       style: { display: "none" },
       onChange: (ev) => {
         const f = ev.target.files && ev.target.files[0];
@@ -2221,7 +2221,7 @@ Live2DDebug.playRandomMotion("")  // Play random motion from default group
         cursor: "pointer",
         marginBottom: "10px",
       }
-    }, "Drag & drop .vrm, .glb, or .zip avatar package here, or click to browse"),
+    }, "Drag & drop .vrm, .glb, .mqo, or .zip avatar package here, or click to browse"),
     statusMsg ? e("div", { style: { fontSize: "12px", color: "#86efac", marginBottom: "8px" } }, statusMsg) : null,
     errorMsg ? e("div", { style: { fontSize: "12px", color: "#fca5a5", marginBottom: "8px" } }, errorMsg) : null,
     models.length > 0 ? e("div", { style: { display: "flex", flexDirection: "column", gap: "6px", maxHeight: "230px", overflowY: "auto" } },

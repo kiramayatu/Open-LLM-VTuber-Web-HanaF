@@ -337,11 +337,12 @@
       const canvas = document.createElement("canvas");
       canvas.id = "olv-avatar-overlay-canvas";
       canvas.style.cssText =
-        "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;display:block;";
+        "position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;z-index:2;display:block;cursor:grab;";
       this.containerEl.appendChild(canvas);
       this.overlayCanvas = canvas;
       this.ctx = canvas.getContext("2d");
       this.onResize();
+      this._bindInteraction(canvas);
 
       let baseOrigin = "";
       try {
@@ -395,6 +396,60 @@
           }
         }
       }
+    }
+
+    _bindInteraction(canvas) {
+      let dragging = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      canvas.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        dragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        canvas.style.cursor = "grabbing";
+        try {
+          canvas.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      });
+
+      canvas.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        const w = Math.max(1, canvas.clientWidth || window.innerWidth);
+        const h = Math.max(1, canvas.clientHeight || window.innerHeight);
+        this.posX += ((e.clientX - lastX) / w) * 2.0;
+        this.posY += ((e.clientY - lastY) / h) * 2.0;
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
+
+      const stopDrag = (e) => {
+        if (!dragging) return;
+        dragging = false;
+        canvas.style.cursor = "grab";
+        try {
+          canvas.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+      };
+      canvas.addEventListener("pointerup", stopDrag);
+      canvas.addEventListener("pointercancel", stopDrag);
+
+      canvas.addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          const factor = e.deltaY < 0 ? 1.08 : 0.92;
+          this.scale = Math.max(0.15, Math.min(6.0, this.scale * factor));
+        },
+        { passive: false }
+      );
+
+      canvas.addEventListener("dblclick", () => {
+        this.posX = 0;
+        this.posY = 0;
+        this.scale = 1.0;
+      });
     }
 
     onResize() {
@@ -528,10 +583,11 @@
       const canvas = document.createElement("canvas");
       canvas.id = "olv-avatar-overlay-canvas";
       canvas.style.cssText =
-        "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;display:block;";
+        "position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;z-index:2;display:block;cursor:grab;";
       this.containerEl.appendChild(canvas);
       this.glCanvas = canvas;
       this.onResize();
+      this._bindInteraction(canvas);
 
       this.gl =
         canvas.getContext("webgl", { alpha: true, premultipliedAlpha: true }) ||
@@ -576,6 +632,60 @@
       }
 
       this.live2DModel = model;
+    }
+
+    _bindInteraction(canvas) {
+      let dragging = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      canvas.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        dragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        canvas.style.cursor = "grabbing";
+        try {
+          canvas.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      });
+
+      canvas.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        const w = Math.max(1, canvas.clientWidth || window.innerWidth);
+        const h = Math.max(1, canvas.clientHeight || window.innerHeight);
+        this.posX += ((e.clientX - lastX) / w) * 2.0;
+        this.posY -= ((e.clientY - lastY) / h) * 2.0;
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
+
+      const stopDrag = (e) => {
+        if (!dragging) return;
+        dragging = false;
+        canvas.style.cursor = "grab";
+        try {
+          canvas.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+      };
+      canvas.addEventListener("pointerup", stopDrag);
+      canvas.addEventListener("pointercancel", stopDrag);
+
+      canvas.addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          const factor = e.deltaY < 0 ? 1.08 : 0.92;
+          this.scale = Math.max(0.15, Math.min(6.0, this.scale * factor));
+        },
+        { passive: false }
+      );
+
+      canvas.addEventListener("dblclick", () => {
+        this.posX = 0;
+        this.posY = 0;
+        this.scale = 1.0;
+      });
     }
 
     onResize() {
@@ -685,6 +795,8 @@
       this.posX = 0;
       this.posY = 0;
       this.yawOffset = 0;
+      this.userYaw = 0;
+      this.userPitch = 0;
       this.bboxCenter = [0, 0.9, 0];
       this.bboxRadius = 1.0;
     }
@@ -696,10 +808,11 @@
       const canvas = document.createElement("canvas");
       canvas.id = "olv-avatar-overlay-canvas";
       canvas.style.cssText =
-        "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;display:block;";
+        "position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;z-index:2;display:block;cursor:grab;";
       this.containerEl.appendChild(canvas);
       this.glCanvas = canvas;
       this.onResize();
+      this._bindInteraction(canvas);
 
       const gl = canvas.getContext("webgl2", { alpha: true, antialias: true });
       if (!gl) throw new Error("WebGL2 is required for 3D VRM / glTF rendering");
@@ -709,7 +822,80 @@
       const resp = await fetch(url);
       if (!resp.ok) throw new Error(`Failed to fetch 3D model (${resp.status})`);
       const buf = await resp.arrayBuffer();
-      await this._parseGLBOrGLTF(buf, url);
+      if (String(url).toLowerCase().endsWith(".mqo") || modelInfo?.format === "mqo") {
+        await this._parseMQO(buf, url);
+      } else {
+        await this._parseGLBOrGLTF(buf, url);
+      }
+    }
+
+    _bindInteraction(canvas) {
+      let dragging = false;
+      let rotateMode = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+      canvas.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0 && e.button !== 2) return;
+        dragging = true;
+        rotateMode = e.button === 2 || e.shiftKey;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        canvas.style.cursor = "grabbing";
+        try {
+          canvas.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      });
+
+      canvas.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+
+        if (rotateMode || e.shiftKey) {
+          this.userYaw += dx * 0.008;
+          this.userPitch = Math.max(-0.8, Math.min(0.8, this.userPitch + dy * 0.006));
+        } else {
+          const h = Math.max(1, canvas.clientHeight || window.innerHeight);
+          const dist = (this.bboxRadius * 2.35) / Math.max(0.1, this.scale);
+          const worldPerPixel = (2.0 * dist * Math.tan(15 * (Math.PI / 180))) / h;
+          this.posX += dx * worldPerPixel;
+          this.posY -= dy * worldPerPixel;
+        }
+      });
+
+      const stopDrag = (e) => {
+        if (!dragging) return;
+        dragging = false;
+        canvas.style.cursor = "grab";
+        try {
+          canvas.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+      };
+      canvas.addEventListener("pointerup", stopDrag);
+      canvas.addEventListener("pointercancel", stopDrag);
+
+      canvas.addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          const factor = e.deltaY < 0 ? 1.1 : 0.9;
+          this.scale = Math.max(0.1, Math.min(10.0, this.scale * factor));
+        },
+        { passive: false }
+      );
+
+      canvas.addEventListener("dblclick", () => {
+        this.posX = 0;
+        this.posY = 0;
+        this.userYaw = 0;
+        this.userPitch = 0;
+        this.scale = 1.0;
+      });
     }
 
     _initShaderProgram(gl) {
@@ -1072,20 +1258,40 @@
           }
           gl.bindVertexArray(null);
 
-          // Resolve material baseColor
+          // Resolve material baseColor, unlit mode, and outline detection
           let baseColorFactor = [1, 1, 1, 1];
           let tex = null;
+          let doubleSided = false;
+          let isOutline = false;
           if (prim.material != null && json.materials && json.materials[prim.material]) {
             const mat = json.materials[prim.material];
+            const matName = String(mat.name || "").trim().toLowerCase();
             const pbr = mat.pbrMetallicRoughness || {};
+            const hasBaseTex = Boolean(
+              pbr.baseColorTexture && pbr.baseColorTexture.index != null
+            );
+            if (
+              matName.includes("outline") ||
+              (!hasBaseTex && !Array.isArray(pbr.baseColorFactor) && matName.includes("line"))
+            ) {
+              isOutline = true;
+            }
             if (Array.isArray(pbr.baseColorFactor)) {
               baseColorFactor = pbr.baseColorFactor;
+            } else if (matName === "black" && !hasBaseTex) {
+              baseColorFactor = [0.06, 0.06, 0.08, 1.0];
             }
+            doubleSided = Boolean(mat.doubleSided);
             const texInfo = pbr.baseColorTexture;
             if (texInfo && texInfo.index != null && json.textures && json.textures[texInfo.index]) {
               const srcImgIdx = json.textures[texInfo.index].source;
               tex = glTextures[srcImgIdx] || null;
             }
+          }
+
+          if (isOutline) {
+            // Skip inverted-hull / duplicate outline shells so inner textured meshes aren't occluded
+            continue;
           }
 
           this.drawCalls.push({
@@ -1096,6 +1302,7 @@
             meshIdx: node.mesh,
             baseColorFactor,
             texture: tex,
+            doubleSided,
           });
         }
       }
@@ -1105,9 +1312,316 @@
         const cy = (minY + maxY) * 0.5;
         const cz = (minZ + maxZ) * 0.5;
         const span = Math.max(maxX - minX, maxY - minY, maxZ - minZ, 0.25);
-        // Frame upper body / bust nicely for VTuber portrait view
-        this.bboxCenter = [cx, minY + (maxY - minY) * 0.62, cz];
-        this.bboxRadius = span * 0.42;
+        // Frame full character nicely and allow scroll-wheel zoom in/out
+        this.bboxCenter = [cx, cy, cz];
+        this.bboxRadius = span * 0.65;
+      }
+    }
+
+    async _parseMQO(arrayBuffer, baseUrl) {
+      const gl = this.gl;
+      let text = "";
+      try {
+        text = new TextDecoder("shift_jis").decode(new Uint8Array(arrayBuffer));
+      } catch (_) {
+        text = new TextDecoder("utf-8").decode(new Uint8Array(arrayBuffer));
+      }
+
+      const baseDir = baseUrl.substring(0, baseUrl.lastIndexOf("/") + 1);
+      const lines = text.split(/\r?\n/);
+
+      const materials = [];
+      const objects = [];
+      let state = "root";
+      let currentObj = null;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        if (state === "root") {
+          if (line.startsWith("Thumbnail ") && line.endsWith("{")) {
+            state = "skip_block";
+          } else if (line.startsWith("Material ") && line.endsWith("{")) {
+            state = "material";
+          } else if (line.startsWith("Object ") && line.endsWith("{")) {
+            const mName = line.match(/^Object\s+"([^"]*)"/);
+            currentObj = {
+              name: mName ? mName[1] : `obj_${objects.length}`,
+              visible: 15,
+              vertices: [],
+              faces: [],
+            };
+            objects.push(currentObj);
+            state = "object";
+          }
+        } else if (state === "skip_block") {
+          if (line === "}") state = "root";
+        } else if (state === "material") {
+          if (line === "}") {
+            state = "root";
+            continue;
+          }
+          const mName = line.match(/^"([^"]*)"/);
+          const mCol = line.match(/col\(\s*([0-9.+-]+)\s+([0-9.+-]+)\s+([0-9.+-]+)\s+([0-9.+-]+)\s*\)/);
+          const mTex = line.match(/tex\("([^"]+)"\)/);
+          materials.push({
+            name: mName ? mName[1] : `mat_${materials.length}`,
+            color: mCol
+              ? [Number(mCol[1]), Number(mCol[2]), Number(mCol[3]), Number(mCol[4])]
+              : [1, 1, 1, 1],
+            texPath: mTex ? mTex[1].replace(/\\/g, "/") : null,
+          });
+        } else if (state === "object") {
+          if (line === "}") {
+            currentObj = null;
+            state = "root";
+          } else if (line.startsWith("visible ")) {
+            currentObj.visible = parseInt(line.split(/\s+/)[1], 10);
+          } else if (line.startsWith("vertex ") && line.endsWith("{")) {
+            state = "vertex";
+          } else if (line.startsWith("face ") && line.endsWith("{")) {
+            state = "face";
+          } else if (line.endsWith("{")) {
+            state = "object_subblock";
+          }
+        } else if (state === "object_subblock") {
+          if (line === "}") state = "object";
+        } else if (state === "vertex") {
+          if (line === "}") {
+            state = "object";
+            continue;
+          }
+          const parts = line.split(/\s+/);
+          if (parts.length >= 3) {
+            currentObj.vertices.push([
+              parseFloat(parts[0]),
+              parseFloat(parts[1]),
+              parseFloat(parts[2]),
+            ]);
+          }
+        } else if (state === "face") {
+          if (line === "}") {
+            state = "object";
+            continue;
+          }
+          const nVerts = parseInt(line, 10);
+          if (nVerts < 3) continue;
+          const mV = line.match(/V\(([^)]+)\)/);
+          if (!mV) continue;
+          const vIdxs = mV[1].trim().split(/\s+/).map(Number);
+          const mM = line.match(/M\((\d+)\)/);
+          const matIdx = mM ? parseInt(mM[1], 10) : 0;
+          const mUV = line.match(/UV\(([^)]+)\)/);
+          const uvs = mUV ? mUV[1].trim().split(/\s+/).map(Number) : [];
+          currentObj.faces.push({ nVerts, vIdxs, matIdx, uvs });
+        }
+      }
+
+      // Load textures referenced by materials
+      const glTextures = [];
+      for (let i = 0; i < materials.length; i++) {
+        const texPath = materials[i].texPath;
+        if (!texPath) {
+          glTextures.push(null);
+          continue;
+        }
+        const texUrl =
+          texPath.startsWith("http") || texPath.startsWith("/") ? texPath : baseDir + texPath;
+        const tex = await new Promise((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => {
+            const t = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, t);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+            gl.generateMipmap(gl.TEXTURE_2D);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            resolve(t);
+          };
+          img.onerror = () => resolve(null);
+          img.src = texUrl;
+        });
+        glTextures.push(tex);
+      }
+
+      this.nodes = [{ name: "mqo_root", parent: null, worldMatrix: this._identityMat4() }];
+
+      // Group triangles by material index and compute smooth vertex normals + character bounds
+      const buckets = new Map(); // matIdx -> { pos: [], norm: [], uv: [] }
+      let charMinX = Infinity, charMinY = Infinity, charMinZ = Infinity;
+      let charMaxX = -Infinity, charMaxY = -Infinity, charMaxZ = -Infinity;
+      let allMinX = Infinity, allMinY = Infinity, allMinZ = Infinity;
+      let allMaxX = -Infinity, allMaxY = -Infinity, allMaxZ = -Infinity;
+
+      for (const obj of objects) {
+        if (obj.visible === 0 || !obj.vertices.length || !obj.faces.length) continue;
+        const verts = obj.vertices;
+        const vNormals = new Float32Array(verts.length * 3);
+
+        // Accumulate face normals into shared vertices for smooth shading
+        for (const f of obj.faces) {
+          const v0 = verts[f.vIdxs[0]];
+          const v1 = verts[f.vIdxs[1]];
+          const v2 = verts[f.vIdxs[2]];
+          if (!v0 || !v1 || !v2) continue;
+          // Metasequoia faces are clockwise; (v2 - v0) x (v1 - v0) points outward
+          const ux = v2[0] - v0[0], uy = v2[1] - v0[1], uz = v2[2] - v0[2];
+          const vx = v1[0] - v0[0], vy = v1[1] - v0[1], vz = v1[2] - v0[2];
+          const nx = uy * vz - uz * vy;
+          const ny = uz * vx - ux * vz;
+          const nz = ux * vy - uy * vx;
+          for (const vi of f.vIdxs) {
+            vNormals[vi * 3] += nx;
+            vNormals[vi * 3 + 1] += ny;
+            vNormals[vi * 3 + 2] += nz;
+          }
+        }
+
+        for (let vi = 0; vi < verts.length; vi++) {
+          const nx = vNormals[vi * 3], ny = vNormals[vi * 3 + 1], nz = vNormals[vi * 3 + 2];
+          const len = Math.hypot(nx, ny, nz) || 1.0;
+          vNormals[vi * 3] = nx / len;
+          vNormals[vi * 3 + 1] = ny / len;
+          vNormals[vi * 3 + 2] = nz / len;
+        }
+
+        for (const f of obj.faces) {
+          const mat = materials[f.matIdx] || { name: "", color: [1, 1, 1, 1], texPath: null };
+          const texNameLower = String(mat.texPath || "").toLowerCase();
+          // Skip giant stage/background dome planes so the VTuber avatar stands cleanly over the app background
+          if (texNameLower.includes("background")) continue;
+
+          const isCharacterTex =
+            Boolean(mat.texPath) && !texNameLower.includes("background");
+
+          let b = buckets.get(f.matIdx);
+          if (!b) {
+            b = { pos: [], norm: [], uv: [] };
+            buckets.set(f.matIdx, b);
+          }
+
+          // Triangulate n-gon (3 or 4 vertices); reverse winding (0, k+1, k) to match OpenGL CCW
+          const tris = f.nVerts === 4 ? [[0, 2, 1], [0, 3, 2]] : [[0, 2, 1]];
+          for (const [a, c, d] of tris) {
+            for (const corner of [a, c, d]) {
+              const vi = f.vIdxs[corner];
+              const v = verts[vi];
+              if (!v) continue;
+              b.pos.push(v[0], v[1], v[2]);
+              b.norm.push(vNormals[vi * 3], vNormals[vi * 3 + 1], vNormals[vi * 3 + 2]);
+              const u = f.uvs.length >= (corner + 1) * 2 ? f.uvs[corner * 2] : 0;
+              const vCoord = f.uvs.length >= (corner + 1) * 2 ? f.uvs[corner * 2 + 1] : 0;
+              b.uv.push(u, vCoord);
+
+              if (v[0] < allMinX) allMinX = v[0];
+              if (v[1] < allMinY) allMinY = v[1];
+              if (v[2] < allMinZ) allMinZ = v[2];
+              if (v[0] > allMaxX) allMaxX = v[0];
+              if (v[1] > allMaxY) allMaxY = v[1];
+              if (v[2] > allMaxZ) allMaxZ = v[2];
+
+              if (isCharacterTex) {
+                if (v[0] < charMinX) charMinX = v[0];
+                if (v[1] < charMinY) charMinY = v[1];
+                if (v[2] < charMinZ) charMinZ = v[2];
+                if (v[0] > charMaxX) charMaxX = v[0];
+                if (v[1] > charMaxY) charMaxY = v[1];
+                if (v[2] > charMaxZ) charMaxZ = v[2];
+              }
+            }
+          }
+        }
+      }
+
+      const useCharBounds = isFinite(charMinY) && isFinite(charMaxY);
+      const minX = useCharBounds ? charMinX : allMinX;
+      const minY = useCharBounds ? charMinY : allMinY;
+      const minZ = useCharBounds ? charMinZ : allMinZ;
+      const maxX = useCharBounds ? charMaxX : allMaxX;
+      const maxY = useCharBounds ? charMaxY : allMaxY;
+      const maxZ = useCharBounds ? charMaxZ : allMaxZ;
+
+      const headThresholdY = minY + (maxY - minY) * 0.72;
+      const createVbo = (data, loc, size) => {
+        const vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
+        return vbo;
+      };
+
+      for (const [matIdx, b] of buckets.entries()) {
+        const vCount = b.pos.length / 3;
+        if (!vCount) continue;
+
+        // Filter out huge untextured stage/backdrop cages that span > 3x the character height
+        const mat = materials[matIdx] || { color: [1, 1, 1, 1], texPath: null };
+        if (!mat.texPath && useCharBounds) {
+          let bMinY = Infinity, bMaxY = -Infinity;
+          for (let i = 1; i < b.pos.length; i += 3) {
+            if (b.pos[i] < bMinY) bMinY = b.pos[i];
+            if (b.pos[i] > bMaxY) bMaxY = b.pos[i];
+          }
+          if (bMaxY - bMinY > (maxY - minY) * 2.2) {
+            continue;
+          }
+        }
+
+        const posArr = new Float32Array(b.pos);
+        const normArr = new Float32Array(b.norm);
+        const uvArr = new Float32Array(b.uv);
+        const morph0 = new Float32Array(vCount * 3);
+        const morph1 = new Float32Array(vCount * 3);
+
+        // Add subtle procedural mouth/jaw motion in upper head region for static MQO meshes
+        const texLower = String(mat.texPath || "").toLowerCase();
+        if (texLower.includes("body") || texLower.includes("parts") || texLower.includes("face")) {
+          const midX = (minX + maxX) * 0.5;
+          const mouthY = minY + (maxY - minY) * 0.77;
+          const radius = (maxY - minY) * 0.045;
+          for (let i = 0; i < vCount; i++) {
+            const vx = posArr[i * 3], vy = posArr[i * 3 + 1], vz = posArr[i * 3 + 2];
+            if (vy > headThresholdY && vz > 0) {
+              const d = Math.hypot(vx - midX, vy - mouthY);
+              if (d < radius) {
+                const w = 1.0 - d / radius;
+                morph0[i * 3 + 1] = -w * (maxY - minY) * 0.012;
+              }
+            }
+          }
+        }
+
+        const vao = gl.createVertexArray();
+        gl.bindVertexArray(vao);
+        createVbo(posArr, 0, 3);
+        createVbo(normArr, 1, 3);
+        createVbo(uvArr, 2, 2);
+        createVbo(morph0, 3, 3);
+        createVbo(morph1, 4, 3);
+        gl.bindVertexArray(null);
+
+        this.drawCalls.push({
+          vao,
+          indexBuffer: null,
+          indexCount: vCount,
+          nodeIdx: 0,
+          meshIdx: matIdx,
+          baseColorFactor: mat.color || [1, 1, 1, 1],
+          texture: glTextures[matIdx] || null,
+          doubleSided: true,
+        });
+      }
+
+      if (isFinite(minX) && isFinite(maxX)) {
+        const cx = (minX + maxX) * 0.5;
+        const cy = (minY + maxY) * 0.52;
+        const cz = (minZ + maxZ) * 0.5;
+        const span = Math.max(maxX - minX, maxY - minY, maxZ - minZ, 0.25);
+        this.bboxCenter = [cx, cy, cz];
+        this.bboxRadius = span * 0.62;
       }
     }
 
@@ -1244,8 +1758,9 @@
       const aspect = cw / Math.max(1, ch);
       const fov = 30 * (Math.PI / 180);
       const f = 1.0 / Math.tan(fov * 0.5);
-      const near = 0.05;
-      const far = 50.0;
+      const dist = (this.bboxRadius * 2.35) / Math.max(0.1, this.scale);
+      const near = Math.max(0.01, dist * 0.05);
+      const far = Math.max(100.0, dist * 8.0);
 
       const proj = new Float32Array([
         f / aspect, 0, 0, 0,
@@ -1254,11 +1769,10 @@
         0, 0, (2 * far * near) / (near - far), 0,
       ]);
 
-      const dist = (this.bboxRadius * 2.35) / Math.max(0.25, this.scale);
-      const rotY = this.yawOffset + life.swayX * 0.08 + life.gazeX * 0.12;
+      const rotY = this.yawOffset + this.userYaw + life.swayX * 0.08 + life.gazeX * 0.12;
       const cy = Math.cos(rotY), sy = Math.sin(rotY);
       const [bx, by, bz] = this.bboxCenter;
-      const breathY = (life.breath - 0.5) * this.bboxRadius * 0.025;
+      const breathY = (life.breath - 0.5) * this.bboxRadius * 0.02;
 
       const rootTransform = new Float32Array([
         cy, 0, -sy, 0,
@@ -1341,12 +1855,13 @@
     detectFormat(modelInfo) {
       if (!modelInfo) return "cubism3";
       const explicit = String(modelInfo.format || "").toLowerCase();
-      if (["cubism3", "cubism2", "vrm", "gltf", "pngtuber"].includes(explicit)) {
+      if (["cubism3", "cubism2", "vrm", "gltf", "mqo", "pngtuber"].includes(explicit)) {
         return explicit;
       }
       const url = String(modelInfo.url || "").toLowerCase();
       if (url.endsWith(".vrm")) return "vrm";
       if (url.endsWith(".glb") || url.endsWith(".gltf")) return "gltf";
+      if (url.endsWith(".mqo")) return "mqo";
       if (url.endsWith(".model3.json")) return "cubism3";
       if (url.endsWith(".model.json")) return "cubism2";
       if (url.endsWith("pngtuber.json") || url.endsWith(".png") || url.endsWith(".webp")) {
@@ -1387,7 +1902,7 @@
           this.activeController = new PNGTuberController(wrapper);
         } else if (fmt === "cubism2") {
           this.activeController = new Live2DCubism2Controller(wrapper);
-        } else if (fmt === "vrm" || fmt === "gltf") {
+        } else if (fmt === "vrm" || fmt === "gltf" || fmt === "mqo") {
           this.activeController = new VRMAndGLTF3DController(wrapper);
         }
         if (this.activeController && modelInfo?.url) {
