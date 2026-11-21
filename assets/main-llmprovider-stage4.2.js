@@ -2388,9 +2388,6 @@ Live2DDebug.playRandomMotion("")  // Play random motion from default group
         display: "flex",
         flexDirection: "column",
         gap: "10px",
-        maxHeight: "420px",
-        overflowY: "auto",
-        paddingRight: "4px",
       }
     },
       models.filter((m) => m.name !== "shizuku-local").map((m) => {
@@ -2687,39 +2684,1281 @@ Live2DDebug.playRandomMotion("")  // Play random motion from default group
     ) : null
   );
 }
-const useLive2dSettings=()=>{const i=useLive2DConfig(),o={url:"",kScale:.5,initialXshift:0,initialYshift:0,emotionMap:{},scrollToResize:!0},[s,a]=reactExports.useState((i==null?void 0:i.modelInfo)||o),[_,$]=reactExports.useState((i==null?void 0:i.modelInfo)||o);return reactExports.useEffect(()=>{i!=null&&i.modelInfo&&JSON.stringify(i.modelInfo)!==JSON.stringify(_)&&($(i.modelInfo),a(i.modelInfo))},[i==null?void 0:i.modelInfo]),reactExports.useEffect(()=>{i&&s&&i.setModelInfo(s)},[s.pointerInteractive,s.scrollToResize]),{modelInfo:s,handleInputChange:(it,nt)=>{a(et=>({...et,[it]:nt}))},handleSave:()=>{i&&s&&$(s)},handleCancel:()=>{a(_),i&&_&&i.setModelInfo(_)}}};function live2D({onSave:i,onCancel:o}){const{t:s}=useTranslation(),{modelInfo:a,handleInputChange:_,handleSave:$,handleCancel:_e}=useLive2dSettings();return reactExports.useEffect(()=>{if(!i||!o)return;const tt=i($),st=o(_e);return()=>{tt==null||tt(),st==null||st()}},[i,o]),jsxRuntimeExports.jsxs(Stack,{...settingStyles.common.container,children:[jsxRuntimeExports.jsx(SwitchField,{label:s("settings.live2d.pointerInteractive"),checked:a.pointerInteractive??!1,onChange:tt=>_("pointerInteractive",tt)}),jsxRuntimeExports.jsx(SwitchField,{label:s("settings.live2d.scrollToResize"),checked:a.scrollToResize??!0,onChange:tt=>_("scrollToResize",tt)}),jsxRuntimeExports.jsx(AvatarModelUploader,{})]})}const useASRSettings=()=>{const{settings:i,updateSettings:o,autoStopMic:s,setAutoStopMic:a,autoStartMicOn:_,setAutoStartMicOn:$,autoStartMicOnConvEnd:_e,setAutoStartMicOnConvEnd:tt}=useVAD(),st=reactExports.useRef(i),it=reactExports.useRef(i),nt=reactExports.useRef(s),et=reactExports.useRef(_),j=reactExports.useRef(_e),[rt,ot]=reactExports.useState(s),[at,lt]=reactExports.useState(_),[ut,ct]=reactExports.useState(_e),[,dt]=React.useReducer(vt=>vt+1,0);reactExports.useEffect(()=>{ot(s),lt(_),ct(_e)},[s,_,_e]);const ft=(vt,wt)=>{if(wt===""||wt==="-")st.current={...st.current,[vt]:wt};else{const Ct=Number(wt);isNaN(Ct)||(st.current={...st.current,[vt]:Ct})}dt()},ht=vt=>{ot(vt),a(vt)},bt=vt=>{lt(vt),$(vt)},yt=vt=>{ct(vt),tt(vt)},mt=()=>{o(st.current),it.current=st.current,nt.current=rt,et.current=at,j.current=ut},gt=()=>{st.current=it.current,ot(nt.current),lt(et.current),a(nt.current),$(et.current),ct(j.current),tt(j.current),dt()};return{localSettings:st.current,autoStopMic:rt,autoStartMicOn:at,autoStartMicOnConvEnd:ut,setAutoStopMic:ht,setAutoStartMicOn:bt,setAutoStartMicOnConvEnd:yt,handleInputChange:ft,handleSave:mt,handleCancel:gt}};function ASR({onSave:i,onCancel:o}){const{t:s}=useTranslation(),{localSettings:a,autoStopMic:_,autoStartMicOn:$,autoStartMicOnConvEnd:_e,setAutoStopMic:tt,setAutoStartMicOn:st,setAutoStartMicOnConvEnd:it,handleInputChange:nt,handleSave:et,handleCancel:j}=useASRSettings();return reactExports.useEffect(()=>{if(!i||!o)return;const rt=i(et),ot=o(j);return()=>{rt==null||rt(),ot==null||ot()}},[i,o,et,j]),jsxRuntimeExports.jsxs(Stack,{...settingStyles.common.container,children:[jsxRuntimeExports.jsx(SwitchField,{label:s("settings.asr.autoStopMic"),checked:_,onChange:tt}),jsxRuntimeExports.jsx(SwitchField,{label:s("settings.asr.autoStartMicOnConvEnd"),checked:_e,onChange:it}),jsxRuntimeExports.jsx(SwitchField,{label:s("settings.asr.autoStartMicOn"),checked:$,onChange:st}),jsxRuntimeExports.jsx(NumberField,{label:s("settings.asr.positiveSpeechThreshold"),help:s("settings.asr.positiveSpeechThresholdDesc"),value:a.positiveSpeechThreshold,onChange:rt=>nt("positiveSpeechThreshold",rt),min:1,max:100}),jsxRuntimeExports.jsx(NumberField,{label:s("settings.asr.negativeSpeechThreshold"),help:s("settings.asr.negativeSpeechThresholdDesc"),value:a.negativeSpeechThreshold,onChange:rt=>nt("negativeSpeechThreshold",rt),min:0,max:100}),jsxRuntimeExports.jsx(NumberField,{label:s("settings.asr.redemptionFrames"),help:s("settings.asr.redemptionFramesDesc"),value:a.redemptionFrames,onChange:rt=>nt("redemptionFrames",rt),min:1,max:100})]})}function TTS(){
-  const [v, s] = reactExports.useState(window.vtuberVolume !== undefined ? window.vtuberVolume : 1);
-  return jsxRuntimeExports.jsxs(Box, {
-    p: 4,
-    children: [
-      jsxRuntimeExports.jsx(Text, {
-        mb: 2,
-        fontWeight: "bold",
-        children: "Voice Volume"
-      }),
-      jsxRuntimeExports.jsx("input", {
-        type: "range",
-        min: 0,
-        max: 1,
-        step: 0.01,
-        value: v,
-        style: { width: "100%", cursor: "pointer", accentColor: "#3182ce" },
-        onChange: (e) => {
-          const val = parseFloat(e.target.value);
-          s(val);
-          window.vtuberVolume = val;
-          localStorage.setItem('vtuberVolume', val);
+const useLive2dSettings=()=>{const i=useLive2DConfig(),o={url:"",kScale:.5,initialXshift:0,initialYshift:0,emotionMap:{},scrollToResize:!0},[s,a]=reactExports.useState((i==null?void 0:i.modelInfo)||o),[_,$]=reactExports.useState((i==null?void 0:i.modelInfo)||o);return reactExports.useEffect(()=>{i!=null&&i.modelInfo&&JSON.stringify(i.modelInfo)!==JSON.stringify(_)&&($(i.modelInfo),a(i.modelInfo))},[i==null?void 0:i.modelInfo]),reactExports.useEffect(()=>{i&&s&&i.setModelInfo(s)},[s.pointerInteractive,s.scrollToResize]),{modelInfo:s,handleInputChange:(it,nt)=>{a(et=>({...et,[it]:nt}))},handleSave:()=>{i&&s&&$(s)},handleCancel:()=>{a(_),i&&_&&i.setModelInfo(_)}}};function live2D({onSave:i,onCancel:o}){const{t:s}=useTranslation(),{modelInfo:a,handleInputChange:_,handleSave:$,handleCancel:_e}=useLive2dSettings();return reactExports.useEffect(()=>{if(!i||!o)return;const tt=i($),st=o(_e);return()=>{tt==null||tt(),st==null||st()}},[i,o]),jsxRuntimeExports.jsxs(Stack,{...settingStyles.common.container,children:[jsxRuntimeExports.jsx(SwitchField,{label:s("settings.live2d.pointerInteractive"),checked:a.pointerInteractive??!1,onChange:tt=>_("pointerInteractive",tt)}),jsxRuntimeExports.jsx(SwitchField,{label:s("settings.live2d.scrollToResize"),checked:a.scrollToResize??!0,onChange:tt=>_("scrollToResize",tt)}),jsxRuntimeExports.jsx(AvatarModelUploader,{})]})}const useASRSettings=()=>{const{settings:i,updateSettings:o,autoStopMic:s,setAutoStopMic:a,autoStartMicOn:_,setAutoStartMicOn:$,autoStartMicOnConvEnd:_e,setAutoStartMicOnConvEnd:tt}=useVAD(),st=reactExports.useRef(i),it=reactExports.useRef(i),nt=reactExports.useRef(s),et=reactExports.useRef(_),j=reactExports.useRef(_e),[rt,ot]=reactExports.useState(s),[at,lt]=reactExports.useState(_),[ut,ct]=reactExports.useState(_e),[,dt]=React.useReducer(vt=>vt+1,0);reactExports.useEffect(()=>{ot(s),lt(_),ct(_e)},[s,_,_e]);const ft=(vt,wt)=>{if(wt===""||wt==="-")st.current={...st.current,[vt]:wt};else{const Ct=Number(wt);isNaN(Ct)||(st.current={...st.current,[vt]:Ct})}dt()},ht=vt=>{ot(vt),a(vt)},bt=vt=>{lt(vt),$(vt)},yt=vt=>{ct(vt),tt(vt)},mt=()=>{o(st.current),it.current=st.current,nt.current=rt,et.current=at,j.current=ut},gt=()=>{st.current=it.current,ot(nt.current),lt(et.current),a(nt.current),$(et.current),ct(j.current),tt(j.current),dt()};return{localSettings:st.current,autoStopMic:rt,autoStartMicOn:at,autoStartMicOnConvEnd:ut,setAutoStopMic:ht,setAutoStartMicOn:bt,setAutoStartMicOnConvEnd:yt,handleInputChange:ft,handleSave:mt,handleCancel:gt}};function ASR({onSave:i,onCancel:o}){const{t:s}=useTranslation(),{localSettings:a,autoStopMic:_,autoStartMicOn:$,autoStartMicOnConvEnd:_e,setAutoStopMic:tt,setAutoStartMicOn:st,setAutoStartMicOnConvEnd:it,handleInputChange:nt,handleSave:et,handleCancel:j}=useASRSettings();return reactExports.useEffect(()=>{if(!i||!o)return;const rt=i(et),ot=o(j);return()=>{rt==null||rt(),ot==null||ot()}},[i,o,et,j]),jsxRuntimeExports.jsxs(Stack,{...settingStyles.common.container,children:[jsxRuntimeExports.jsx(SwitchField,{label:s("settings.asr.autoStopMic"),checked:_,onChange:tt}),jsxRuntimeExports.jsx(SwitchField,{label:s("settings.asr.autoStartMicOnConvEnd"),checked:_e,onChange:it}),jsxRuntimeExports.jsx(SwitchField,{label:s("settings.asr.autoStartMicOn"),checked:$,onChange:st}),jsxRuntimeExports.jsx(NumberField,{label:s("settings.asr.positiveSpeechThreshold"),help:s("settings.asr.positiveSpeechThresholdDesc"),value:a.positiveSpeechThreshold,onChange:rt=>nt("positiveSpeechThreshold",rt),min:1,max:100}),jsxRuntimeExports.jsx(NumberField,{label:s("settings.asr.negativeSpeechThreshold"),help:s("settings.asr.negativeSpeechThresholdDesc"),value:a.negativeSpeechThreshold,onChange:rt=>nt("negativeSpeechThreshold",rt),min:0,max:100}),jsxRuntimeExports.jsx(NumberField,{label:s("settings.asr.redemptionFrames"),help:s("settings.asr.redemptionFramesDesc"),value:a.redemptionFrames,onChange:rt=>nt("redemptionFrames",rt),min:1,max:100})]})}const TTS_ENGINE_CATALOG = [
+  { value: "hana_tts", label: "hana_tts (Hana Standalone VITS)", tag: "Local", defaultUrl: "http://127.0.0.1:7860/v1/tts", defaultVoice: "Hana", defaultLang: "日本語", needsKey: false },
+  { value: "edge_tts", label: "edge_tts (Microsoft Edge Neural • Free)", tag: "Free", defaultUrl: "", defaultVoice: "ja-JP-NanamiNeural", defaultLang: "ja-JP", needsKey: false },
+  { value: "openai_tts", label: "openai_tts (Kokoro / OpenAI-Compatible)", tag: "Local/Cloud", defaultUrl: "http://127.0.0.1:8880/v1", defaultVoice: "af_sky+af_bella", defaultModel: "kokoro", defaultLang: "en", needsKey: false },
+  { value: "elevenlabs_tts", label: "elevenlabs_tts (ElevenLabs Cloud API)", tag: "Cloud", defaultUrl: "https://api.elevenlabs.io", defaultVoice: "JBFqnCBsd6RMkjVDRZzb", defaultModel: "eleven_multilingual_v2", defaultLang: "multi", needsKey: true },
+  { value: "gpt_sovits_tts", label: "gpt_sovits_tts (GPT-SoVITS Voice Clone)", tag: "Local", defaultUrl: "http://127.0.0.1:9880/tts", defaultVoice: "default", defaultLang: "ja", needsKey: false },
+  { value: "cosyvoice_tts", label: "cosyvoice_tts (CosyVoice Gradio)", tag: "Local", defaultUrl: "http://127.0.0.1:50000", defaultVoice: "中文女", defaultLang: "zh", needsKey: false },
+  { value: "cosyvoice2_tts", label: "cosyvoice2_tts (CosyVoice 2 Gradio)", tag: "Local", defaultUrl: "http://127.0.0.1:50000", defaultVoice: "中文女", defaultLang: "zh", needsKey: false },
+  { value: "gradio_vits", label: "gradio_vits (Gradio VITS Service)", tag: "Local", defaultUrl: "http://127.0.0.1:7860", defaultVoice: "Hana", defaultLang: "日本語", needsKey: false },
+  { value: "azure_tts", label: "azure_tts (Microsoft Azure Speech)", tag: "Cloud", defaultUrl: "", defaultVoice: "en-US-AshleyNeural", defaultLang: "en-US", needsKey: true },
+  { value: "cartesia_tts", label: "cartesia_tts (Cartesia Sonic API)", tag: "Cloud", defaultUrl: "", defaultVoice: "6ccbfb76-1fc6-48f7-b71d-91ac6298247b", defaultModel: "sonic-3", defaultLang: "en", needsKey: true },
+  { value: "fish_api_tts", label: "fish_api_tts (Fish Audio API)", tag: "Cloud", defaultUrl: "https://api.fish.audio", defaultVoice: "7f92f8afb8ec43bf81429cc1c9199cb1", defaultLang: "multi", needsKey: true },
+  { value: "siliconflow_tts", label: "siliconflow_tts (SiliconFlow CosyVoice2)", tag: "Cloud", defaultUrl: "https://api.siliconflow.cn/v1/audio/speech", defaultVoice: "FunAudioLLM/CosyVoice2-0.5B:alex", defaultModel: "FunAudioLLM/CosyVoice2-0.5B", defaultLang: "zh", needsKey: true },
+  { value: "minimax_tts", label: "minimax_tts (MiniMax Speech API)", tag: "Cloud", defaultUrl: "", defaultVoice: "male-qn-qingse", defaultModel: "speech-02-turbo", defaultLang: "zh", needsKey: true },
+  { value: "piper_tts", label: "piper_tts (Piper Local ONNX)", tag: "Local", defaultUrl: "", defaultVoice: "0", defaultModel: "models/piper/zh_CN-huayan-medium.onnx", defaultLang: "zh", needsKey: false },
+  { value: "melo_tts", label: "melo_tts (MeloTTS Local)", tag: "Local", defaultUrl: "", defaultVoice: "EN-Default", defaultLang: "EN", needsKey: false },
+  { value: "x_tts", label: "x_tts (Coqui XTTS Server)", tag: "Local", defaultUrl: "http://127.0.0.1:8020/tts_to_audio", defaultVoice: "female", defaultLang: "en", needsKey: false },
+  { value: "sherpa_onnx_tts", label: "sherpa_onnx_tts (Sherpa-ONNX Local VITS)", tag: "Local", defaultUrl: "", defaultVoice: "1", defaultModel: "", defaultLang: "multi", needsKey: false },
+  { value: "coqui_tts", label: "coqui_tts (Coqui TTS Local)", tag: "Local", defaultUrl: "", defaultVoice: "", defaultModel: "tts_models/en/ljspeech/tacotron2-DDC", defaultLang: "en", needsKey: false },
+  { value: "bark_tts", label: "bark_tts (Suno Bark Local)", tag: "Local", defaultUrl: "", defaultVoice: "v2/en_speaker_6", defaultLang: "en", needsKey: false },
+  { value: "spark_tts", label: "spark_tts (Spark TTS Voice Clone)", tag: "Local", defaultUrl: "http://127.0.0.1:7860", defaultVoice: "voice_clone", defaultLang: "multi", needsKey: false },
+  { value: "pyttsx3_tts", label: "pyttsx3_tts (System Offline TTS)", tag: "Local", defaultUrl: "", defaultVoice: "default", defaultLang: "multi", needsKey: false }
+];
+
+function TTS() {
+  const metaForType = (t) => TTS_ENGINE_CATALOG.find((item) => item.value === t) || TTS_ENGINE_CATALOG[0];
+  const emptyForm = (type = "hana_tts") => {
+    const m = metaForType(type);
+    return {
+      provider_id: null,
+      name: "",
+      provider_type: m.value,
+      base_url: m.defaultUrl || "",
+      voice: m.defaultVoice || "",
+      model: m.defaultModel || "",
+      enabled: true,
+      settings: {
+        language: m.defaultLang || "日本語",
+        speed: 1.0,
+        timeout: 120,
+      },
+    };
+  };
+
+  const [volume, setVolume] = reactExports.useState(
+    window.vtuberVolume !== undefined ? window.vtuberVolume : 1
+  );
+  const [providers, setProviders] = reactExports.useState([]);
+  const [activeProviderId, setActiveProviderId] = reactExports.useState(null);
+  const [form, setForm] = reactExports.useState(() => emptyForm("hana_tts"));
+  const [apiKeyDraft, setApiKeyDraft] = reactExports.useState("");
+  const [apiKeyConfigured, setApiKeyConfigured] = reactExports.useState(false);
+  const [apiKeyVisible, setApiKeyVisible] = reactExports.useState(false);
+  const [apiKeyTouched, setApiKeyTouched] = reactExports.useState(false);
+  const [apiKeyRevealed, setApiKeyRevealed] = reactExports.useState(false);
+  const [voices, setVoices] = reactExports.useState([]);
+  const [sampleText, setSampleText] = reactExports.useState(
+    "Hello kira oniichan! Ready to test my new voice settings?"
+  );
+  const [previewAudio, setPreviewAudio] = reactExports.useState(null);
+  const [busy, setBusy] = reactExports.useState("");
+  const [notice, setNotice] = reactExports.useState(null);
+  const [loaded, setLoaded] = reactExports.useState(false);
+  const [dirty, setDirty] = reactExports.useState(false);
+  const importInputRef = reactExports.useRef(null);
+  const audioRef = reactExports.useRef(null);
+
+  const e = React.createElement;
+
+  const apiBaseUrl = () => {
+    const configured = (localStorage.getItem("baseUrl") || "")
+      .trim()
+      .replace(/^['"]+|['"]+$/g, "")
+      .trim();
+    return (configured || "http://127.0.0.1:12393").replace(/\/+$/, "");
+  };
+
+  const apiKey = () => {
+    if (typeof window.__olvGetApiKey === "function") return window.__olvGetApiKey();
+    const key = (localStorage.getItem("vtuberApiKey") || "").trim();
+    if (!key) throw new Error("Missing VTuber API key");
+    return key;
+  };
+
+  const request = async (path, options = {}) => {
+    const credential = apiKey();
+    const response = await fetch(`${apiBaseUrl()}${path}`, {
+      cache: "no-store",
+      ...options,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${credential}`,
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.headers || {}),
+      },
+    });
+    const text = await response.text();
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = {};
+    }
+    if (!response.ok) {
+      throw new Error(
+        typeof data.detail === "string"
+          ? data.detail
+          : typeof data.error === "string"
+            ? data.error
+            : `Request failed (${response.status})`
+      );
+    }
+    return data;
+  };
+
+  const showNotice = (type, text) => setNotice({ type, text });
+
+  const applyProviderToForm = (provider) => {
+    const m = metaForType(provider.provider_type);
+    setForm({
+      provider_id: provider.provider_id,
+      name: provider.name || "",
+      provider_type: provider.provider_type || "hana_tts",
+      base_url: provider.base_url || "",
+      voice: provider.voice || "",
+      model: provider.model || "",
+      enabled: provider.enabled !== false,
+      settings: {
+        language: m.defaultLang || "日本語",
+        speed: 1.0,
+        timeout: 120,
+        ...(provider.settings || {}),
+      },
+    });
+    setApiKeyConfigured(Boolean(provider.api_key_configured));
+    setApiKeyDraft("");
+    setApiKeyVisible(false);
+    setApiKeyTouched(false);
+    setApiKeyRevealed(false);
+    setVoices([]);
+    setDirty(false);
+  };
+
+  const loadProviders = reactExports.useCallback(async (selectActive = true) => {
+    setBusy("load");
+    try {
+      const data = await request("/tts/providers");
+      const nextProviders = Array.isArray(data.providers) ? data.providers : [];
+      setProviders(nextProviders);
+      setActiveProviderId(data.active_provider_id || null);
+      setLoaded(true);
+      if (selectActive && nextProviders.length > 0) {
+        const selected =
+          nextProviders.find((item) => item.provider_id === data.active_provider_id) ||
+          nextProviders[0];
+        applyProviderToForm(selected);
+      }
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Could not load TTS providers");
+    } finally {
+      setBusy("");
+    }
+  }, []);
+
+  reactExports.useEffect(() => {
+    loadProviders(true);
+  }, [loadProviders]);
+
+  const updateField = (key, value) => {
+    setForm((current) => {
+      const next = { ...current, [key]: value };
+      if (key === "provider_type") {
+        const m = metaForType(value);
+        next.base_url = m.defaultUrl || "";
+        next.voice = m.defaultVoice || "";
+        next.model = m.defaultModel || "";
+        next.settings = {
+          ...current.settings,
+          language: m.defaultLang || current.settings.language || "en",
+        };
+      }
+      return next;
+    });
+    setDirty(true);
+    setNotice(null);
+  };
+
+  const updateSetting = (sKey, sVal) => {
+    setForm((current) => ({
+      ...current,
+      settings: { ...(current.settings || {}), [sKey]: sVal },
+    }));
+    setDirty(true);
+    setNotice(null);
+  };
+
+  const newProvider = () => {
+    setForm(emptyForm("hana_tts"));
+    setApiKeyDraft("");
+    setApiKeyConfigured(false);
+    setApiKeyVisible(false);
+    setApiKeyTouched(false);
+    setApiKeyRevealed(false);
+    setVoices([]);
+    setPreviewAudio(null);
+    setDirty(false);
+    setNotice(null);
+  };
+
+  const buildProbePayload = () => {
+    const payload = {
+      name: (form.name || "").trim() || "TTS Probe",
+      provider_type: form.provider_type,
+      base_url: (form.base_url || "").trim() || null,
+      voice: (form.voice || "").trim() || null,
+      model: (form.model || "").trim() || null,
+      enabled: form.enabled !== false,
+      settings: form.settings || {},
+    };
+    if (form.provider_id) payload.provider_id = form.provider_id;
+    if (apiKeyTouched) payload.api_key = apiKeyDraft.trim() || null;
+    return payload;
+  };
+
+  const saveProvider = async () => {
+    const trimmedName = (form.name || "").trim();
+    if (!trimmedName) {
+      showNotice("error", "Profile Display Name is required.");
+      return;
+    }
+    setBusy("save");
+    setNotice(null);
+    try {
+      const payload = {
+        name: trimmedName,
+        provider_type: form.provider_type,
+        base_url: (form.base_url || "").trim() || null,
+        voice: (form.voice || "").trim() || null,
+        model: (form.model || "").trim() || null,
+        enabled: form.enabled !== false,
+        settings: form.settings || {},
+      };
+      if (apiKeyTouched) {
+        payload.api_key = apiKeyDraft.trim() || null;
+      }
+      let data;
+      if (form.provider_id) {
+        data = await request(`/tts/providers/${encodeURIComponent(form.provider_id)}`, {
+          method: "PATCH",
+          body: JSON.stringify(payload),
+        });
+      } else {
+        data = await request("/tts/providers", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+      }
+      if (data.provider) {
+        applyProviderToForm(data.provider);
+      }
+      await loadProviders(false);
+      window.dispatchEvent(new CustomEvent("olv-provider-updated"));
+      showNotice(
+        "success",
+        data.runtime_applied
+          ? `Saved "${trimmedName}" and hot-swapped active TTS engine.`
+          : `Saved TTS provider "${trimmedName}".`
+      );
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Could not save TTS provider");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const activateProvider = async () => {
+    if (!form.provider_id) return;
+    setBusy("activate");
+    setNotice(null);
+    try {
+      const data = await request(
+        `/tts/providers/${encodeURIComponent(form.provider_id)}/activate`,
+        { method: "POST" }
+      );
+      setActiveProviderId(data.active_provider_id || form.provider_id);
+      await loadProviders(false);
+      window.dispatchEvent(new CustomEvent("olv-provider-updated"));
+      showNotice("success", `Activated TTS provider "${form.name}". Live voice engine updated!`);
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Could not activate TTS provider");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const deactivateProvider = async () => {
+    setBusy("deactivate");
+    setNotice(null);
+    try {
+      await request("/tts/providers/deactivate", { method: "POST" });
+      setActiveProviderId(null);
+      await loadProviders(false);
+      window.dispatchEvent(new CustomEvent("olv-provider-updated"));
+      showNotice("success", "Deactivated managed TTS provider. Using conf.yaml fallback.");
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Could not deactivate TTS provider");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const deleteProvider = async () => {
+    if (!form.provider_id) return;
+    setBusy("delete");
+    setNotice(null);
+    try {
+      await request(`/tts/providers/${encodeURIComponent(form.provider_id)}`, {
+        method: "DELETE",
+      });
+      newProvider();
+      await loadProviders(true);
+      window.dispatchEvent(new CustomEvent("olv-provider-updated"));
+      showNotice("success", "TTS provider profile deleted.");
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Could not delete TTS provider");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const testConnection = async () => {
+    setBusy("test");
+    setNotice(null);
+    try {
+      const data = await request("/tts/providers/test", {
+        method: "POST",
+        body: JSON.stringify(buildProbePayload()),
+      });
+      const latency = data.latency_ms !== null && data.latency_ms !== undefined ? ` (${data.latency_ms} ms)` : "";
+      showNotice("success", `Verified: ${data.message || "TTS service reachable"}${latency}`);
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "TTS connection test failed");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const fetchVoices = async () => {
+    setBusy("voices");
+    setNotice(null);
+    try {
+      let data;
+      if (form.provider_id && !dirty && !apiKeyTouched) {
+        data = await request(`/tts/providers/voices/${encodeURIComponent(form.provider_id)}`);
+      } else {
+        data = await request("/tts/providers/voices", {
+          method: "POST",
+          body: JSON.stringify(buildProbePayload()),
+        });
+      }
+      const list = Array.isArray(data.voices) ? data.voices : [];
+      setVoices(list);
+      if (list.length > 0 && !form.voice) {
+        updateField("voice", list[0].voice_id);
+      }
+      showNotice("success", `Discovered ${list.length} voice(s) from ${form.provider_type}.`);
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Could not fetch voices");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const testVoicePreview = async () => {
+    setBusy("preview");
+    setNotice(null);
+    try {
+      const payload = {
+        ...buildProbePayload(),
+        text: (sampleText || "").trim() || "Hello! This is a voice preview test.",
+      };
+      const data = await request("/tts/providers/preview", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      if (!data.ok || !data.audio_base64) {
+        throw new Error(data.message || "No audio returned by TTS preview");
+      }
+      const mime = data.mime_type || "audio/wav";
+      const src = `data:${mime};base64,${data.audio_base64}`;
+      setPreviewAudio({
+        src,
+        latency_ms: data.latency_ms,
+        mime,
+      });
+      showNotice("success", data.message || "Voice preview synthesized!");
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.volume =
+            window.vtuberVolume !== undefined ? Number(window.vtuberVolume) : 1.0;
+          audioRef.current.play().catch(() => {});
         }
-      }),
-      jsxRuntimeExports.jsx(Text, {
-        textAlign: "right",
-        mt: 1,
-        fontSize: "sm",
-        color: "gray.400",
-        children: Math.round(v * 100) + "%"
-      })
-    ]
-  });
+      }, 60);
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Voice preview synthesis failed");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const revealApiKey = async () => {
+    if (apiKeyVisible) {
+      setApiKeyVisible(false);
+      return;
+    }
+    if (apiKeyTouched || apiKeyRevealed || !form.provider_id || !apiKeyConfigured) {
+      setApiKeyVisible(true);
+      return;
+    }
+    setBusy("reveal");
+    setNotice(null);
+    try {
+      const data = await request(
+        `/tts/providers/${encodeURIComponent(form.provider_id)}/reveal-secret`,
+        { method: "POST" }
+      );
+      setApiKeyDraft(data.api_key || "");
+      setApiKeyRevealed(true);
+      setApiKeyVisible(true);
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Could not reveal stored API key");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const importCurrentYaml = async () => {
+    setBusy("import");
+    setNotice(null);
+    try {
+      const data = await request("/tts/providers/import-current", {
+        method: "POST",
+        body: JSON.stringify({ activate: true }),
+      });
+      await loadProviders(false);
+      if (data.provider) applyProviderToForm(data.provider);
+      window.dispatchEvent(new CustomEvent("olv-provider-updated"));
+      showNotice("success", "Imported active YAML TTS configuration into managed profiles.");
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Could not import current YAML TTS");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const handleImportFile = async (event) => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = "";
+    if (!file) return;
+    setBusy("import-file");
+    setNotice(null);
+    try {
+      const content = await file.text();
+      const data = await request("/tts/providers/import-file", {
+        method: "POST",
+        body: JSON.stringify({
+          filename: file.name,
+          content,
+          activate: true,
+        }),
+      });
+      await loadProviders(false);
+      if (data.provider) applyProviderToForm(data.provider);
+      window.dispatchEvent(new CustomEvent("olv-provider-updated"));
+      showNotice("success", `Imported TTS profile from ${file.name}.`);
+    } catch (err) {
+      showNotice("error", err instanceof Error ? err.message : "Could not import YAML file");
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const fieldLabel = (title, hint) =>
+    e(
+      "div",
+      { style: { marginBottom: 5 } },
+      e("div", { style: { fontSize: 11.5, fontWeight: 700, color: "#cbd5e1" } }, title),
+      hint
+        ? e("div", { style: { fontSize: 10.5, color: "rgba(148,163,184,0.8)", marginTop: 1 } }, hint)
+        : null
+    );
+
+  const inputStyle = {
+    width: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
+    height: 36,
+    borderRadius: 8,
+    border: "1px solid rgba(255,255,255,0.15)",
+    background: "#0d111b",
+    color: "#f8fafc",
+    padding: "0 11px",
+    fontSize: 12.5,
+  };
+
+  const actionBtn = (label, onClick, disabled = false, variant = "default") => {
+    const palettes = {
+      primary: { bg: "#2563eb", border: "rgba(96,165,250,0.65)", color: "#ffffff" },
+      purple: { bg: "#9333ea", border: "rgba(192,132,252,0.75)", color: "#ffffff" },
+      danger: { bg: "rgba(127,29,29,0.75)", border: "rgba(248,113,113,0.45)", color: "#fecaca" },
+      default: { bg: "#1e293b", border: "rgba(255,255,255,0.16)", color: "#e2e8f0" },
+    };
+    const p = palettes[variant] || palettes.default;
+    return e(
+      "button",
+      {
+        type: "button",
+        onClick,
+        disabled,
+        style: {
+          height: 36,
+          padding: "0 13px",
+          borderRadius: 8,
+          border: `1px solid ${p.border}`,
+          background: p.bg,
+          color: p.color,
+          fontSize: 12,
+          fontWeight: 700,
+          cursor: disabled ? "not-allowed" : "pointer",
+          opacity: disabled ? 0.6 : 1,
+          whiteSpace: "nowrap",
+        },
+      },
+      label
+    );
+  };
+
+  const currentMeta = metaForType(form.provider_type);
+  const apiKeyValue =
+    apiKeyTouched || apiKeyRevealed
+      ? apiKeyDraft
+      : apiKeyConfigured
+        ? "••••••••••••"
+        : "";
+  const apiKeyType = apiKeyVisible ? "text" : "password";
+  const isCurrentActive = Boolean(form.provider_id && form.provider_id === activeProviderId);
+
+  return e(
+    "div",
+    {
+      "data-tts-studio": "managed-tts-providers",
+      style: {
+        display: "flex",
+        flexDirection: "column",
+        gap: 14,
+        color: "#f8fafc",
+        width: "100%",
+      },
+    },
+    e("input", {
+      ref: importInputRef,
+      type: "file",
+      accept: ".yaml,.yml",
+      style: { display: "none" },
+      onChange: handleImportFile,
+    }),
+    // Header Row
+    e(
+      "div",
+      {
+        style: {
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 12,
+          flexWrap: "wrap",
+        },
+      },
+      e(
+        "div",
+        null,
+        e(
+          "div",
+          { style: { fontSize: 18, fontWeight: 700, color: "#ffffff" } },
+          "Managed TTS Voice Providers"
+        ),
+        e(
+          "div",
+          { style: { fontSize: 12, color: "#94a3b8", marginTop: 2 } },
+          "Configure local or cloud TTS engines, discover voices, and test audio output live."
+        )
+      ),
+      e(
+        "div",
+        { style: { display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" } },
+        actionBtn("+ New TTS", newProvider, Boolean(busy), "primary"),
+        actionBtn("Import YAML", importCurrentYaml, Boolean(busy)),
+        actionBtn("Import File", () => importInputRef.current && importInputRef.current.click(), Boolean(busy)),
+        actionBtn("Refresh", () => loadProviders(false), Boolean(busy))
+      )
+    ),
+    // Main 2-Column Studio Split
+    e(
+      "div",
+      {
+        style: {
+          display: "grid",
+          gridTemplateColumns: "minmax(225px, 255px) minmax(0, 1fr)",
+          gap: 16,
+          alignItems: "stretch",
+        },
+      },
+      // Left Column: Saved TTS Profiles + Master Output Volume
+      e(
+        "div",
+        {
+          style: {
+            borderRadius: 13,
+            background: "rgba(20, 25, 38, 0.92)",
+            border: "1px solid rgba(255, 255, 255, 0.11)",
+            padding: 12,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            gap: 12,
+          },
+        },
+        e(
+          "div",
+          { style: { display: "flex", flexDirection: "column", gap: 8 } },
+          e(
+            "div",
+            {
+              style: {
+                fontSize: 11,
+                fontWeight: 700,
+                color: "#94a3b8",
+                letterSpacing: "0.04em",
+                padding: "2px 4px",
+              },
+            },
+            `SAVED TTS PROFILES (${providers.length})`
+          ),
+          !loaded && busy === "load"
+            ? e("div", { style: { fontSize: 12, color: "#94a3b8", padding: 8 } }, "Loading profiles…")
+            : providers.length === 0
+              ? e(
+                  "div",
+                  {
+                    style: {
+                      padding: 12,
+                      borderRadius: 10,
+                      background: "rgba(15, 19, 30, 0.85)",
+                      border: "1px dashed rgba(255,255,255,0.15)",
+                      fontSize: 12,
+                      color: "#94a3b8",
+                      lineHeight: 1.45,
+                    },
+                  },
+                  "No managed TTS profiles yet. Click ",
+                  e("strong", { style: { color: "#e2e8f0" } }, "Import YAML"),
+                  " to import your current conf.yaml voice or save a new profile on the right."
+                )
+              : e(
+                  "div",
+                  {
+                    style: {
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8,
+                      maxHeight: 430,
+                      overflowY: "auto",
+                    },
+                  },
+                  providers.map((item) => {
+                    const isSelected = form.provider_id === item.provider_id;
+                    const isAct = activeProviderId === item.provider_id;
+                    const tMeta = metaForType(item.provider_type);
+                    return e(
+                      "button",
+                      {
+                        key: item.provider_id,
+                        type: "button",
+                        onClick: () => applyProviderToForm(item),
+                        style: {
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "10px 12px",
+                          borderRadius: 10,
+                          background: isSelected
+                            ? "rgba(30, 58, 138, 0.45)"
+                            : "rgba(15, 19, 30, 0.85)",
+                          border: isSelected
+                            ? "2px solid rgba(96, 165, 250, 0.88)"
+                            : "1px solid rgba(255, 255, 255, 0.1)",
+                          color: "#f8fafc",
+                          cursor: "pointer",
+                        },
+                      },
+                      e(
+                        "div",
+                        {
+                          style: {
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 6,
+                          },
+                        },
+                        e(
+                          "span",
+                          {
+                            style: {
+                              fontSize: 12.5,
+                              fontWeight: 700,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            },
+                          },
+                          item.name
+                        ),
+                        isAct
+                          ? e(
+                              "span",
+                              {
+                                style: {
+                                  fontSize: 10,
+                                  fontWeight: 700,
+                                  color: "#6ee7b7",
+                                  background: "rgba(16, 185, 129, 0.2)",
+                                  border: "1px solid rgba(16, 185, 129, 0.65)",
+                                  borderRadius: 6,
+                                  padding: "1px 6px",
+                                  flexShrink: 0,
+                                },
+                              },
+                              "Active"
+                            )
+                          : null
+                      ),
+                      e(
+                        "div",
+                        {
+                          style: {
+                            fontSize: 11,
+                            fontWeight: 700,
+                            color: "#93c5fd",
+                            marginTop: 4,
+                          },
+                        },
+                        `${String(item.provider_type || "").toUpperCase()} • ${tMeta.tag}`
+                      ),
+                      e(
+                        "div",
+                        {
+                          style: {
+                            fontSize: 11,
+                            color: "#94a3b8",
+                            marginTop: 2,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          },
+                        },
+                        `Voice: ${item.voice || item.model || "Default"}`
+                      )
+                    );
+                  })
+                )
+        ),
+        // Bottom Master Output Volume Card
+        e(
+          "div",
+          {
+            style: {
+              padding: "10px 12px",
+              borderRadius: 10,
+              background: "rgba(15, 19, 30, 0.92)",
+              border: "1px solid rgba(255, 255, 255, 0.11)",
+            },
+          },
+          e(
+            "div",
+            {
+              style: {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                fontSize: 11.5,
+                fontWeight: 700,
+                color: "#e2e8f0",
+                marginBottom: 6,
+              },
+            },
+            e("span", null, "Output Master Volume"),
+            e("span", { style: { color: "#93c5fd" } }, `${Math.round(volume * 100)}%`)
+          ),
+          e("input", {
+            type: "range",
+            min: 0,
+            max: 1,
+            step: 0.01,
+            value: volume,
+            style: { width: "100%", cursor: "pointer", accentColor: "#3b82f6" },
+            onChange: (ev) => {
+              const val = parseFloat(ev.target.value);
+              setVolume(val);
+              window.vtuberVolume = val;
+              localStorage.setItem("vtuberVolume", String(val));
+              if (audioRef.current) audioRef.current.volume = val;
+            },
+          })
+        )
+      ),
+      // Right Column: TTS Provider Editor & Live Audio Preview
+      e(
+        "div",
+        {
+          style: {
+            borderRadius: 13,
+            background: "rgba(20, 25, 38, 0.92)",
+            border: "1px solid rgba(255, 255, 255, 0.11)",
+            padding: "16px 18px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            gap: 14,
+          },
+        },
+        e(
+          "div",
+          { style: { display: "flex", flexDirection: "column", gap: 12 } },
+          // Form Header
+          e(
+            "div",
+            {
+              style: {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+              },
+            },
+            e(
+              "div",
+              { style: { fontSize: 15, fontWeight: 700, color: "#ffffff" } },
+              form.provider_id
+                ? `Edit TTS Provider — ${form.name || "Unnamed"}`
+                : "Create New TTS Provider"
+            ),
+            isCurrentActive
+              ? e(
+                  "span",
+                  {
+                    style: {
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: "#6ee7b7",
+                      background: "rgba(16, 185, 129, 0.18)",
+                      border: "1px solid rgba(16, 185, 129, 0.65)",
+                      borderRadius: 8,
+                      padding: "3px 10px",
+                    },
+                  },
+                  "● Active TTS"
+                )
+              : null
+          ),
+          // Row 1: Display Name & Engine Type
+          e(
+            "div",
+            { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 } },
+            e(
+              "div",
+              null,
+              fieldLabel("Profile Display Name"),
+              e("input", {
+                type: "text",
+                value: form.name || "",
+                placeholder: "e.g. Hana VITS FastAPI",
+                onChange: (ev) => updateField("name", ev.target.value),
+                style: inputStyle,
+              })
+            ),
+            e(
+              "div",
+              null,
+              fieldLabel("TTS Engine Type (21 Supported)"),
+              e(
+                "select",
+                {
+                  value: form.provider_type || "hana_tts",
+                  onChange: (ev) => updateField("provider_type", ev.target.value),
+                  style: { ...inputStyle, border: "1px solid rgba(96, 165, 250, 0.55)" },
+                },
+                TTS_ENGINE_CATALOG.map((item) =>
+                  e("option", { key: item.value, value: item.value }, item.label)
+                )
+              )
+            )
+          ),
+          // Row 2: Endpoint URL & Encrypted API Key
+          e(
+            "div",
+            { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 } },
+            e(
+              "div",
+              null,
+              fieldLabel("Endpoint / Base URL"),
+              e("input", {
+                type: "text",
+                value: form.base_url || "",
+                placeholder: currentMeta.defaultUrl || "Local SDK / No endpoint URL required",
+                onChange: (ev) => updateField("base_url", ev.target.value),
+                style: { ...inputStyle, color: "#93c5fd", fontFamily: "monospace" },
+              })
+            ),
+            e(
+              "div",
+              null,
+              fieldLabel("API Key (AES-256-GCM Encrypted)"),
+              e(
+                "div",
+                {
+                  style: {
+                    display: "grid",
+                    gridTemplateColumns: "minmax(0, 1fr) auto",
+                    gap: 6,
+                  },
+                },
+                e("input", {
+                  type: apiKeyType,
+                  value: apiKeyValue,
+                  placeholder: apiKeyConfigured
+                    ? "Stored key (click Eye to reveal)"
+                    : currentMeta.needsKey
+                      ? "Required cloud API key"
+                      : "Optional for local •• click Eye",
+                  onChange: (ev) => {
+                    setApiKeyDraft(ev.target.value);
+                    setApiKeyTouched(true);
+                    setApiKeyVisible(true);
+                    setApiKeyRevealed(false);
+                    setDirty(true);
+                    setNotice(null);
+                  },
+                  style: inputStyle,
+                }),
+                actionBtn(
+                  apiKeyVisible ? "Hide" : "Eye",
+                  revealApiKey,
+                  Boolean(busy)
+                )
+              )
+            )
+          ),
+          // Row 3: Voice / Speaker ID + Fetch Voices
+          e(
+            "div",
+            null,
+            fieldLabel("Voice / Speaker ID (Fetch from engine or enter manually)"),
+            e(
+              "div",
+              {
+                style: {
+                  display: "grid",
+                  gridTemplateColumns: "minmax(0, 1fr) auto",
+                  gap: 8,
+                },
+              },
+              voices.length > 0
+                ? e(
+                    "select",
+                    {
+                      value: form.voice || "",
+                      onChange: (ev) => updateField("voice", ev.target.value),
+                      style: inputStyle,
+                    },
+                    e("option", { value: "" }, "Select a discovered voice…"),
+                    voices.map((v) =>
+                      e(
+                        "option",
+                        { key: v.voice_id, value: v.voice_id },
+                        `${v.name || v.voice_id}${v.language ? ` (${v.language})` : ""}`
+                      )
+                    )
+                  )
+                : e("input", {
+                    type: "text",
+                    value: form.voice || "",
+                    placeholder: currentMeta.defaultVoice || "Voice or Speaker ID",
+                    onChange: (ev) => updateField("voice", ev.target.value),
+                    style: inputStyle,
+                  }),
+              actionBtn(
+                busy === "voices" ? "Fetching…" : "Fetch Voices",
+                fetchVoices,
+                Boolean(busy)
+              )
+            )
+          ),
+          // Row 4: Dynamic Parameters (Language, Speed, Model / Region / Timeout)
+          e(
+            "div",
+            { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 } },
+            e(
+              "div",
+              null,
+              fieldLabel("Language"),
+              e("input", {
+                type: "text",
+                value: (form.settings && form.settings.language) || "",
+                placeholder: currentMeta.defaultLang || "ja-JP / en-US / zh-CN",
+                onChange: (ev) => updateSetting("language", ev.target.value),
+                style: inputStyle,
+              })
+            ),
+            e(
+              "div",
+              null,
+              fieldLabel(`Speech Speed (${(form.settings && form.settings.speed) || 1.0}x)`),
+              e("input", {
+                type: "number",
+                step: "0.05",
+                min: "0.25",
+                max: "3.0",
+                value:
+                  form.settings && form.settings.speed !== undefined
+                    ? form.settings.speed
+                    : 1.0,
+                onChange: (ev) => updateSetting("speed", parseFloat(ev.target.value) || 1.0),
+                style: inputStyle,
+              })
+            ),
+            form.provider_type === "azure_tts"
+              ? e(
+                  "div",
+                  null,
+                  fieldLabel("Azure Region"),
+                  e("input", {
+                    type: "text",
+                    value: (form.settings && form.settings.region) || "eastus",
+                    placeholder: "eastus",
+                    onChange: (ev) => updateSetting("region", ev.target.value),
+                    style: inputStyle,
+                  })
+                )
+              : form.provider_type === "hana_tts"
+                ? e(
+                    "div",
+                    null,
+                    fieldLabel("Timeout / Latency (s)"),
+                    e("input", {
+                      type: "number",
+                      min: "5",
+                      max: "300",
+                      value:
+                        form.settings && form.settings.timeout !== undefined
+                          ? form.settings.timeout
+                          : 120,
+                      onChange: (ev) =>
+                        updateSetting("timeout", parseFloat(ev.target.value) || 120),
+                      style: inputStyle,
+                    })
+                  )
+                : e(
+                    "div",
+                    null,
+                    fieldLabel("Model ID / ONNX Path"),
+                    e("input", {
+                      type: "text",
+                      value: form.model || "",
+                      placeholder: currentMeta.defaultModel || "Default model",
+                      onChange: (ev) => updateField("model", ev.target.value),
+                      style: inputStyle,
+                    })
+                  )
+          ),
+          // Contextual Row for Voice Cloning or Cloud Engine Extra Fields
+          ["gpt_sovits_tts", "cosyvoice_tts", "cosyvoice2_tts", "spark_tts"].includes(
+            form.provider_type
+          )
+            ? e(
+                "div",
+                { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 } },
+                e(
+                  "div",
+                  null,
+                  fieldLabel("Reference Audio File Path"),
+                  e("input", {
+                    type: "text",
+                    value:
+                      (form.settings &&
+                        (form.settings.ref_audio_path || form.settings.prompt_wav_upload)) ||
+                      "",
+                    placeholder: "voices/reference.wav",
+                    onChange: (ev) => {
+                      updateSetting("ref_audio_path", ev.target.value);
+                      updateSetting("prompt_wav_upload", ev.target.value);
+                    },
+                    style: inputStyle,
+                  })
+                ),
+                e(
+                  "div",
+                  null,
+                  fieldLabel("Reference Prompt Transcript"),
+                  e("input", {
+                    type: "text",
+                    value: (form.settings && form.settings.prompt_text) || "",
+                    placeholder: "Transcript of reference audio",
+                    onChange: (ev) => updateSetting("prompt_text", ev.target.value),
+                    style: inputStyle,
+                  })
+                )
+              )
+            : form.provider_type === "minimax_tts"
+              ? e(
+                  "div",
+                  null,
+                  fieldLabel("MiniMax Group ID"),
+                  e("input", {
+                    type: "text",
+                    value: (form.settings && form.settings.group_id) || "",
+                    placeholder: "Required MiniMax group_id",
+                    onChange: (ev) => updateSetting("group_id", ev.target.value),
+                    style: inputStyle,
+                  })
+                )
+              : null,
+          // Row 5: Live Voice Preview & Synthesis Test Box
+          e(
+            "div",
+            {
+              style: {
+                borderRadius: 11,
+                background: "rgba(15, 23, 42, 0.92)",
+                border: "1px solid rgba(168, 85, 247, 0.55)",
+                padding: "11px 13px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+              },
+            },
+            e(
+              "div",
+              {
+                style: {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 8,
+                },
+              },
+              e(
+                "span",
+                {
+                  style: {
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#d8b4fe",
+                    letterSpacing: "0.03em",
+                  },
+                },
+                "LIVE VOICE PREVIEW & SYNTHESIS TEST"
+              ),
+              previewAudio && previewAudio.latency_ms !== undefined
+                ? e(
+                    "span",
+                    { style: { fontSize: 10.5, fontWeight: 600, color: "#6ee7b7" } },
+                    `Latency: ${previewAudio.latency_ms} ms • ${
+                      previewAudio.mime === "audio/mpeg" ? "MP3" : "WAV"
+                    }`
+                  )
+                : e(
+                    "span",
+                    { style: { fontSize: 10.5, color: "#94a3b8" } },
+                    "Test audio before activating"
+                  )
+            ),
+            e(
+              "div",
+              {
+                style: {
+                  display: "grid",
+                  gridTemplateColumns: "minmax(0, 1fr) auto",
+                  gap: 8,
+                },
+              },
+              e("input", {
+                type: "text",
+                value: sampleText,
+                placeholder: "Enter sample phrase to synthesize…",
+                onChange: (ev) => setSampleText(ev.target.value),
+                style: { ...inputStyle, background: "#090d16" },
+              }),
+              actionBtn(
+                busy === "preview" ? "Synthesizing…" : "Test Voice ▶",
+                testVoicePreview,
+                Boolean(busy),
+                "purple"
+              )
+            ),
+            previewAudio && previewAudio.src
+              ? e("audio", {
+                  ref: audioRef,
+                  controls: true,
+                  src: previewAudio.src,
+                  style: { width: "100%", height: 32, marginTop: 2 },
+                })
+              : null
+          ),
+          // Status Notice
+          notice
+            ? e(
+                "div",
+                {
+                  role: "status",
+                  style: {
+                    padding: "8px 11px",
+                    borderRadius: 8,
+                    border:
+                      notice.type === "error"
+                        ? "1px solid rgba(248, 113, 113, 0.35)"
+                        : "1px solid rgba(74, 222, 128, 0.32)",
+                    background:
+                      notice.type === "error"
+                        ? "rgba(127, 29, 29, 0.25)"
+                        : "rgba(20, 83, 45, 0.25)",
+                    color: notice.type === "error" ? "#fecaca" : "#bbf7d0",
+                    fontSize: 11.5,
+                    lineHeight: 1.4,
+                  },
+                },
+                notice.text
+              )
+            : null
+        ),
+        // Bottom Action Bar
+        e(
+          "div",
+          {
+            style: {
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              flexWrap: "wrap",
+              paddingTop: 4,
+              borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+            },
+          },
+          actionBtn(
+            busy === "test" ? "Testing…" : "Test Connection",
+            testConnection,
+            Boolean(busy)
+          ),
+          actionBtn(
+            busy === "save" ? "Saving…" : "Save Provider",
+            saveProvider,
+            Boolean(busy),
+            "primary"
+          ),
+          form.provider_id && isCurrentActive
+            ? actionBtn("Deactivate", deactivateProvider, Boolean(busy))
+            : form.provider_id
+              ? actionBtn("Set Active", activateProvider, Boolean(busy))
+              : null,
+          form.provider_id
+            ? actionBtn("Delete", deleteProvider, Boolean(busy), "danger")
+            : null
+        )
+      )
+    )
+  );
 }
 function useTriggerSpeak(){const{sendMessage:i}=useWebSocket(),{captureAllMedia:o}=useMediaCapture();return{sendTriggerSignal:reactExports.useCallback(async a=>{const _=await o();i({type:"ai-speak-signal",idle_time:a,images:_})},[i,o])}}const defaultSettings$1={allowProactiveSpeak:!1,idleSecondsToSpeak:5,allowButtonTrigger:!1},ProactiveSpeakContext=reactExports.createContext(null);function ProactiveSpeakProvider({children:i}){const[o,s]=useLocalStorage("proactiveSpeakSettings",defaultSettings$1),{aiState:a}=useAiState(),{sendTriggerSignal:_}=useTriggerSpeak(),$=reactExports.useRef(null),_e=reactExports.useRef(null),tt=reactExports.useCallback(()=>{$.current&&(clearTimeout($.current),$.current=null),_e.current=null},[]),st=reactExports.useCallback(()=>{tt(),o.allowProactiveSpeak&&(_e.current=Date.now(),$.current=setTimeout(()=>{const et=(Date.now()-_e.current)/1e3;_(et)},o.idleSecondsToSpeak*1e3))},[o.allowProactiveSpeak,o.idleSecondsToSpeak,_,tt]);reactExports.useEffect(()=>{a===AiStateEnum.IDLE?st():tt()},[a,st,tt]),reactExports.useEffect(()=>()=>{tt()},[tt]);const it=reactExports.useCallback(et=>{s(et)},[s]),nt=reactExports.useMemo(()=>({settings:o,updateSettings:it}),[o,it]);return jsxRuntimeExports.jsx(ProactiveSpeakContext.Provider,{value:nt,children:i})}function useProactiveSpeak(){const i=reactExports.useContext(ProactiveSpeakContext);if(!i)throw new Error("useProactiveSpeak must be used within a ProactiveSpeakProvider");return i}function useAgentSettings({onSave:i,onCancel:o}={}){const{settings:s,updateSettings:a}=useProactiveSpeak(),[_,$]=reactExports.useState({allowProactiveSpeak:s.allowProactiveSpeak,idleSecondsToSpeak:s.idleSecondsToSpeak,allowButtonTrigger:s.allowButtonTrigger}),[_e,tt]=reactExports.useState({...s});reactExports.useEffect(()=>{s&&(tt(s),$(s))},[s]);const st=reactExports.useCallback(rt=>{$(ot=>({...ot,allowProactiveSpeak:rt}))},[]),it=reactExports.useCallback(rt=>{$(ot=>({...ot,idleSecondsToSpeak:rt}))},[]),nt=reactExports.useCallback(rt=>{$(ot=>({...ot,allowButtonTrigger:rt}))},[]),et=reactExports.useCallback(()=>{a(_),tt(_)},[a,_]),j=reactExports.useCallback(()=>{$(_e),a(_e)},[_e,a]);return reactExports.useEffect(()=>{if(!i||!o)return;const rt=i(et),ot=o(j);return()=>{rt==null||rt(),ot==null||ot()}},[i,o,et,j]),{settings:_,handleAllowProactiveSpeakChange:st,handleIdleSecondsChange:it,handleAllowButtonTriggerChange:nt}}function Agent({onSave:i,onCancel:o}){const{t:s}=useTranslation(),{settings:a,handleAllowProactiveSpeakChange:_,handleIdleSecondsChange:$,handleAllowButtonTriggerChange:_e}=useAgentSettings({onSave:i,onCancel:o});return jsxRuntimeExports.jsxs(Stack,{...settingStyles.common.container,children:[jsxRuntimeExports.jsx(SwitchField,{label:s("settings.agent.allowProactiveSpeak"),checked:a.allowProactiveSpeak,onChange:_}),a.allowProactiveSpeak&&jsxRuntimeExports.jsx(NumberField,{label:s("settings.agent.idleSecondsToSpeak"),value:a.idleSecondsToSpeak,onChange:tt=>$(Number(tt)),min:0,step:.1,allowMouseWheel:!0}),jsxRuntimeExports.jsx(SwitchField,{label:s("settings.agent.allowButtonTrigger"),checked:a.allowButtonTrigger,onChange:_e})]})}function FaGithub(i){return GenIcon({attr:{viewBox:"0 0 496 512"},child:[{tag:"path",attr:{d:"M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"},child:[]}]})(i)}function FaBook(i){return GenIcon({attr:{viewBox:"0 0 448 512"},child:[{tag:"path",attr:{d:"M448 360V24c0-13.3-10.7-24-24-24H96C43 0 0 43 0 96v320c0 53 43 96 96 96h328c13.3 0 24-10.7 24-24v-16c0-7.5-3.5-14.3-8.9-18.7-4.2-15.4-4.2-59.3 0-74.7 5.4-4.3 8.9-11.1 8.9-18.6zM128 134c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm0 64c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm253.4 250H96c-17.7 0-32-14.3-32-32 0-17.6 14.4-32 32-32h285.4c-1.9 17.1-1.9 46.9 0 64z"},child:[]}]})(i)}function FaCheck(i){return GenIcon({attr:{viewBox:"0 0 512 512"},child:[{tag:"path",attr:{d:"M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z"},child:[]}]})(i)}function FaTimes(i){return GenIcon({attr:{viewBox:"0 0 352 512"},child:[{tag:"path",attr:{d:"M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"},child:[]}]})(i)}function FaTools(i){return GenIcon({attr:{viewBox:"0 0 512 512"},child:[{tag:"path",attr:{d:"M501.1 395.7L384 278.6c-23.1-23.1-57.6-27.6-85.4-13.9L192 158.1V96L64 0 0 64l96 128h62.1l106.6 106.6c-13.6 27.8-9.2 62.3 13.9 85.4l117.1 117.1c14.6 14.6 38.2 14.6 52.7 0l52.7-52.7c14.5-14.6 14.5-38.2 0-52.7zM331.7 225c28.3 0 54.9 11 74.9 31l19.4 19.4c15.8-6.9 30.8-16.5 43.8-29.5 37.1-37.1 49.7-89.3 37.9-136.7-2.2-9-13.5-12.1-20.1-5.5l-74.4 74.4-67.9-11.3L334 98.9l74.4-74.4c6.6-6.6 3.4-17.9-5.7-20.2-47.4-11.7-99.6.9-136.6 37.9-28.5 28.5-41.9 66.1-41.2 103.6l82.1 82.1c8.1-1.9 16.5-2.9 24.7-2.9zm-103.9 82l-56.7-56.7L18.7 402.8c-25 25-25 65.5 0 90.5s65.5 25 90.5 0l123.6-123.6c-7.6-19.9-9.9-41.6-5-62.7zM64 472c-13.2 0-24-10.8-24-24 0-13.3 10.7-24 24-24s24 10.7 24 24c0 13.2-10.7 24-24 24z"},child:[]}]})(i)}const Button$1=reactExports.forwardRef((i,o)=>{const{loading:s,disabled:a,loadingText:_,children:$,..._e}=i;return jsxRuntimeExports.jsx(Button$2,{disabled:s||a,ref:o,..._e,children:s&&!_?jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment,{children:[jsxRuntimeExports.jsx(AbsoluteCenter,{display:"inline-flex",children:jsxRuntimeExports.jsx(Spinner,{size:"inherit",color:"inherit"})}),jsxRuntimeExports.jsx(Span,{opacity:0,children:$})]}):s&&_?jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment,{children:[jsxRuntimeExports.jsx(Spinner,{size:"inherit",color:"inherit"}),_]}):$})});function About(){const{t:i}=useTranslation(),o=a=>{window.open(a,"_blank")};return jsxRuntimeExports.jsxs(Stack,{...settingStyles.common.container,gap:3,children:[jsxRuntimeExports.jsx(Heading,{size:"md",mb:1,children:i("settings.about.title")}),jsxRuntimeExports.jsxs(Box,{children:[jsxRuntimeExports.jsx(Text,{fontWeight:"bold",mb:0,children:i("settings.about.version")}),jsxRuntimeExports.jsx(Text,{children:"1.2.1"})]}),jsxRuntimeExports.jsx(Box,{borderTop:"1px solid",borderColor:"whiteAlpha.200",pt:2,mt:1}),jsxRuntimeExports.jsxs(Box,{mt:1,children:[jsxRuntimeExports.jsx(Text,{fontWeight:"bold",mb:1,children:i("settings.about.projectLinks")}),jsxRuntimeExports.jsxs(HStack,{mt:1,gap:2,children:[jsxRuntimeExports.jsxs(Button$1,{size:"sm",onClick:()=>o("https://github.com/Open-LLM-VTuber/Open-LLM-VTuber-Web"),children:[jsxRuntimeExports.jsx(Icon,{as:FaGithub,mr:2})," ",i("settings.about.github")]}),jsxRuntimeExports.jsxs(Button$1,{size:"sm",onClick:()=>o("https://docs.llmvtuber.com"),children:[jsxRuntimeExports.jsx(Icon,{as:FaBook,mr:2})," ",i("settings.about.documentation")]})]})]}),jsxRuntimeExports.jsx(Box,{borderTop:"1px solid",borderColor:"whiteAlpha.200",pt:2,mt:1}),jsxRuntimeExports.jsx(Box,{mt:1,children:jsxRuntimeExports.jsx(Button$1,{size:"xs",colorPalette:"blue",onClick:()=>o("https://github.com/Open-LLM-VTuber/Open-LLM-VTuber-Web/blob/main/LICENSE"),children:i("settings.about.viewLicense")})}),jsxRuntimeExports.jsxs(Box,{mt:1,children:[jsxRuntimeExports.jsx(Text,{fontWeight:"bold",mb:0,children:i("settings.about.copyright")}),jsxRuntimeExports.jsxs(Text,{children:["© ",new Date().getFullYear()," Open LLM VTuber Team"]})]})]})}const LLM_PROVIDER_TYPE_OPTIONS = [
   ["ollama", "Ollama"],
@@ -3159,6 +4398,7 @@ function LLMProviders() {
       const deletedActive = activeProviderId === form.provider_id;
       newProvider();
       await loadProviders(false);
+      window.dispatchEvent(new CustomEvent("olv-provider-updated"));
       showNotice("success", data.requires_reconnect || deletedActive ? "Provider deleted. Reconnect the chat to use the fallback configuration." : "Provider deleted");
     } catch (error) {
       showNotice("error", error instanceof Error ? error.message : "Failed to delete provider");
@@ -3416,7 +4656,230 @@ function LLMProviders() {
     ),
   );
 }
-function SettingUI({open:i,onClose:o}){const{t:s}=useTranslation(),[a,_]=reactExports.useState([]),[$,_e]=reactExports.useState([]),[tt,st]=reactExports.useState("general"),it=reactExports.useCallback(ot=>(_(at=>[...at,ot]),()=>{_(at=>at.filter(lt=>lt!==ot))}),[]),nt=reactExports.useCallback(ot=>(_e(at=>[...at,ot]),()=>{_e(at=>at.filter(lt=>lt!==ot))}),[]),et=reactExports.useCallback(()=>{a.forEach(ot=>ot()),o()},[a,o]),j=reactExports.useCallback(()=>{$.forEach(ot=>ot()),o()},[$,o]),rt=reactExports.useMemo(()=>jsxRuntimeExports.jsxs(TabsContentGroup,{children:[jsxRuntimeExports.jsx(TabsContent,{value:"general",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(General,{onSave:it,onCancel:nt})}),jsxRuntimeExports.jsx(TabsContent,{value:"live2d",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(live2D,{onSave:it,onCancel:nt})}),jsxRuntimeExports.jsx(TabsContent,{value:"asr",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(ASR,{onSave:it,onCancel:nt})}),jsxRuntimeExports.jsx(TabsContent,{value:"tts",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(TTS,{})}),jsxRuntimeExports.jsx(TabsContent,{value:"agent",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(Agent,{onSave:it,onCancel:nt})}),jsxRuntimeExports.jsx(TabsContent,{value:"llm",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(LLMProviders,{})}),jsxRuntimeExports.jsx(TabsContent,{value:"about",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(About,{})})]}),[it,nt]);return jsxRuntimeExports.jsxs(DrawerRoot$1,{open:i,onOpenChange:ot=>ot.open?null:o(),placement:"start",children:[jsxRuntimeExports.jsx(DrawerBackdrop$1,{}),jsxRuntimeExports.jsxs(DrawerContent$1,{...settingStyles.settingUI.drawerContent,children:[jsxRuntimeExports.jsxs(DrawerHeader$1,{...settingStyles.settingUI.drawerHeader,children:[jsxRuntimeExports.jsx(DrawerTitle$1,{...settingStyles.settingUI.drawerTitle,children:s("common.settings")}),jsxRuntimeExports.jsx("div",{...settingStyles.settingUI.closeButton,children:jsxRuntimeExports.jsx(DrawerCloseTrigger$1,{asChild:!0,onClick:j,children:jsxRuntimeExports.jsx(CloseButton,{size:"sm",color:"white"})})})]}),jsxRuntimeExports.jsx(DrawerBody$1,{children:jsxRuntimeExports.jsxs(TabsRoot,{defaultValue:"general",value:tt,onValueChange:ot=>st(ot.value),...settingStyles.settingUI.tabs.root,children:[jsxRuntimeExports.jsxs(TabsList,{...settingStyles.settingUI.tabs.list,children:[jsxRuntimeExports.jsx(TabsTrigger,{value:"general",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.general")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"live2d",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.live2d")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"asr",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.asr")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"tts",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.tts")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"agent",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.agent")}),jsxRuntimeExports.jsx(TabsTrigger,{value:"llm",...settingStyles.settingUI.tabs.trigger,children:"LLM Providers"}),jsxRuntimeExports.jsx(TabsTrigger,{value:"about",...settingStyles.settingUI.tabs.trigger,children:s("settings.tabs.about")})]}),rt]})}),tt==="llm"?null:jsxRuntimeExports.jsxs(DrawerFooter$1,{children:[jsxRuntimeExports.jsx(Button$2,{colorPalette:"red",onClick:j,children:s("common.cancel")}),jsxRuntimeExports.jsx(Button$2,{colorPalette:"blue",onClick:et,children:s("common.save")})]})]})]})}var propTypes={exports:{}},ReactPropTypesSecret$1="SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED",ReactPropTypesSecret_1=ReactPropTypesSecret$1,ReactPropTypesSecret=ReactPropTypesSecret_1;function emptyFunction(){}function emptyFunctionWithReset(){}emptyFunctionWithReset.resetWarningCache=emptyFunction;var factoryWithThrowingShims=function(){function i(a,_,$,_e,tt,st){if(st!==ReactPropTypesSecret){var it=new Error("Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. Read more at http://fb.me/use-check-prop-types");throw it.name="Invariant Violation",it}}i.isRequired=i;function o(){return i}var s={array:i,bigint:i,bool:i,func:i,number:i,object:i,string:i,symbol:i,any:i,arrayOf:o,element:i,elementType:i,instanceOf:o,node:i,objectOf:o,oneOf:o,oneOfType:o,shape:o,exact:o,checkPropTypes:emptyFunctionWithReset,resetWarningCache:emptyFunction};return s.PropTypes=s,s};propTypes.exports=factoryWithThrowingShims();var propTypesExports=propTypes.exports;const PropTypes=getDefaultExportFromCjs(propTypesExports);var prefix="cs",classnames={exports:{}};/*!
+function SettingUI({open:i,onClose:o}){
+  const{t:s}=useTranslation(),
+    [a,_]=reactExports.useState([]),
+    [$,_e]=reactExports.useState([]),
+    [tt,st]=reactExports.useState(()=>window.__olvInitialSettingsTab||"live2d"),
+    it=reactExports.useCallback(ot=>(_(at=>[...at,ot]),()=>{_(at=>at.filter(lt=>lt!==ot))}),[]),
+    nt=reactExports.useCallback(ot=>(_e(at=>[...at,ot]),()=>{_e(at=>at.filter(lt=>lt!==ot))}),[]),
+    et=reactExports.useCallback(()=>{a.forEach(ot=>ot()),o()},[a,o]),
+    j=reactExports.useCallback(()=>{$.forEach(ot=>ot()),o()},[$,o]);
+
+  reactExports.useEffect(()=>{
+    if(window.__olvInitialSettingsTab){
+      st(window.__olvInitialSettingsTab);
+      window.__olvInitialSettingsTab=null;
+    }
+    const onTab=ev=>{
+      if(ev&&ev.detail&&ev.detail.tab){
+        st(ev.detail.tab);
+      }
+    };
+    window.addEventListener("olv-open-settings-tab",onTab);
+    return()=>window.removeEventListener("olv-open-settings-tab",onTab);
+  },[]);
+
+  reactExports.useEffect(()=>{
+    if(!i)return;
+    const onKey=ev=>{if(ev.key==="Escape")j()};
+    window.addEventListener("keydown",onKey);
+    return()=>window.removeEventListener("keydown",onKey);
+  },[i,j]);
+
+  const rt=reactExports.useMemo(()=>jsxRuntimeExports.jsxs(TabsContentGroup,{children:[
+    jsxRuntimeExports.jsx(TabsContent,{value:"general",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(General,{onSave:it,onCancel:nt})}),
+    jsxRuntimeExports.jsx(TabsContent,{value:"live2d",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(live2D,{onSave:it,onCancel:nt})}),
+    jsxRuntimeExports.jsx(TabsContent,{value:"asr",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(ASR,{onSave:it,onCancel:nt})}),
+    jsxRuntimeExports.jsx(TabsContent,{value:"tts",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(TTS,{})}),
+    jsxRuntimeExports.jsx(TabsContent,{value:"agent",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(Agent,{onSave:it,onCancel:nt})}),
+    jsxRuntimeExports.jsx(TabsContent,{value:"llm",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(LLMProviders,{})}),
+    jsxRuntimeExports.jsx(TabsContent,{value:"about",...settingStyles.settingUI.tabs.content,children:jsxRuntimeExports.jsx(About,{})})
+  ]}),[it,nt]);
+
+  if(!i)return null;
+
+  const navItems=[
+    {id:"live2d",title:"Characters & Avatars",sub:"2D / 3D Models & Persona"},
+    {id:"llm",title:"LLM Providers",sub:"Ollama / OpenAI / Claude"},
+    {id:"tts",title:"TTS Providers",sub:"Voice Engines & Preview"},
+    {id:"asr",title:"Speech & Mic (ASR)",sub:"VAD & Mic Thresholds"},
+    {id:"agent",title:"Proactive Agent",sub:"Idle Speak & Triggers"},
+    {id:"general",title:s("settings.tabs.general")||"General & Scene",sub:"Background & Canvas"},
+    {id:"about",title:s("settings.tabs.about")||"About & System",sub:"Version & Diagnostics"}
+  ];
+  const e=React.createElement;
+  const showFooter=tt!=="llm"&&tt!=="tts"&&tt!=="about";
+
+  return reactDomExports.createPortal(e("div",{
+    "data-studio-modal":"centered",
+    style:{
+      position:"fixed",
+      inset:0,
+      width:"100vw",
+      height:"100vh",
+      zIndex:2400,
+      background:"rgba(5, 8, 16, 0.72)",
+      backdropFilter:"blur(7px)",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      padding:"20px",
+    },
+    onClick:ev=>{if(ev.target===ev.currentTarget)j();}
+  },
+    e("div",{
+      style:{
+        width:"min(1160px, 95vw)",
+        height:"min(830px, 90vh)",
+        borderRadius:18,
+        background:"linear-gradient(180deg, #101423 0%, #0b0e18 100%)",
+        border:"1px solid rgba(96, 165, 250, 0.36)",
+        boxShadow:"0 28px 80px rgba(0, 0, 0, 0.82)",
+        display:"flex",
+        flexDirection:"column",
+        overflow:"hidden",
+        color:"#f8fafc",
+      },
+      onClick:ev=>ev.stopPropagation()
+    },
+      e("div",{
+        style:{
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"space-between",
+          padding:"15px 22px",
+          background:"rgba(20, 25, 39, 0.98)",
+          borderBottom:"1px solid rgba(255, 255, 255, 0.09)",
+          flexShrink:0,
+        }
+      },
+        e("div",{style:{display:"flex",alignItems:"center",gap:12}},
+          e("span",{style:{fontSize:18,fontWeight:700,color:"#ffffff",letterSpacing:"-0.01em"}},"VTuber Studio Settings"),
+          e("span",{
+            style:{
+              fontSize:11,
+              fontWeight:600,
+              color:"#bfdbfe",
+              background:"rgba(37, 99, 235, 0.22)",
+              border:"1px solid rgba(96, 165, 250, 0.45)",
+              borderRadius:999,
+              padding:"3px 11px",
+            }
+          },"Studio Control Center")
+        ),
+        e("button",{
+          type:"button",
+          "aria-label":"Close settings",
+          onClick:j,
+          style:{
+            width:34,
+            height:34,
+            borderRadius:9,
+            border:"1px solid rgba(255,255,255,0.14)",
+            background:"rgba(255,255,255,0.06)",
+            color:"#e2e8f0",
+            fontSize:15,
+            fontWeight:700,
+            cursor:"pointer",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center",
+          }
+        },"✕")
+      ),
+      e("div",{
+        style:{
+          display:"flex",
+          flex:1,
+          minHeight:0,
+          overflow:"hidden",
+        }
+      },
+        e("div",{
+          style:{
+            width:225,
+            flexShrink:0,
+            background:"#0e121f",
+            borderRight:"1px solid rgba(255, 255, 255, 0.08)",
+            padding:"14px 10px",
+            display:"flex",
+            flexDirection:"column",
+            gap:6,
+            overflowY:"auto",
+          }
+        },
+          navItems.map(item=>{
+            const active=tt===item.id;
+            return e("button",{
+              key:item.id,
+              type:"button",
+              onClick:()=>st(item.id),
+              style:{
+                position:"relative",
+                width:"100%",
+                textAlign:"left",
+                padding:"10px 14px 10px 16px",
+                borderRadius:11,
+                border:active?"1px solid rgba(59, 130, 246, 0.75)":"1px solid transparent",
+                background:active?"rgba(37, 99, 235, 0.24)":"rgba(255, 255, 255, 0.025)",
+                color:active?"#ffffff":"rgba(226, 232, 240, 0.78)",
+                cursor:"pointer",
+                transition:"all 0.15s ease",
+              }
+            },
+              active?e("span",{
+                style:{
+                  position:"absolute",
+                  left:0,
+                  top:8,
+                  bottom:8,
+                  width:3.5,
+                  borderRadius:4,
+                  background:"#60a5fa",
+                }
+              }):null,
+              e("div",{style:{fontSize:13,fontWeight:active?700:600,lineHeight:1.25}},item.title),
+              e("div",{style:{fontSize:10.5,color:active?"#93c5fd":"rgba(148, 163, 184, 0.78)",marginTop:3}},item.sub)
+            );
+          })
+        ),
+        e("div",{
+          style:{
+            flex:1,
+            minWidth:0,
+            overflowY:"auto",
+            padding:"20px 26px",
+            background:"rgba(13, 17, 27, 0.65)",
+          }
+        },
+          jsxRuntimeExports.jsx(TabsRoot,{
+            defaultValue:"live2d",
+            value:tt,
+            onValueChange:ot=>st(ot.value),
+            ...settingStyles.settingUI.tabs.root,
+            children:rt
+          })
+        )
+      ),
+      showFooter?e("div",{
+        style:{
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"flex-end",
+          gap:10,
+          padding:"12px 24px",
+          background:"rgba(16, 21, 34, 0.98)",
+          borderTop:"1px solid rgba(255, 255, 255, 0.09)",
+          flexShrink:0,
+        }
+      },
+        jsxRuntimeExports.jsx(Button$2,{colorPalette:"red",onClick:j,children:s("common.cancel")}),
+        jsxRuntimeExports.jsx(Button$2,{colorPalette:"blue",onClick:et,children:s("common.save")})
+      ):null
+    )
+  ), document.body);
+}var propTypes={exports:{}},ReactPropTypesSecret$1="SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED",ReactPropTypesSecret_1=ReactPropTypesSecret$1,ReactPropTypesSecret=ReactPropTypesSecret_1;function emptyFunction(){}function emptyFunctionWithReset(){}emptyFunctionWithReset.resetWarningCache=emptyFunction;var factoryWithThrowingShims=function(){function i(a,_,$,_e,tt,st){if(st!==ReactPropTypesSecret){var it=new Error("Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. Read more at http://fb.me/use-check-prop-types");throw it.name="Invariant Violation",it}}i.isRequired=i;function o(){return i}var s={array:i,bigint:i,bool:i,func:i,number:i,object:i,string:i,symbol:i,any:i,arrayOf:o,element:i,elementType:i,instanceOf:o,node:i,objectOf:o,oneOf:o,oneOfType:o,shape:o,exact:o,checkPropTypes:emptyFunctionWithReset,resetWarningCache:emptyFunction};return s.PropTypes=s,s};propTypes.exports=factoryWithThrowingShims();var propTypesExports=propTypes.exports;const PropTypes=getDefaultExportFromCjs(propTypesExports);var prefix="cs",classnames={exports:{}};/*!
 	Copyright (c) 2018 Jed Watson.
 	Licensed under the MIT License (MIT), see
 	http://jedwatson.github.io/classnames
@@ -4063,7 +5526,7 @@ function ArtifactCard({ artifacts }) {
         ]
       }),
       previewUrl && jsxRuntimeExports.jsx(Box, {
-        position: "fixed", inset: 0, zIndex: 2000, bg: "blackAlpha.800", display: "flex", alignItems: "center", justifyContent: "center", p: 4,
+        position: "fixed", inset: 0, zIndex: 3000, bg: "blackAlpha.800", display: "flex", alignItems: "center", justifyContent: "center", p: 4,
         onClick: closePreview,
         children: jsxRuntimeExports.jsxs(Box, {
           w: "full", maxW: "1200px", h: "90vh", bg: "gray.900", borderRadius: "md", overflow: "hidden", boxShadow: "2xl",
@@ -4089,7 +5552,126 @@ function ArtifactCard({ artifacts }) {
     ]
   });
 }
-function ChatHistoryPanel(){const{t:i}=useTranslation(),{messages:o}=useChatHistory(),{confName:s}=useConfig(),{baseUrl:a}=useWebSocket(),_="Me",$=o.filter(_e=>_e.content||_e.type==="tool_call_status"&&_e.status==="running"||_e.type==="tool_call_status"&&_e.status==="completed"||_e.type==="tool_call_status"&&_e.status==="error");return jsxRuntimeExports.jsxs(Box,{h:"full",overflow:"hidden",bg:"gray.900",children:[jsxRuntimeExports.jsx(Global,{styles:chatPanelStyles}),jsxRuntimeExports.jsx(MainContainer,{children:jsxRuntimeExports.jsx(ChatContainer,{children:jsxRuntimeExports.jsx(MessageList,{children:$.length===0?jsxRuntimeExports.jsx(Box,{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",color:"whiteAlpha.500",fontSize:"sm",children:i("sidebar.noMessages")}):$.map(_e=>_e.type==="tool_call_status"?jsxRuntimeExports.jsxs(Box,{key:_e.id,children:[jsxRuntimeExports.jsxs(Flex,{...sidebarStyles.toolCallIndicator.container,alignItems:"center",children:[jsxRuntimeExports.jsx(Icon,{as:FaTools,...sidebarStyles.toolCallIndicator.icon}),jsxRuntimeExports.jsx(Text,{...sidebarStyles.toolCallIndicator.text,children:_e.status==="running"?`${_e.name} is using tool ${_e.tool_name}`:`${_e.name} used tool ${_e.tool_name}`}),_e.status==="running"&&jsxRuntimeExports.jsx(Spinner,{size:"xs",color:sidebarStyles.toolCallIndicator.spinner.color,ml:sidebarStyles.toolCallIndicator.spinner.ml}),_e.status==="completed"&&jsxRuntimeExports.jsx(Icon,{as:FaCheck,...sidebarStyles.toolCallIndicator.completedIcon}),_e.status==="error"&&jsxRuntimeExports.jsx(Icon,{as:FaTimes,...sidebarStyles.toolCallIndicator.errorIcon})]}),_e.status==="completed"&&jsxRuntimeExports.jsx(ArtifactCard,{artifacts:_e.artifacts||[]})]},_e.id):jsxRuntimeExports.jsx(Message,{type:"text",model:{message:_e.content,sentTime:_e.timestamp,sender:_e.role==="ai"?_e.name||s||"AI":_,direction:_e.role==="ai"?"incoming":"outgoing",position:"single"},avatarPosition:_e.role==="ai"?"tl":"tr",avatarSpacer:!1,children:jsxRuntimeExports.jsx(Avatar,{children:_e.role==="ai"?_e.avatar?jsxRuntimeExports.jsx("img",{src:_e.avatar.startsWith("http")?_e.avatar:_e.avatar.startsWith("/")?`${a}${_e.avatar}`:`${a}/avatars/${_e.avatar}`,alt:"avatar",style:{width:"100%",height:"100%",borderRadius:"50%"},onError:tt=>{const st=tt.target,it=String(_e.name||s||"A").trim()||"A",dv=document.createElement("div");dv.style.cssText="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 50%; background-color: var(--chakra-colors-blue-500); color: white; font-size: 14px;";dv.textContent=it[0].toUpperCase();st.replaceWith(dv)}}):_e.name&&_e.name[0].toUpperCase()||s&&s[0].toUpperCase()||"A":_[0].toUpperCase()})},_e.id))})})})]})}const useCameraPanel=()=>{const i=reactExports.useRef(null),[o,s]=reactExports.useState(""),[a,_]=reactExports.useState(!1),{isStreaming:$,stream:_e,startCamera:tt,stopCamera:st}=useCamera();return{videoRef:i,error:o,isHovering:a,isStreaming:$,stream:_e,toggleCamera:async()=>{try{$?st():await tt(),s("")}catch(j){let rt="Unable to access camera";j instanceof Error&&(rt=j.message),s(rt)}},handleMouseEnter:()=>_(!0),handleMouseLeave:()=>_(!1)}};function LiveIndicator(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{color:"red.500",display:"flex",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(Box,{w:"8px",h:"8px",borderRadius:"full",bg:"red.500",animation:"pulse 2s infinite"}),jsxRuntimeExports.jsx(Text,{fontSize:"sm",children:i("sidebar.live")})]})}function CameraPlaceholder(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{position:"absolute",display:"flex",flexDirection:"column",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(FiCamera,{size:24}),jsxRuntimeExports.jsx(Text,{color:"whiteAlpha.600",fontSize:"sm",textAlign:"center",children:i("footer.cameraControl")})]})}function VideoStream$1({videoRef:i,isStreaming:o}){return jsxRuntimeExports.jsx("video",{ref:i,autoPlay:!0,playsInline:!0,muted:!0,style:sidebarStyles.cameraPanel.video,...o?{}:{display:"none"}})}function CameraPanel(){const{t:i}=useTranslation(),{videoRef:o,error:s,isHovering:a,isStreaming:_,stream:$,toggleCamera:_e,handleMouseEnter:tt,handleMouseLeave:st}=useCameraPanel();return reactExports.useEffect(()=>{o.current&&(o.current.srcObject=$)},[$]),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.cameraPanel.container,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.cameraPanel.header,children:_&&jsxRuntimeExports.jsx(LiveIndicator,{})}),jsxRuntimeExports.jsx(Tooltip,{showArrow:!0,content:i(_?"footer.cameraStopping":"footer.cameraControl"),open:a&&!s,children:jsxRuntimeExports.jsx(Box,{...sidebarStyles.cameraPanel.videoContainer,onClick:_e,onMouseEnter:tt,onMouseLeave:st,cursor:"pointer",position:"relative",_hover:{bg:"whiteAlpha.100"},children:s?jsxRuntimeExports.jsx(Text,{color:"red.300",fontSize:"sm",textAlign:"center",children:s}):jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment,{children:[jsxRuntimeExports.jsx(VideoStream$1,{videoRef:o,isStreaming:_}),!_&&jsxRuntimeExports.jsx(CameraPlaceholder,{})]})})})]})}function useCaptureScreen(){const i=reactExports.useRef(null),[o,s]=reactExports.useState(!1),{stream:a,isStreaming:_,error:$,startCapture:_e,stopCapture:tt}=useScreenCaptureContext(),st=()=>{_?tt():_e()},it=()=>s(!0),nt=()=>s(!1);return reactExports.useEffect(()=>{i.current&&(i.current.srcObject=a)},[a]),{videoRef:i,error:$,isHovering:o,isStreaming:_,stream:a,toggleCapture:st,handleMouseEnter:it,handleMouseLeave:nt}}function ScreenIndicator(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{color:"red.500",display:"flex",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(Box,{w:"8px",h:"8px",borderRadius:"full",bg:"red.500",animation:"pulse 2s infinite"}),jsxRuntimeExports.jsx(Text,{fontSize:"sm",children:i("sidebar.screen")})]})}function ScreenPlaceholder(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{position:"absolute",display:"flex",flexDirection:"column",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(FiMonitor,{size:24}),jsxRuntimeExports.jsx(Text,{color:"whiteAlpha.600",fontSize:"sm",textAlign:"center",children:i("footer.screenControl")})]})}function VideoStream({videoRef:i,isStreaming:o}){return jsxRuntimeExports.jsx("video",{ref:i,autoPlay:!0,playsInline:!0,muted:!0,style:sidebarStyles.screenPanel.video,...o?{}:{display:"none"}})}function ScreenPanel(){const{t:i}=useTranslation(),{videoRef:o,error:s,isHovering:a,isStreaming:_,toggleCapture:$,handleMouseEnter:_e,handleMouseLeave:tt}=useCaptureScreen();return jsxRuntimeExports.jsxs(Box,{...sidebarStyles.screenPanel.container,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.screenPanel.header,children:_&&jsxRuntimeExports.jsx(ScreenIndicator,{})}),jsxRuntimeExports.jsx(Tooltip,{showArrow:!0,content:i(_?"footer.screenStopping":"footer.screenControl"),open:a&&!s,children:jsxRuntimeExports.jsx(Box,{...sidebarStyles.screenPanel.screenContainer,onClick:$,onMouseEnter:_e,onMouseLeave:tt,cursor:"pointer",position:"relative",_hover:{bg:"whiteAlpha.100"},children:s?jsxRuntimeExports.jsx(Text,{color:"red.300",fontSize:"sm",textAlign:"center",children:s}):jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment,{children:[jsxRuntimeExports.jsx(VideoStream,{videoRef:o,isStreaming:_}),!_&&jsxRuntimeExports.jsx(ScreenPlaceholder,{})]})})})]})}const BrowserContext=reactExports.createContext({browserViewData:null,setBrowserViewData:()=>{},clearBrowserViewData:()=>{}});function BrowserProvider({children:i}){const[o,s]=reactExports.useState(null),a=reactExports.useCallback($=>{s($)},[]),_=reactExports.useCallback(()=>{s(null)},[]);return jsxRuntimeExports.jsx(BrowserContext.Provider,{value:{browserViewData:o,setBrowserViewData:a,clearBrowserViewData:_},children:i})}function useBrowser(){const i=reactExports.useContext(BrowserContext);if(!i)throw new Error("useBrowser must be used within a BrowserProvider");return i}function BrowserPlaceholder(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{position:"absolute",display:"flex",flexDirection:"column",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(FiGlobe,{size:24}),jsxRuntimeExports.jsx(Text,{color:"whiteAlpha.600",fontSize:"sm",textAlign:"center",children:i("sidebar.noBrowserSession")})]})}function BrowserPanel(){const{t:i}=useTranslation(),{browserViewData:o}=useBrowser(),[s,a]=reactExports.useState(!1),_=()=>a(!0),$=()=>a(!1);return jsxRuntimeExports.jsxs(Box,{...sidebarStyles.browserPanel.container,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.browserPanel.header,children:o&&jsxRuntimeExports.jsx(Text,{fontSize:"sm",color:"blue.300",children:i("sidebar.browserSession")})}),jsxRuntimeExports.jsx(Tooltip,{showArrow:!0,content:o?"Interactive browser view":i("sidebar.noBrowserSession"),open:s,children:jsxRuntimeExports.jsx(Box,{...sidebarStyles.browserPanel.browserContainer,onMouseEnter:_,onMouseLeave:$,position:"relative",children:o?jsxRuntimeExports.jsx("iframe",{src:o.debuggerFullscreenUrl,style:sidebarStyles.browserPanel.iframe,sandbox:"allow-same-origin allow-scripts",allow:"clipboard-read; clipboard-write"}):jsxRuntimeExports.jsx(BrowserPlaceholder,{})})})]})}function BottomTab(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(TabsRoot,{defaultValue:"camera",variant:"plain",...sidebarStyles.bottomTab.container,children:[jsxRuntimeExports.jsxs(TabsList,{...sidebarStyles.bottomTab.list,children:[jsxRuntimeExports.jsxs(TabsTrigger,{value:"camera",...sidebarStyles.bottomTab.trigger,children:[jsxRuntimeExports.jsx(FiCamera,{}),i("sidebar.camera")]}),jsxRuntimeExports.jsxs(TabsTrigger,{value:"screen",...sidebarStyles.bottomTab.trigger,children:[jsxRuntimeExports.jsx(FiMonitor,{}),i("sidebar.screen")]}),jsxRuntimeExports.jsxs(TabsTrigger,{value:"browser",...sidebarStyles.bottomTab.trigger,children:[jsxRuntimeExports.jsx(FiGlobe,{}),i("sidebar.browser")]})]}),jsxRuntimeExports.jsx(TabsContent,{value:"camera",children:jsxRuntimeExports.jsx(CameraPanel,{})}),jsxRuntimeExports.jsx(TabsContent,{value:"screen",children:jsxRuntimeExports.jsx(ScreenPanel,{})}),jsxRuntimeExports.jsx(TabsContent,{value:"browser",children:jsxRuntimeExports.jsx(BrowserPanel,{})})]})}const minutesInMonth=43200,minutesInDay=1440,constructFromSymbol=Symbol.for("constructDateFrom");function constructFrom(i,o){return typeof i=="function"?i(o):i&&typeof i=="object"&&constructFromSymbol in i?i[constructFromSymbol](o):i instanceof Date?new i.constructor(o):new Date(o)}function toDate(i,o){return constructFrom(i,i)}let defaultOptions={};function getDefaultOptions(){return defaultOptions}function getTimezoneOffsetInMilliseconds(i){const o=toDate(i),s=new Date(Date.UTC(o.getFullYear(),o.getMonth(),o.getDate(),o.getHours(),o.getMinutes(),o.getSeconds(),o.getMilliseconds()));return s.setUTCFullYear(o.getFullYear()),+i-+s}function normalizeDates(i,...o){const s=constructFrom.bind(null,i||o.find(a=>typeof a=="object"));return o.map(s)}function compareAsc(i,o){const s=+toDate(i)-+toDate(o);return s<0?-1:s>0?1:s}function constructNow(i){return constructFrom(i,Date.now())}function differenceInCalendarMonths(i,o,s){const[a,_]=normalizeDates(s==null?void 0:s.in,i,o),$=a.getFullYear()-_.getFullYear(),_e=a.getMonth()-_.getMonth();return $*12+_e}function getRoundingMethod(i){return o=>{const a=(i?Math[i]:Math.trunc)(o);return a===0?0:a}}function differenceInMilliseconds(i,o){return+toDate(i)-+toDate(o)}function endOfDay(i,o){const s=toDate(i);return s.setHours(23,59,59,999),s}function endOfMonth(i,o){const s=toDate(i),a=s.getMonth();return s.setFullYear(s.getFullYear(),a+1,0),s.setHours(23,59,59,999),s}function isLastDayOfMonth(i,o){const s=toDate(i);return+endOfDay(s)==+endOfMonth(s)}function differenceInMonths(i,o,s){const[a,_,$]=normalizeDates(s==null?void 0:s.in,i,i,o),_e=compareAsc(_,$),tt=Math.abs(differenceInCalendarMonths(_,$));if(tt<1)return 0;_.getMonth()===1&&_.getDate()>27&&_.setDate(30),_.setMonth(_.getMonth()-_e*tt);let st=compareAsc(_,$)===-_e;isLastDayOfMonth(a)&&tt===1&&compareAsc(a,$)===1&&(st=!1);const it=_e*(tt-+st);return it===0?0:it}function differenceInSeconds(i,o,s){const a=differenceInMilliseconds(i,o)/1e3;return getRoundingMethod(s==null?void 0:s.roundingMethod)(a)}const formatDistanceLocale={lessThanXSeconds:{one:"less than a second",other:"less than {{count}} seconds"},xSeconds:{one:"1 second",other:"{{count}} seconds"},halfAMinute:"half a minute",lessThanXMinutes:{one:"less than a minute",other:"less than {{count}} minutes"},xMinutes:{one:"1 minute",other:"{{count}} minutes"},aboutXHours:{one:"about 1 hour",other:"about {{count}} hours"},xHours:{one:"1 hour",other:"{{count}} hours"},xDays:{one:"1 day",other:"{{count}} days"},aboutXWeeks:{one:"about 1 week",other:"about {{count}} weeks"},xWeeks:{one:"1 week",other:"{{count}} weeks"},aboutXMonths:{one:"about 1 month",other:"about {{count}} months"},xMonths:{one:"1 month",other:"{{count}} months"},aboutXYears:{one:"about 1 year",other:"about {{count}} years"},xYears:{one:"1 year",other:"{{count}} years"},overXYears:{one:"over 1 year",other:"over {{count}} years"},almostXYears:{one:"almost 1 year",other:"almost {{count}} years"}},formatDistance$1=(i,o,s)=>{let a;const _=formatDistanceLocale[i];return typeof _=="string"?a=_:o===1?a=_.one:a=_.other.replace("{{count}}",o.toString()),s!=null&&s.addSuffix?s.comparison&&s.comparison>0?"in "+a:a+" ago":a};function buildFormatLongFn(i){return(o={})=>{const s=o.width?String(o.width):i.defaultWidth;return i.formats[s]||i.formats[i.defaultWidth]}}const dateFormats={full:"EEEE, MMMM do, y",long:"MMMM do, y",medium:"MMM d, y",short:"MM/dd/yyyy"},timeFormats={full:"h:mm:ss a zzzz",long:"h:mm:ss a z",medium:"h:mm:ss a",short:"h:mm a"},dateTimeFormats={full:"{{date}} 'at' {{time}}",long:"{{date}} 'at' {{time}}",medium:"{{date}}, {{time}}",short:"{{date}}, {{time}}"},formatLong={date:buildFormatLongFn({formats:dateFormats,defaultWidth:"full"}),time:buildFormatLongFn({formats:timeFormats,defaultWidth:"full"}),dateTime:buildFormatLongFn({formats:dateTimeFormats,defaultWidth:"full"})},formatRelativeLocale={lastWeek:"'last' eeee 'at' p",yesterday:"'yesterday at' p",today:"'today at' p",tomorrow:"'tomorrow at' p",nextWeek:"eeee 'at' p",other:"P"},formatRelative=(i,o,s,a)=>formatRelativeLocale[i];function buildLocalizeFn(i){return(o,s)=>{const a=s!=null&&s.context?String(s.context):"standalone";let _;if(a==="formatting"&&i.formattingValues){const _e=i.defaultFormattingWidth||i.defaultWidth,tt=s!=null&&s.width?String(s.width):_e;_=i.formattingValues[tt]||i.formattingValues[_e]}else{const _e=i.defaultWidth,tt=s!=null&&s.width?String(s.width):i.defaultWidth;_=i.values[tt]||i.values[_e]}const $=i.argumentCallback?i.argumentCallback(o):o;return _[$]}}const eraValues={narrow:["B","A"],abbreviated:["BC","AD"],wide:["Before Christ","Anno Domini"]},quarterValues={narrow:["1","2","3","4"],abbreviated:["Q1","Q2","Q3","Q4"],wide:["1st quarter","2nd quarter","3rd quarter","4th quarter"]},monthValues={narrow:["J","F","M","A","M","J","J","A","S","O","N","D"],abbreviated:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],wide:["January","February","March","April","May","June","July","August","September","October","November","December"]},dayValues={narrow:["S","M","T","W","T","F","S"],short:["Su","Mo","Tu","We","Th","Fr","Sa"],abbreviated:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],wide:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},dayPeriodValues={narrow:{am:"a",pm:"p",midnight:"mi",noon:"n",morning:"morning",afternoon:"afternoon",evening:"evening",night:"night"},abbreviated:{am:"AM",pm:"PM",midnight:"midnight",noon:"noon",morning:"morning",afternoon:"afternoon",evening:"evening",night:"night"},wide:{am:"a.m.",pm:"p.m.",midnight:"midnight",noon:"noon",morning:"morning",afternoon:"afternoon",evening:"evening",night:"night"}},formattingDayPeriodValues={narrow:{am:"a",pm:"p",midnight:"mi",noon:"n",morning:"in the morning",afternoon:"in the afternoon",evening:"in the evening",night:"at night"},abbreviated:{am:"AM",pm:"PM",midnight:"midnight",noon:"noon",morning:"in the morning",afternoon:"in the afternoon",evening:"in the evening",night:"at night"},wide:{am:"a.m.",pm:"p.m.",midnight:"midnight",noon:"noon",morning:"in the morning",afternoon:"in the afternoon",evening:"in the evening",night:"at night"}},ordinalNumber=(i,o)=>{const s=Number(i),a=s%100;if(a>20||a<10)switch(a%10){case 1:return s+"st";case 2:return s+"nd";case 3:return s+"rd"}return s+"th"},localize={ordinalNumber,era:buildLocalizeFn({values:eraValues,defaultWidth:"wide"}),quarter:buildLocalizeFn({values:quarterValues,defaultWidth:"wide",argumentCallback:i=>i-1}),month:buildLocalizeFn({values:monthValues,defaultWidth:"wide"}),day:buildLocalizeFn({values:dayValues,defaultWidth:"wide"}),dayPeriod:buildLocalizeFn({values:dayPeriodValues,defaultWidth:"wide",formattingValues:formattingDayPeriodValues,defaultFormattingWidth:"wide"})};function buildMatchFn(i){return(o,s={})=>{const a=s.width,_=a&&i.matchPatterns[a]||i.matchPatterns[i.defaultMatchWidth],$=o.match(_);if(!$)return null;const _e=$[0],tt=a&&i.parsePatterns[a]||i.parsePatterns[i.defaultParseWidth],st=Array.isArray(tt)?findIndex(tt,et=>et.test(_e)):findKey(tt,et=>et.test(_e));let it;it=i.valueCallback?i.valueCallback(st):st,it=s.valueCallback?s.valueCallback(it):it;const nt=o.slice(_e.length);return{value:it,rest:nt}}}function findKey(i,o){for(const s in i)if(Object.prototype.hasOwnProperty.call(i,s)&&o(i[s]))return s}function findIndex(i,o){for(let s=0;s<i.length;s++)if(o(i[s]))return s}function buildMatchPatternFn(i){return(o,s={})=>{const a=o.match(i.matchPattern);if(!a)return null;const _=a[0],$=o.match(i.parsePattern);if(!$)return null;let _e=i.valueCallback?i.valueCallback($[0]):$[0];_e=s.valueCallback?s.valueCallback(_e):_e;const tt=o.slice(_.length);return{value:_e,rest:tt}}}const matchOrdinalNumberPattern=/^(\d+)(th|st|nd|rd)?/i,parseOrdinalNumberPattern=/\d+/i,matchEraPatterns={narrow:/^(b|a)/i,abbreviated:/^(b\.?\s?c\.?|b\.?\s?c\.?\s?e\.?|a\.?\s?d\.?|c\.?\s?e\.?)/i,wide:/^(before christ|before common era|anno domini|common era)/i},parseEraPatterns={any:[/^b/i,/^(a|c)/i]},matchQuarterPatterns={narrow:/^[1234]/i,abbreviated:/^q[1234]/i,wide:/^[1234](th|st|nd|rd)? quarter/i},parseQuarterPatterns={any:[/1/i,/2/i,/3/i,/4/i]},matchMonthPatterns={narrow:/^[jfmasond]/i,abbreviated:/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i,wide:/^(january|february|march|april|may|june|july|august|september|october|november|december)/i},parseMonthPatterns={narrow:[/^j/i,/^f/i,/^m/i,/^a/i,/^m/i,/^j/i,/^j/i,/^a/i,/^s/i,/^o/i,/^n/i,/^d/i],any:[/^ja/i,/^f/i,/^mar/i,/^ap/i,/^may/i,/^jun/i,/^jul/i,/^au/i,/^s/i,/^o/i,/^n/i,/^d/i]},matchDayPatterns={narrow:/^[smtwf]/i,short:/^(su|mo|tu|we|th|fr|sa)/i,abbreviated:/^(sun|mon|tue|wed|thu|fri|sat)/i,wide:/^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)/i},parseDayPatterns={narrow:[/^s/i,/^m/i,/^t/i,/^w/i,/^t/i,/^f/i,/^s/i],any:[/^su/i,/^m/i,/^tu/i,/^w/i,/^th/i,/^f/i,/^sa/i]},matchDayPeriodPatterns={narrow:/^(a|p|mi|n|(in the|at) (morning|afternoon|evening|night))/i,any:/^([ap]\.?\s?m\.?|midnight|noon|(in the|at) (morning|afternoon|evening|night))/i},parseDayPeriodPatterns={any:{am:/^a/i,pm:/^p/i,midnight:/^mi/i,noon:/^no/i,morning:/morning/i,afternoon:/afternoon/i,evening:/evening/i,night:/night/i}},match={ordinalNumber:buildMatchPatternFn({matchPattern:matchOrdinalNumberPattern,parsePattern:parseOrdinalNumberPattern,valueCallback:i=>parseInt(i,10)}),era:buildMatchFn({matchPatterns:matchEraPatterns,defaultMatchWidth:"wide",parsePatterns:parseEraPatterns,defaultParseWidth:"any"}),quarter:buildMatchFn({matchPatterns:matchQuarterPatterns,defaultMatchWidth:"wide",parsePatterns:parseQuarterPatterns,defaultParseWidth:"any",valueCallback:i=>i+1}),month:buildMatchFn({matchPatterns:matchMonthPatterns,defaultMatchWidth:"wide",parsePatterns:parseMonthPatterns,defaultParseWidth:"any"}),day:buildMatchFn({matchPatterns:matchDayPatterns,defaultMatchWidth:"wide",parsePatterns:parseDayPatterns,defaultParseWidth:"any"}),dayPeriod:buildMatchFn({matchPatterns:matchDayPeriodPatterns,defaultMatchWidth:"any",parsePatterns:parseDayPeriodPatterns,defaultParseWidth:"any"})},enUS={code:"en-US",formatDistance:formatDistance$1,formatLong,formatRelative,localize,match,options:{weekStartsOn:0,firstWeekContainsDate:1}};function formatDistance(i,o,s){const a=getDefaultOptions(),_=(s==null?void 0:s.locale)??a.locale??enUS,$=2520,_e=compareAsc(i,o);if(isNaN(_e))throw new RangeError("Invalid time value");const tt=Object.assign({},s,{addSuffix:s==null?void 0:s.addSuffix,comparison:_e}),[st,it]=normalizeDates(s==null?void 0:s.in,..._e>0?[o,i]:[i,o]),nt=differenceInSeconds(it,st),et=(getTimezoneOffsetInMilliseconds(it)-getTimezoneOffsetInMilliseconds(st))/1e3,j=Math.round((nt-et)/60);let rt;if(j<2)return s!=null&&s.includeSeconds?nt<5?_.formatDistance("lessThanXSeconds",5,tt):nt<10?_.formatDistance("lessThanXSeconds",10,tt):nt<20?_.formatDistance("lessThanXSeconds",20,tt):nt<40?_.formatDistance("halfAMinute",0,tt):nt<60?_.formatDistance("lessThanXMinutes",1,tt):_.formatDistance("xMinutes",1,tt):j===0?_.formatDistance("lessThanXMinutes",1,tt):_.formatDistance("xMinutes",j,tt);if(j<45)return _.formatDistance("xMinutes",j,tt);if(j<90)return _.formatDistance("aboutXHours",1,tt);if(j<minutesInDay){const ot=Math.round(j/60);return _.formatDistance("aboutXHours",ot,tt)}else{if(j<$)return _.formatDistance("xDays",1,tt);if(j<minutesInMonth){const ot=Math.round(j/minutesInDay);return _.formatDistance("xDays",ot,tt)}else if(j<minutesInMonth*2)return rt=Math.round(j/minutesInMonth),_.formatDistance("aboutXMonths",rt,tt)}if(rt=differenceInMonths(it,st),rt<12){const ot=Math.round(j/minutesInMonth);return _.formatDistance("xMonths",ot,tt)}else{const ot=rt%12,at=Math.trunc(rt/12);return ot<3?_.formatDistance("aboutXYears",at,tt):ot<9?_.formatDistance("overXYears",at,tt):_.formatDistance("almostXYears",at+1,tt)}}function formatDistanceToNow(i,o){return formatDistance(i,constructNow(i),o)}const DrawerContent=reactExports.forwardRef((i,o)=>{const{children:s,portalled:a=!0,portalRef:_,offset:$,..._e}=i;return jsxRuntimeExports.jsx(Portal,{disabled:!a,container:_,children:jsxRuntimeExports.jsx(DrawerPositioner,{padding:$,children:jsxRuntimeExports.jsx(DrawerContent$1,{ref:o,..._e,asChild:!1,children:s})})})}),DrawerCloseTrigger=reactExports.forwardRef((i,o)=>jsxRuntimeExports.jsx(DrawerCloseTrigger$1,{position:"absolute",top:"2",insetEnd:"2",...i,asChild:!0,children:jsxRuntimeExports.jsx(CloseButton,{size:"sm",ref:o})})),DrawerTrigger=DrawerTrigger$1,DrawerRoot=DrawerRoot$1,DrawerFooter=DrawerFooter$1,DrawerHeader=DrawerHeader$1,DrawerBody=DrawerBody$1,DrawerBackdrop=DrawerBackdrop$1,DrawerTitle=DrawerTitle$1,DrawerActionTrigger=DrawerActionTrigger$1,useHistoryDrawer=()=>{const{t:i}=useTranslation(),[o,s]=reactExports.useState(!1),{historyList:a,currentHistoryUid:_,setCurrentHistoryUid:$,setHistoryList:_e,messages:tt,updateHistoryList:st}=useChatHistory(),{sendMessage:it}=useWebSocket();return{open:o,setOpen:s,historyList:a,currentHistoryUid:_,fetchAndSetHistory:rt=>{if(!(!rt||rt===_)){if(_&&tt.length>0){const ot=tt[tt.length-1];st(_,ot)}$(rt),it({type:"fetch-and-set-history",history_uid:rt})}},deleteHistory:rt=>{if(rt===_){toaster.create({title:i("error.cannotDeleteCurrentHistory"),type:"warning",duration:2e3});return}it({type:"delete-history",history_uid:rt}),_e(a.filter(ot=>ot.uid!==rt))},getLatestMessageContent:rt=>{var ot;if(rt.uid===_&&tt.length>0){const at=tt[tt.length-1];return{content:at.content,timestamp:at.timestamp}}return{content:((ot=rt.latest_message)==null?void 0:ot.content)||"",timestamp:rt.timestamp}}}},HistoryItem=reactExports.memo(({isSelected:i,latestMessage:o,onSelect:s,onDelete:a,isDeleteDisabled:_})=>{const{t:$}=useTranslation();return jsxRuntimeExports.jsxs(Box,{...sidebarStyles.historyDrawer.historyItem,...i?sidebarStyles.historyDrawer.historyItemSelected:{},onClick:s,children:[jsxRuntimeExports.jsxs(Box,{...sidebarStyles.historyDrawer.historyHeader,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.historyDrawer.timestamp,children:o.timestamp?formatDistanceToNow(new Date(o.timestamp),{addSuffix:!0}):$("history.noMessages")}),jsxRuntimeExports.jsx(Button$2,{onClick:a,disabled:_,...sidebarStyles.historyDrawer.deleteButton,children:jsxRuntimeExports.jsx(FiTrash2,{})})]}),o.content&&jsxRuntimeExports.jsx(Box,{...sidebarStyles.historyDrawer.messagePreview,children:o.content})]})});HistoryItem.displayName="HistoryItem";function HistoryDrawer({children:i}){const{t:o}=useTranslation(),{open:s,setOpen:a,historyList:_,currentHistoryUid:$,fetchAndSetHistory:_e,deleteHistory:tt,getLatestMessageContent:st}=useHistoryDrawer();return jsxRuntimeExports.jsxs(DrawerRoot,{open:s,onOpenChange:it=>a(it.open),placement:"start",children:[jsxRuntimeExports.jsx(DrawerBackdrop,{}),jsxRuntimeExports.jsx(DrawerTrigger,{asChild:!0,children:i}),jsxRuntimeExports.jsxs(DrawerContent,{style:sidebarStyles.historyDrawer.drawer.content,children:[jsxRuntimeExports.jsxs(DrawerHeader,{children:[jsxRuntimeExports.jsx(DrawerTitle,{style:sidebarStyles.historyDrawer.drawer.title,children:o("history.chatHistoryList")}),jsxRuntimeExports.jsx(DrawerCloseTrigger,{style:sidebarStyles.historyDrawer.drawer.closeButton})]}),jsxRuntimeExports.jsx(DrawerBody,{children:jsxRuntimeExports.jsx(Box,{...sidebarStyles.historyDrawer.listContainer,children:_.map(it=>jsxRuntimeExports.jsx(HistoryItem,{isSelected:$===it.uid,latestMessage:st(it),onSelect:()=>_e(it.uid),onDelete:nt=>{nt.stopPropagation(),tt(it.uid)},isDeleteDisabled:$===it.uid},it.uid))})}),jsxRuntimeExports.jsx(DrawerFooter,{children:jsxRuntimeExports.jsx(DrawerActionTrigger,{asChild:!0,children:jsxRuntimeExports.jsx(Button$2,{...sidebarStyles.historyDrawer.drawer.actionButton,children:o("common.close")})})})]})]})}const useSidebar=()=>{const i=useDisclosure(),{sendMessage:o}=useWebSocket(),{interrupt:s}=useInterrupt(),{currentHistoryUid:a,messages:_,updateHistoryList:$}=useChatHistory(),{setMode:_e,mode:tt,isElectron:st}=useMode(),it=()=>{if(a&&_.length>0){const nt=_[_.length-1];$(a,nt)}s(),o({type:"create-new-history"})};return{settingsOpen:i.open,onSettingsOpen:i.onOpen,onSettingsClose:i.onClose,createNewHistory:it,setMode:_e,currentMode:tt,isElectron:st}},ClipboardIcon=reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardIndicator,{copied:jsxRuntimeExports.jsx(LuCheck,{}),...o,ref:s,children:jsxRuntimeExports.jsx(LuClipboard,{})})}),ClipboardCopyText=reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardIndicator,{copied:"Copied",...o,ref:s,children:"Copy"})});reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardLabel,{textStyle:"sm",fontWeight:"medium",display:"inline-block",mb:"1",...o,ref:s})});const ClipboardButton=reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardTrigger,{asChild:!0,children:jsxRuntimeExports.jsxs(Button$2,{ref:s,size:"sm",variant:"surface",...o,children:[jsxRuntimeExports.jsx(ClipboardIcon,{}),jsxRuntimeExports.jsx(ClipboardCopyText,{})]})})});reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardTrigger,{asChild:!0,children:jsxRuntimeExports.jsxs(Button$2,{unstyled:!0,variant:"plain",size:"xs",display:"inline-flex",alignItems:"center",gap:"2",ref:s,...o,children:[jsxRuntimeExports.jsx(LuLink,{}),jsxRuntimeExports.jsx(ClipboardCopyText,{})]})})});reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardTrigger,{asChild:!0,children:jsxRuntimeExports.jsxs(IconButton,{ref:s,size:"xs",variant:"subtle",...o,children:[jsxRuntimeExports.jsx(ClipboardIcon,{}),jsxRuntimeExports.jsx(ClipboardCopyText,{srOnly:!0})]})})});reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardInput,{asChild:!0,children:jsxRuntimeExports.jsx(Input$1,{ref:s,...o})})});const ClipboardRoot=ClipboardRoot$1,useGroupDrawer=()=>{const{t:i}=useTranslation(),[o,s]=reactExports.useState(!1),[a,_]=reactExports.useState(""),{sendMessage:$}=useWebSocket(),_e=reactExports.useCallback(()=>{$({type:"request-group-info"})},[$]),tt=reactExports.useCallback(async()=>{if(!a.trim()){toaster.create({title:i("error.enterValidUuid"),type:"error",duration:2e3});return}$({type:"add-client-to-group",invitee_uid:a.trim()}),_(""),setTimeout(_e,100)},[a,$,_e,i]),st=reactExports.useCallback(nt=>{$({type:"remove-client-from-group",target_uid:nt}),setTimeout(_e,100)},[$,_e]),it=reactExports.useCallback(nt=>{$({type:"remove-client-from-group",target_uid:nt}),setTimeout(_e,100)},[$,_e]);return{isOpen:o,setIsOpen:s,inviteUid:a,setInviteUid:_,handleInvite:tt,handleRemove:st,handleLeaveGroup:it,requestGroupInfo:_e}},GroupContext=reactExports.createContext(null);function GroupProvider({children:i}){const[o,s]=reactExports.useState(""),[a,_]=reactExports.useState([]),[$,_e]=reactExports.useState(!1),tt=()=>{_([]),_e(!1)},st=reactExports.useMemo(()=>a.includes(o)?[o,...a.filter(it=>it!==o)]:a,[a,o]);return jsxRuntimeExports.jsx(GroupContext.Provider,{value:{selfUid:o,groupMembers:a,isOwner:$,setSelfUid:s,setGroupMembers:_,setIsOwner:_e,sortedGroupMembers:st,resetGroupState:tt},children:i})}function useGroup(){const i=reactExports.useContext(GroupContext);if(!i)throw new Error("useGroup must be used within a GroupProvider");return i}function GroupDrawer({children:i}){const{t:o}=useTranslation(),{selfUid:s,sortedGroupMembers:a,isOwner:_}=useGroup(),{isOpen:$,setIsOpen:_e,inviteUid:tt,setInviteUid:st,handleInvite:it,handleRemove:nt,handleLeaveGroup:et,requestGroupInfo:j}=useGroupDrawer();return jsxRuntimeExports.jsxs(DrawerRoot,{open:$,onOpenChange:rt=>{_e(rt.open),rt.open&&j()},placement:"start",children:[jsxRuntimeExports.jsx(DrawerBackdrop,{}),jsxRuntimeExports.jsx(DrawerTrigger,{asChild:!0,children:i}),jsxRuntimeExports.jsxs(DrawerContent,{style:sidebarStyles.historyDrawer.drawer.content,children:[jsxRuntimeExports.jsxs(DrawerHeader,{children:[jsxRuntimeExports.jsx(DrawerTitle,{style:sidebarStyles.historyDrawer.drawer.title,children:o("group.management")}),jsxRuntimeExports.jsx(DrawerCloseTrigger,{style:sidebarStyles.historyDrawer.drawer.closeButton})]}),jsxRuntimeExports.jsx(DrawerBody,{children:jsxRuntimeExports.jsxs(Box,{...sidebarStyles.historyDrawer.listContainer,children:[jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.section,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.sectionTitle,children:o("group.yourUuid")}),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.memberItem,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.memberText,children:s}),jsxRuntimeExports.jsx(ClipboardRoot,{value:s,children:jsxRuntimeExports.jsx(ClipboardButton,{...sidebarStyles.groupDrawer.clipboardButton,size:"sm"})})]})]}),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.section,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.sectionTitle,children:o("group.inviteMember")}),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.inviteBox,children:[jsxRuntimeExports.jsx(Input$1,{value:tt,onChange:rt=>st(rt.target.value),placeholder:o("group.enterMemberUuid"),...sidebarStyles.groupDrawer.input}),jsxRuntimeExports.jsx(Button$2,{onClick:it,...sidebarStyles.groupDrawer.button,children:o("group.invite")})]})]}),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.section,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.sectionTitle,children:o("group.members")}),jsxRuntimeExports.jsx(Box,{...sidebarStyles.groupDrawer.memberList,children:a.map(rt=>jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.memberItem,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.memberText,children:rt===s?`${rt} (${o("group.you")})`:rt}),(_&&rt!==s||!_&&rt===s)&&jsxRuntimeExports.jsx(IconButton,{"aria-label":o(rt===s?"group.leaveGroup":"group.removeMember"),onClick:()=>rt===s?et(s):nt(rt),...sidebarStyles.groupDrawer.removeButton,size:"sm",title:o(rt===s?"group.leaveGroup":"group.removeMember"),children:rt===s?o("group.leave"):jsxRuntimeExports.jsx(FiX,{})})]},rt))})]})]})}),jsxRuntimeExports.jsx(DrawerFooter,{children:jsxRuntimeExports.jsx(DrawerActionTrigger,{asChild:!0,children:jsxRuntimeExports.jsx(Button$2,{...sidebarStyles.historyDrawer.drawer.actionButton,children:o("common.close")})})})]})]})}const ToggleButton$1=reactExports.memo(({isCollapsed:i,onToggle:o})=>jsxRuntimeExports.jsx(Box,{...sidebarStyles.sidebar.toggleButton,style:{transform:i?"rotate(180deg)":"rotate(0deg)"},onClick:o,children:jsxRuntimeExports.jsx(FiChevronLeft,{})}));ToggleButton$1.displayName="ToggleButton";const ModeMenu=reactExports.memo(({setMode:i,currentMode:o,isElectron:s})=>jsxRuntimeExports.jsxs(MenuRoot,{children:[jsxRuntimeExports.jsx(MenuTrigger,{as:Button$2,"aria-label":"Mode Menu",title:"Change Mode",children:jsxRuntimeExports.jsx(FiLayers,{})}),jsxRuntimeExports.jsx(MenuPositioner,{children:jsxRuntimeExports.jsx(MenuContent,{children:jsxRuntimeExports.jsxs(MenuRadioItemGroup,{value:o,children:[jsxRuntimeExports.jsxs(MenuRadioItem,{value:"window",onClick:()=>i("window"),children:[jsxRuntimeExports.jsx(MenuItemIndicator,{}),"Live Mode"]}),jsxRuntimeExports.jsxs(MenuRadioItem,{value:"pet",onClick:()=>{s&&i("pet")},disabled:!s,title:s?void 0:"Pet mode is only available in desktop app",children:[jsxRuntimeExports.jsx(MenuItemIndicator,{}),"Pet Mode"]})]})})})]}));ModeMenu.displayName="ModeMenu";const HeaderButtons=reactExports.memo(({onSettingsOpen:i,onNewHistory:o,setMode:s,currentMode:a,isElectron:_})=>jsxRuntimeExports.jsxs(Box,{display:"flex",gap:1,children:[jsxRuntimeExports.jsx(Button$2,{onClick:i,children:jsxRuntimeExports.jsx(FiSettings,{})}),jsxRuntimeExports.jsx(GroupDrawer,{children:jsxRuntimeExports.jsx(Button$2,{children:jsxRuntimeExports.jsx(FiUsers,{})})}),jsxRuntimeExports.jsx(HistoryDrawer,{children:jsxRuntimeExports.jsx(Button$2,{children:jsxRuntimeExports.jsx(FiClock,{})})}),jsxRuntimeExports.jsx(Button$2,{onClick:o,children:jsxRuntimeExports.jsx(FiPlus,{})}),jsxRuntimeExports.jsx(ModeMenu,{setMode:s,currentMode:a,isElectron:_})]}));HeaderButtons.displayName="HeaderButtons";const SidebarContent=reactExports.memo(({onSettingsOpen:i,onNewHistory:o,setMode:s,currentMode:a,isElectron:_})=>jsxRuntimeExports.jsxs(Box,{...sidebarStyles.sidebar.content,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.sidebar.header,children:jsxRuntimeExports.jsx(HeaderButtons,{onSettingsOpen:i,onNewHistory:o,setMode:s,currentMode:a,isElectron:_})}),jsxRuntimeExports.jsx(ChatHistoryPanel,{}),jsxRuntimeExports.jsx(BottomTab,{})]}));SidebarContent.displayName="SidebarContent";function Sidebar({isCollapsed:i=!1,onToggle:o}){const{settingsOpen:s,onSettingsOpen:a,onSettingsClose:_,createNewHistory:$,setMode:_e,currentMode:tt,isElectron:st}=useSidebar();return jsxRuntimeExports.jsxs(Box,{...sidebarStyles.sidebar.container(i),children:[jsxRuntimeExports.jsx(ToggleButton$1,{isCollapsed:i,onToggle:o}),!i&&!s&&jsxRuntimeExports.jsx(SidebarContent,{onSettingsOpen:a,onNewHistory:$,setMode:_e,currentMode:tt,isElectron:st}),!i&&s&&jsxRuntimeExports.jsx(SettingUI,{open:s,onClose:_,onToggle:o})]})}function BsMicFill(i){return GenIcon({attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"},child:[]},{tag:"path",attr:{d:"M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"},child:[]}]})(i)}function BsMicMuteFill(i){return GenIcon({attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M13 8c0 .564-.094 1.107-.266 1.613l-.814-.814A4 4 0 0 0 12 8V7a.5.5 0 0 1 1 0zm-5 4c.818 0 1.578-.245 2.212-.667l.718.719a5 5 0 0 1-2.43.923V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 1 0v1a4 4 0 0 0 4 4m3-9v4.879L5.158 2.037A3.001 3.001 0 0 1 11 3"},child:[]},{tag:"path",attr:{d:"M9.486 10.607 5 6.12V8a3 3 0 0 0 4.486 2.607m-7.84-9.253 12 12 .708-.708-12-12z"},child:[]}]})(i)}function BsPaperclip(i){return GenIcon({attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0z"},child:[]}]})(i)}function IoHandRightSharp(i){return GenIcon({attr:{viewBox:"0 0 512 512"},child:[{tag:"path",attr:{d:"M82.42 209.08c15.06-6.62 32.38 1.31 38.5 17.62L156 312h11.27V80c0-17.6 13.3-32 29.55-32 16.26 0 29.55 14.4 29.55 32v151.75l14.78.25V32c0-17.6 13.3-32 29.55-32 16.3 0 29.55 14.4 29.55 32v199.75L315 232V64c0-17.6 13.3-32 29.55-32 16.26 0 29.55 14.4 29.55 32v183.75l14.78.25V128c0-17.6 13.3-32 29.55-32C434.7 96 448 110.4 448 128v216c0 75.8-37.13 168-169 168-40.8 0-79.42-7-100.66-21a121.41 121.41 0 0 1-33.72-33.31 138 138 0 0 1-16-31.78L66.16 250.77c-6.11-16.31 1.2-35.06 16.26-41.69z"},child:[]}]})(i)}const InputGroup=reactExports.forwardRef((i,o)=>{const{startElement:s,startElementProps:a,endElement:_,endElementProps:$,children:_e,startOffset:tt="6px",endOffset:st="6px",...it}=i,nt=reactExports.Children.only(_e);return jsxRuntimeExports.jsxs(Group,{ref:o,...it,children:[s&&jsxRuntimeExports.jsx(InputElement,{pointerEvents:"none",...a,children:s}),reactExports.cloneElement(nt,{...s&&{ps:`calc(var(--input-height) - ${tt})`},..._&&{pe:`calc(var(--input-height) - ${st})`},..._e.props}),_&&jsxRuntimeExports.jsx(InputElement,{placement:"end",...$,children:_})]})}),footerStyles={footer:{container:i=>({bg:i?"transparent":"gray.800",borderTopRadius:i?"none":"lg",transform:i?"translateY(calc(100% - 24px))":"translateY(0)",transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",height:"100%",position:"relative",overflow:i?"visible":"hidden",pb:"4"}),toggleButton:{height:"24px",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:"whiteAlpha.700",_hover:{color:"white"},bg:"transparent",transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"},actionButton:{borderRadius:"12px",width:"50px",height:"50px",minW:"50px"},input:{bg:"gray.700",border:"none",height:"80px",borderRadius:"12px",fontSize:"18px",pl:"12",pr:"4",color:"whiteAlpha.900",_placeholder:{color:"whiteAlpha.500"},_focus:{border:"none",bg:"gray.700"},resize:"none",minHeight:"80px",maxHeight:"80px",py:"0",display:"flex",alignItems:"center",paddingTop:"28px",lineHeight:"1.4"},attachButton:{position:"absolute",left:"1",top:"50%",transform:"translateY(-50%)",color:"whiteAlpha.700",zIndex:2,_hover:{bg:"transparent",color:"white"}}},aiIndicator:{container:{bg:"#7C5CFF",color:"white",width:"110px",height:"30px",borderRadius:"12px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 2px 6px rgba(0,0,0,0.1)",overflow:"hidden"},text:{fontSize:"12px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}};function AIStateIndicator(){const{t:i}=useTranslation(),{aiState:o}=useAiState(),s=footerStyles.aiIndicator;return jsxRuntimeExports.jsx(Box,{...s.container,children:jsxRuntimeExports.jsx(Text,{...s.text,children:i(`aiState.${o}`)})})}function useTextInput(){const[i,o]=reactExports.useState(""),[s,a]=reactExports.useState(!1),_=useWebSocket(),{aiState:$}=useAiState(),{interrupt:_e}=useInterrupt(),{appendHumanMessage:tt}=useChatHistory(),{stopMic:st,autoStopMic:it}=useVAD(),{captureAllMedia:nt}=useMediaCapture(),et=lt=>{o(lt.target.value)},j=async()=>{if(!i.trim()||!_)return;$==="thinking-speaking"&&_e();const lt=await nt();tt(i.trim()),_.sendMessage({type:"text-input",text:i.trim(),images:lt}),it&&st(),o("")};return{inputText:i,setInputText:et,handleSend:j,handleKeyPress:lt=>{s||lt.key==="Enter"&&!lt.shiftKey&&(lt.preventDefault(),j())},handleCompositionStart:()=>a(!0),handleCompositionEnd:()=>a(!1)}}const useFooter=()=>{const{inputText:i,setInputText:o,handleKeyPress:s,handleCompositionStart:a,handleCompositionEnd:_}=useTextInput(),{interrupt:$}=useInterrupt(),{startMic:_e,autoStartMicOn:tt}=useVAD(),{handleMicToggle:st,micOn:it}=useMicToggle(),{setAiState:nt,aiState:et}=useAiState(),{sendTriggerSignal:j}=useTriggerSpeak(),{settings:rt}=useProactiveSpeak();return{inputValue:i,handleInputChange:ut=>{o({target:{value:ut.target.value}}),nt(AiStateEnum.WAITING)},handleKeyPress:ut=>{s(ut)},handleCompositionStart:a,handleCompositionEnd:_,handleInterrupt:()=>{et===AiStateEnum.THINKING_SPEAKING?($(),tt&&_e()):rt.allowButtonTrigger&&j(-1)},handleMicToggle:st,micOn:it}},ToggleButton=reactExports.memo(({isCollapsed:i,onToggle:o})=>jsxRuntimeExports.jsx(Box,{...footerStyles.footer.toggleButton,onClick:o,color:"whiteAlpha.500",style:{transform:i?"rotate(180deg)":"rotate(0deg)"},children:jsxRuntimeExports.jsx(FiChevronDown,{})}));ToggleButton.displayName="ToggleButton";const ActionButtons=reactExports.memo(({micOn:i,onMicToggle:o,onInterrupt:s})=>jsxRuntimeExports.jsxs(HStack,{gap:2,children:[jsxRuntimeExports.jsx(IconButton,{bg:i?"green.500":"red.500",...footerStyles.footer.actionButton,onClick:o,children:i?jsxRuntimeExports.jsx(BsMicFill,{}):jsxRuntimeExports.jsx(BsMicMuteFill,{})}),jsxRuntimeExports.jsx(IconButton,{"aria-label":"Raise hand",bg:"yellow.500",...footerStyles.footer.actionButton,onClick:s,children:jsxRuntimeExports.jsx(IoHandRightSharp,{size:"24"})})]}));ActionButtons.displayName="ActionButtons";const MessageInput=reactExports.memo(({value:i,onChange:o,onKeyDown:s,onCompositionStart:a,onCompositionEnd:_})=>{const{t:$}=useTranslation();return jsxRuntimeExports.jsx(InputGroup,{flex:1,children:jsxRuntimeExports.jsxs(Box,{position:"relative",width:"100%",children:[jsxRuntimeExports.jsx(IconButton,{"aria-label":"Attach file",variant:"ghost",...footerStyles.footer.attachButton,children:jsxRuntimeExports.jsx(BsPaperclip,{size:"24"})}),jsxRuntimeExports.jsx(Textarea,{value:i,onChange:o,onKeyDown:s,onCompositionStart:a,onCompositionEnd:_,placeholder:$("footer.typeYourMessage"),...footerStyles.footer.input})]})})});MessageInput.displayName="MessageInput";function Footer({isCollapsed:i=!1,onToggle:o}){const{inputValue:s,handleInputChange:a,handleKeyPress:_,handleCompositionStart:$,handleCompositionEnd:_e,handleInterrupt:tt,handleMicToggle:st,micOn:it}=useFooter();return jsxRuntimeExports.jsxs(Box,{...footerStyles.footer.container(i),children:[jsxRuntimeExports.jsx(ToggleButton,{isCollapsed:i,onToggle:o}),jsxRuntimeExports.jsx(Box,{pt:"0",px:"4",children:jsxRuntimeExports.jsxs(HStack,{width:"100%",gap:4,children:[jsxRuntimeExports.jsxs(Box,{children:[jsxRuntimeExports.jsx(Box,{mb:"1.5",children:jsxRuntimeExports.jsx(AIStateIndicator,{})}),jsxRuntimeExports.jsx(ActionButtons,{micOn:it,onMicToggle:st,onInterrupt:tt})]}),jsxRuntimeExports.jsx(MessageInput,{value:s,onChange:a,onKeyDown:_,onCompositionStart:$,onCompositionEnd:_e})]})})]})}const isElectron=window.api!==void 0,getAppHeight=()=>typeof window<"u"&&/Mobi|Android/i.test(navigator.userAgent)?`${window.innerHeight}px`:isElectron?"calc(100vh - 30px)":"100vh",layoutStyles={appContainer:{width:"100vw",height:getAppHeight(),bg:"gray.900",color:"white",overflow:"hidden",position:"relative",display:"flex",flexDirection:{base:"column",md:"row"},mt:isElectron?"30px":"0"},sidebar:{position:"relative",width:{base:"100%",md:"440px"},height:{base:"auto",md:"100%"},bg:"gray.800",borderRight:"1px solid",borderColor:"whiteAlpha.200",overflow:"hidden",flexShrink:0,transition:"all 0.2s"},mainContent:{flex:1,height:{base:"calc(100% - 120px)",md:"100%"},position:"relative",display:"flex",flexDirection:"column",transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",width:"100%",overflow:"hidden"},footer:{width:"100%",height:{base:"100px",md:"120px"},transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",willChange:"transform",position:"relative",zIndex:1},collapsedFooter:{height:{base:"20px",md:"24px"},transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"},windowsTitleBar:{position:"fixed",top:0,left:0,width:"100vw",display:"flex",alignItems:"center",justifyContent:"space-between",height:"30px",backgroundColor:"gray.800",paddingX:"10px",zIndex:1e3,css:{"-webkit-app-region":"drag"}},macTitleBar:{position:"fixed",top:0,left:0,width:"100vw",display:"flex",alignItems:"center",justifyContent:"center",height:"30px",backgroundColor:"gray.800",zIndex:1e3,css:{"-webkit-app-region":"drag","-webkit-user-select":"none"}},titleBarTitle:{fontSize:"sm",color:"whiteAlpha.800",textAlign:"center"},titleBarButtons:{display:"flex",gap:"1"},titleBarButton:{size:"sm",variant:"ghost",color:"whiteAlpha.800",css:{"-webkit-app-region":"no-drag"},_hover:{backgroundColor:"whiteAlpha.200"}},closeButton:{size:"sm",variant:"ghost",color:"whiteAlpha.800",css:{"-webkit-app-region":"no-drag"},_hover:{backgroundColor:"red.500"}}};function WebSocketHandler({children:i}){const{t:o}=useTranslation(),[s,a]=reactExports.useState("CLOSED"),[_,$]=useLocalStorage("wsUrl",defaultWsUrl),[_e,tt]=useLocalStorage("baseUrl",defaultBaseUrl),{aiState:st,setAiState:it,backendSynthComplete:nt,setBackendSynthComplete:et}=useAiState(),{setModelInfo:j}=useLive2DConfig(),{setSubtitleText:rt}=useSubtitle(),{clearResponse:ot,setForceNewMessage:at,appendHumanMessage:lt,appendOrUpdateToolCallMessage:ut}=useChatHistory(),{addAudioTask:ct}=useAudioTask(),dt=useBgUrl(),{confUid:ft,setConfName:ht,setConfUid:bt,setConfigFiles:yt}=useConfig(),[mt,gt]=reactExports.useState(void 0),{setSelfUid:vt,setGroupMembers:wt,setIsOwner:Ct}=useGroup(),{startMic:kt,stopMic:It,autoStartMicOnConvEnd:Pt}=useVAD(),St=reactExports.useRef(Pt),{interrupt:Rt}=useInterrupt(),{setBrowserViewData:At}=useBrowser();reactExports.useEffect(()=>{St.current=Pt},[Pt]),reactExports.useEffect(()=>{mt&&ft&&(j(mt),gt(void 0))},[mt,j,ft]);const{setCurrentHistoryUid:Mt,setMessages:jt,setHistoryList:Yt}=useChatHistory(),Kt=reactExports.useCallback(Gt=>{switch(Gt){case"start-mic":console.log("Starting microphone..."),kt();break;case"stop-mic":console.log("Stopping microphone..."),It();break;case"conversation-chain-start":it("thinking-speaking"),audioTaskQueue.clearQueue(),ot();break;case"conversation-chain-end":audioTaskQueue.addTask(()=>new Promise(Qt=>{it(tr=>tr==="thinking-speaking"?(St.current&&kt(),"idle"):tr),Qt()}));break;default:console.warn("Unknown control command:",Gt)}},[it,ot,at,kt,It]),sr=reactExports.useCallback(Gt=>{var Qt,tr;switch(console.log("Received message from server:",Gt),Gt.type){case"control":Gt.text&&Kt(Gt.text);break;case"set-model-and-conf":if(it("loading"),Gt.conf_name&&ht(Gt.conf_name),Gt.conf_uid&&(bt(Gt.conf_uid),console.log("confUid",Gt.conf_uid)),Gt.client_uid&&vt(Gt.client_uid),gt(Gt.model_info),Gt.model_info&&!Gt.model_info.url.startsWith("http")){const Vt=_e+Gt.model_info.url;Gt.model_info.url=Vt}it("idle");break;case"full-text":Gt.text&&rt(Gt.text);break;case"config-files":Gt.configs&&yt(Gt.configs);break;case"config-switched":it("idle"),rt(o("notification.characterLoaded")),toaster.create({title:o("notification.characterSwitched"),type:"success",duration:2e3}),wsService.sendMessage({type:"fetch-history-list"}),wsService.sendMessage({type:"create-new-history"});break;case"background-files":Gt.files&&(dt==null||dt.setBackgroundFiles(Gt.files));break;case"audio":st==="interrupted"||st==="listening"?console.log("Audio playback intercepted. Sentence:",(Qt=Gt.display_text)==null?void 0:Qt.text):(console.log("actions",Gt.actions),ct({audioBase64:Gt.audio||"",volumes:Gt.volumes||[],sliceLength:Gt.slice_length||0,displayText:Gt.display_text||null,expressions:((tr=Gt.actions)==null?void 0:tr.expressions)||null,forwarded:Gt.forwarded||!1}));break;case"history-data":Gt.messages&&jt(Gt.messages),toaster.create({title:o("notification.historyLoaded"),type:"success",duration:2e3});break;case"new-history-created":if(it("idle"),rt(o("notification.newConversation")),Gt.history_uid){Mt(Gt.history_uid),jt([]);const Vt={uid:Gt.history_uid,latest_message:null,timestamp:new Date().toISOString()};Yt(Xt=>[Vt,...Xt]),toaster.create({title:o("notification.newChatHistory"),type:"success",duration:2e3})}break;case"history-deleted":toaster.create({title:Gt.success?o("notification.historyDeleteSuccess"):o("notification.historyDeleteFail"),type:Gt.success?"success":"error",duration:2e3});break;case"history-list":Gt.histories&&(Yt(Gt.histories),Gt.histories.length>0&&Mt(Gt.histories[0].uid));break;case"user-input-transcription":console.log("user-input-transcription: ",Gt.text),Gt.text&&lt(Gt.text);break;case"error":toaster.create({title:Gt.message,type:"error",duration:2e3});break;case"group-update":console.log("Received group-update:",Gt.members),Gt.members&&wt(Gt.members),Gt.is_owner!==void 0&&Ct(Gt.is_owner);break;case"group-operation-result":toaster.create({title:Gt.message,type:Gt.success?"success":"error",duration:2e3});break;case"backend-synth-complete":et(!0);break;case"conversation-chain-end":audioTaskQueue.hasTask()||it(Vt=>Vt==="thinking-speaking"?"idle":Vt);break;case"force-new-message":at(!0);break;case"interrupt-signal":Rt(!1);break;case"tool_call_status":Gt.tool_id&&Gt.tool_name&&Gt.status?(Gt.browser_view&&(console.log("Browser view data received:",Gt.browser_view),At(Gt.browser_view)),ut({id:Gt.tool_id,type:"tool_call_status",role:"ai",tool_id:Gt.tool_id,tool_name:Gt.tool_name,name:Gt.name,status:Gt.status,content:Gt.content||"",artifacts:Array.isArray(Gt.artifacts)?Gt.artifacts:[],timestamp:Gt.timestamp||new Date().toISOString()})):console.warn("Received incomplete tool_call_status message:",Gt);break;default:console.warn("Unknown message type:",Gt.type)}},[st,ct,lt,_e,dt,it,ht,bt,yt,Mt,Yt,jt,j,rt,kt,It,vt,wt,Ct,nt,et,ot,Kt,ut,Rt,At,o]);reactExports.useEffect(()=>{wsService.connect(_)},[_]),reactExports.useEffect(()=>{const Gt=wsService.onStateChange(a),Qt=wsService.onMessage(sr);return()=>{Gt.unsubscribe(),Qt.unsubscribe()}},[_,sr]);const ar=reactExports.useMemo(()=>({sendMessage:wsService.sendMessage.bind(wsService),wsState:s,reconnect:()=>wsService.connect(_),wsUrl:_,setWsUrl:$,baseUrl:_e,setBaseUrl:tt}),[s,_,_e]);return jsxRuntimeExports.jsx(WebSocketContext.Provider,{value:ar,children:i})}function TitleBar(){var st;const[i,o]=reactExports.useState(!1),[s,a]=reactExports.useState(!1),_=((st=window.electron)==null?void 0:st.process.platform)==="darwin";reactExports.useEffect(()=>{var et,j;const it=(rt,ot)=>{o(ot)},nt=(rt,ot)=>{a(ot)};return(et=window.electron)==null||et.ipcRenderer.on("window-maximized-change",it),(j=window.electron)==null||j.ipcRenderer.on("window-fullscreen-change",nt),()=>{var rt,ot;(rt=window.electron)==null||rt.ipcRenderer.removeAllListeners("window-maximized-change"),(ot=window.electron)==null||ot.ipcRenderer.removeAllListeners("window-fullscreen-change")}},[]);const $=()=>{var it,nt;s?(it=window.electron)==null||it.ipcRenderer.send("window-unfullscreen"):(nt=window.electron)==null||nt.ipcRenderer.send("window-maximize")},_e=()=>s?"Exit Full Screen":i?"Restore":"Maximize",tt=()=>s?jsxRuntimeExports.jsx(FiChevronsDown,{}):i?jsxRuntimeExports.jsx(FiMinimize2,{}):jsxRuntimeExports.jsx(FiMaximize2,{});return _?jsxRuntimeExports.jsx(Box,{...layoutStyles.macTitleBar,children:jsxRuntimeExports.jsx(Box,{...layoutStyles.titleBarTitle,children:"Open LLM VTuber"})}):jsxRuntimeExports.jsxs(Box,{...layoutStyles.windowsTitleBar,children:[jsxRuntimeExports.jsx(Box,{...layoutStyles.titleBarTitle,children:"Open LLM VTuber"}),jsxRuntimeExports.jsxs(Box,{...layoutStyles.titleBarButtons,children:[jsxRuntimeExports.jsx(IconButton,{...layoutStyles.titleBarButton,onClick:()=>{var it;return(it=window.electron)==null?void 0:it.ipcRenderer.send("window-minimize")},"aria-label":"Minimize",children:jsxRuntimeExports.jsx(FiMinus,{})}),jsxRuntimeExports.jsx(IconButton,{...layoutStyles.titleBarButton,onClick:$,"aria-label":_e(),children:tt()}),jsxRuntimeExports.jsx(IconButton,{...layoutStyles.closeButton,onClick:()=>{var it;return(it=window.electron)==null?void 0:it.ipcRenderer.send("window-close")},"aria-label":"Close",children:jsxRuntimeExports.jsx(FiX,{})})]})]})}function useInputSubtitle(){const{inputText:i,setInputText:o,handleKeyPress:s,handleCompositionStart:a,handleCompositionEnd:_,handleSend:$}=useTextInput(),{messages:_e}=useChatHistory(),{startMic:tt,autoStartMicOn:st}=useVAD(),{handleMicToggle:it,micOn:nt}=useMicToggle(),{aiState:et,setAiState:j}=useAiState(),{interrupt:rt}=useInterrupt(),ot=_e.filter(dt=>dt.role==="ai").slice(-1).map(dt=>dt.content)[0],at=_e.some(dt=>dt.role==="ai");return{inputValue:i,handleInputChange:dt=>{o({target:{value:dt.target.value}}),j(AiStateEnum.WAITING)},handleKeyPress:dt=>{s(dt)},handleCompositionStart:a,handleCompositionEnd:_,handleInterrupt:()=>{rt(),st&&tt()},handleMicToggle:it,lastAIMessage:ot,hasAIMessages:at,aiState:et,micOn:nt,handleSend:$}}function useDraggable({componentId:i}){const{mode:o}=useMode(),s=o==="pet",[a,_]=reactExports.useState(!1),$=reactExports.useRef({x:0,y:0}),_e=reactExports.useRef({x:0,y:0}),tt=reactExports.useRef(null);return{elementRef:tt,isDragging:a,handleMouseDown:et=>{_(!0),_e.current={x:et.clientX-$.current.x,y:et.clientY-$.current.y};const j=ot=>{if(!tt.current)return;const at={x:ot.clientX-_e.current.x,y:ot.clientY-_e.current.y};$.current=at,tt.current.style.transform=`translateX(-50%) translate(${$.current.x}px, ${$.current.y}px)`},rt=()=>{_(!1),document.removeEventListener("mousemove",j,!0),document.removeEventListener("mouseup",rt,!0)};document.addEventListener("mousemove",j,!0),document.addEventListener("mouseup",rt,!0)},handleMouseEnter:()=>{var et;s&&((et=window.api)==null||et.updateComponentHover(i,!0))},handleMouseLeave:()=>{var et;s&&!a&&((et=window.api)==null||et.updateComponentHover(i,!1))}}}const inputSubtitleStyles={container:{display:"flex",alignItems:"flex-end",justifyContent:"center",maxW:"fit-content",position:"absolute",bottom:"120px",left:"50%",transform:"translateX(-50%)",zIndex:1e3,userSelect:"none",willChange:"transform",padding:0},box:{w:"400px",rounded:"xl",overflow:"hidden",boxShadow:"lg",bg:"blackAlpha.700",backdropFilter:"blur(8px)",css:{WebkitUserSelect:"none"}},messageStack:{p:"3",gap:1,alignItems:"stretch",justify:"flex-end"},messageText:{color:"white",fontSize:"sm",lineHeight:"1.5",transition:"all 0.3s"},statusBox:{bg:"blackAlpha.600",p:"3",borderTop:"1px",borderColor:"whiteAlpha.200"},statusText:{fontSize:"xs",color:"whiteAlpha.800",transition:"all 0.3s"},iconButton:{size:"xs",variant:"ghost",color:"whiteAlpha.800",_hover:{bg:"whiteAlpha.200"}},inputBox:{bg:"blackAlpha.600",borderTop:"1px",borderColor:"whiteAlpha.200"},input:{size:"sm",bg:"blackAlpha.500",color:"white",_placeholder:{color:"whiteAlpha.500"},borderColor:"whiteAlpha.300",_focus:{borderColor:"whiteAlpha.500",outline:"none"},flex:"1"},sendButton:{p:"1.5",bg:"blackAlpha.500",rounded:"lg",_hover:{bg:"blackAlpha.600"},transition:"colors",color:"whiteAlpha.800",size:"sm"},draggableContainer:i=>({cursor:i?"grabbing":"grab",transition:i?"none":"transform 0.1s ease",_active:{cursor:"grabbing"}}),closeButton:{position:"absolute",top:0,right:0,size:"2xs",minW:"6",height:"6",padding:0,variant:"ghost",color:"whiteAlpha.400",bg:"transparent",_hover:{bg:"blackAlpha.300",color:"whiteAlpha.800"},zIndex:10}};function InputSubtitle(){const{inputValue:i,handleInputChange:o,handleKeyPress:s,handleCompositionStart:a,handleCompositionEnd:_,handleInterrupt:$,handleMicToggle:_e,handleSend:tt,lastAIMessage:st,hasAIMessages:it,aiState:nt,micOn:et}=useInputSubtitle(),{mode:j}=useMode(),rt=j==="pet",{elementRef:ot,isDragging:at,handleMouseDown:lt,handleMouseEnter:ut,handleMouseLeave:ct}=useDraggable({componentId:"input-subtitle"}),[dt,ft]=reactExports.useState(!0),ht=reactExports.useCallback(()=>{var yt;rt&&((yt=window.api)==null||yt.updateComponentHover("input-subtitle",!1)),ft(!1)},[rt]),bt=()=>{ft(!0)};return reactExports.useEffect(()=>{var yt;if(rt){const mt=(yt=window.api)==null?void 0:yt.onToggleInputSubtitle(()=>{dt?ht():bt()});return()=>mt==null?void 0:mt()}return()=>{}},[ht,rt,dt]),reactExports.useEffect(()=>(window.inputSubtitle={open:bt,close:ht},()=>{delete window.inputSubtitle}),[rt,ht]),dt?jsxRuntimeExports.jsx(Box,{ref:ot,...inputSubtitleStyles.container,...inputSubtitleStyles.draggableContainer(at),onMouseDown:lt,onMouseEnter:ut,onMouseLeave:ct,children:jsxRuntimeExports.jsxs(Box,{...inputSubtitleStyles.box,children:[jsxRuntimeExports.jsx(IconButton,{"aria-label":"Close subtitle",onClick:ht,...inputSubtitleStyles.closeButton,children:jsxRuntimeExports.jsx(LuX,{size:12})}),it&&jsxRuntimeExports.jsx(VStack,{minH:st?"32px":"0px",...inputSubtitleStyles.messageStack,children:st&&jsxRuntimeExports.jsx(Text,{...inputSubtitleStyles.messageText,children:st})}),jsxRuntimeExports.jsx(Box,{...inputSubtitleStyles.statusBox,children:jsxRuntimeExports.jsxs(Flex,{align:"center",justify:"space-between",color:"whiteAlpha.700",children:[jsxRuntimeExports.jsxs(Flex,{align:"center",gap:"2",children:[jsxRuntimeExports.jsx(LuBell,{size:16}),jsxRuntimeExports.jsx(Text,{...inputSubtitleStyles.statusText,children:nt})]}),jsxRuntimeExports.jsxs(Flex,{gap:"2",children:[jsxRuntimeExports.jsx(IconButton,{"aria-label":"Toggle microphone",onClick:_e,...inputSubtitleStyles.iconButton,children:et?jsxRuntimeExports.jsx(LuMic,{size:16}):jsxRuntimeExports.jsx(LuMicOff,{size:16})}),jsxRuntimeExports.jsx(IconButton,{"aria-label":"Interrupt",onClick:$,...inputSubtitleStyles.iconButton,children:jsxRuntimeExports.jsx(LuHand,{size:16})})]})]})}),jsxRuntimeExports.jsx(Box,{...inputSubtitleStyles.inputBox,children:jsxRuntimeExports.jsxs(Stack,{direction:"row",gap:"2",p:"2",children:[jsxRuntimeExports.jsx(Input$1,{value:i,onChange:o,onKeyDown:s,onCompositionStart:a,onCompositionEnd:_,placeholder:"Type your message...",...inputSubtitleStyles.input}),jsxRuntimeExports.jsx(Button$2,{onClick:tt,...inputSubtitleStyles.sendButton,children:jsxRuntimeExports.jsx(LuSend,{size:16})})]})})]})}):null}const canvasStyles={background:{container:{position:"relative",width:"100%",height:"100%",overflow:"hidden",pointerEvents:"auto"},image:{position:"absolute",top:"0",left:"0",width:"100%",height:"100%",objectFit:"cover",zIndex:1},video:{position:"absolute",top:"0",left:"0",width:"100%",height:"100%",objectFit:"cover",zIndex:1,transform:"scaleX(-1)"}},subtitle:{container:{backgroundColor:"rgba(0, 0, 0, 0.7)",padding:"15px 30px",borderRadius:"12px",minWidth:"60%",maxWidth:"95%"},text:{color:"white",fontSize:"1.5rem",textAlign:"center",lineHeight:"1.4",whiteSpace:"pre-wrap"}},wsStatus:{container:{position:"relative",zIndex:2,padding:"8px 16px",borderRadius:"20px",fontSize:"14px",fontWeight:"medium",color:"white",transition:"all 0.2s",cursor:"pointer",userSelect:"none",_hover:{opacity:.8}}}},Background=reactExports.memo(({children:i})=>{const o=reactExports.useRef(null),{backgroundStream:s,isBackgroundStreaming:a,startBackgroundCamera:_,stopBackgroundCamera:$}=useCamera(),{useCameraBackground:_e,backgroundUrl:tt}=useBgUrl();return reactExports.useEffect(()=>{_e?_():$()},[_e,_,$]),reactExports.useEffect(()=>{o.current&&s&&(o.current.srcObject=s)},[s]),jsxRuntimeExports.jsxs(Box,{...canvasStyles.background.container,children:[_e?jsxRuntimeExports.jsx("video",{ref:o,autoPlay:!0,playsInline:!0,muted:!0,style:{...canvasStyles.background.video,display:a?"block":"none",transform:"scaleX(-1)"}}):jsxRuntimeExports.jsx(Image$1,{...canvasStyles.background.image,src:tt,alt:"background"}),i]})});Background.displayName="Background";const useWSStatus=()=>{const{wsState:i,reconnect:o}=useWebSocket(),s=reactExports.useCallback(()=>{i!=="OPEN"&&i!=="CONNECTING"&&o()},[i,o]);return reactExports.useMemo(()=>{switch(i){case"OPEN":return{color:"green.500",textKey:"wsStatus.connected",isDisconnected:!1,handleClick:s};case"CONNECTING":return{color:"yellow.500",textKey:"wsStatus.connecting",isDisconnected:!1,handleClick:s};default:return{color:"red.500",textKey:"wsStatus.clickToReconnect",isDisconnected:!0,handleClick:s}}},[i,s])},StatusContent=({textKey:i})=>{const{t:o}=useTranslation();return o(i)},MemoizedStatusContent=reactExports.memo(StatusContent),WebSocketStatus=reactExports.memo(()=>{const{color:i,textKey:o,handleClick:s,isDisconnected:a}=useWSStatus();return jsxRuntimeExports.jsx(Box,{...canvasStyles.wsStatus.container,backgroundColor:i,onClick:s,cursor:a?"pointer":"default",_hover:{opacity:a?.8:1},children:jsxRuntimeExports.jsx(MemoizedStatusContent,{textKey:o})})});WebSocketStatus.displayName="WebSocketStatus";const useSubtitleDisplay=()=>{const i=useSubtitle();return{subtitleText:reactExports.useMemo(()=>i?i.subtitleText:null,[i==null?void 0:i.subtitleText]),isLoaded:!!i}},SubtitleText=reactExports.memo(({text:i})=>jsxRuntimeExports.jsx(Text,{...canvasStyles.subtitle.text,children:i}));SubtitleText.displayName="SubtitleText";const Subtitle=reactExports.memo(()=>{const{subtitleText:i,isLoaded:o}=useSubtitleDisplay(),{showSubtitle:s}=useSubtitle();return!o||!i||!s?null:jsxRuntimeExports.jsx(Box,{...canvasStyles.subtitle.container,children:jsxRuntimeExports.jsx(SubtitleText,{text:i})})});Subtitle.displayName="Subtitle";function WorkspacePanel(){
+function ChatHistoryPanel(){const{t:i}=useTranslation(),{messages:o}=useChatHistory(),{confName:s}=useConfig(),{baseUrl:a}=useWebSocket(),_="Me",$=o.filter(_e=>_e.content||_e.type==="tool_call_status"&&_e.status==="running"||_e.type==="tool_call_status"&&_e.status==="completed"||_e.type==="tool_call_status"&&_e.status==="error");return jsxRuntimeExports.jsxs(Box,{h:"full",overflow:"hidden",bg:"gray.900",children:[jsxRuntimeExports.jsx(Global,{styles:chatPanelStyles}),jsxRuntimeExports.jsx(MainContainer,{children:jsxRuntimeExports.jsx(ChatContainer,{children:jsxRuntimeExports.jsx(MessageList,{children:$.length===0?jsxRuntimeExports.jsx(Box,{display:"flex",alignItems:"center",justifyContent:"center",height:"100%",color:"whiteAlpha.500",fontSize:"sm",children:i("sidebar.noMessages")}):$.map(_e=>_e.type==="tool_call_status"?jsxRuntimeExports.jsxs(Box,{key:_e.id,children:[jsxRuntimeExports.jsxs(Flex,{...sidebarStyles.toolCallIndicator.container,alignItems:"center",children:[jsxRuntimeExports.jsx(Icon,{as:FaTools,...sidebarStyles.toolCallIndicator.icon}),jsxRuntimeExports.jsx(Text,{...sidebarStyles.toolCallIndicator.text,children:_e.status==="running"?`${_e.name} is using tool ${_e.tool_name}`:`${_e.name} used tool ${_e.tool_name}`}),_e.status==="running"&&jsxRuntimeExports.jsx(Spinner,{size:"xs",color:sidebarStyles.toolCallIndicator.spinner.color,ml:sidebarStyles.toolCallIndicator.spinner.ml}),_e.status==="completed"&&jsxRuntimeExports.jsx(Icon,{as:FaCheck,...sidebarStyles.toolCallIndicator.completedIcon}),_e.status==="error"&&jsxRuntimeExports.jsx(Icon,{as:FaTimes,...sidebarStyles.toolCallIndicator.errorIcon})]}),_e.status==="completed"&&jsxRuntimeExports.jsx(ArtifactCard,{artifacts:_e.artifacts||[]})]},_e.id):jsxRuntimeExports.jsx(Message,{type:"text",model:{message:_e.content,sentTime:_e.timestamp,sender:_e.role==="ai"?_e.name||s||"AI":_,direction:_e.role==="ai"?"incoming":"outgoing",position:"single"},avatarPosition:_e.role==="ai"?"tl":"tr",avatarSpacer:!1,children:jsxRuntimeExports.jsx(Avatar,{children:_e.role==="ai"?_e.avatar?jsxRuntimeExports.jsx("img",{src:_e.avatar.startsWith("http")?_e.avatar:_e.avatar.startsWith("/")?`${a}${_e.avatar}`:`${a}/avatars/${_e.avatar}`,alt:"avatar",style:{width:"100%",height:"100%",borderRadius:"50%"},onError:tt=>{const st=tt.target,it=String(_e.name||s||"A").trim()||"A",dv=document.createElement("div");dv.style.cssText="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 50%; background-color: var(--chakra-colors-blue-500); color: white; font-size: 14px;";dv.textContent=it[0].toUpperCase();st.replaceWith(dv)}}):_e.name&&_e.name[0].toUpperCase()||s&&s[0].toUpperCase()||"A":_[0].toUpperCase()})},_e.id))})})})]})}const useCameraPanel=()=>{const i=reactExports.useRef(null),[o,s]=reactExports.useState(""),[a,_]=reactExports.useState(!1),{isStreaming:$,stream:_e,startCamera:tt,stopCamera:st}=useCamera();return{videoRef:i,error:o,isHovering:a,isStreaming:$,stream:_e,toggleCamera:async()=>{try{$?st():await tt(),s("")}catch(j){let rt="Unable to access camera";j instanceof Error&&(rt=j.message),s(rt)}},handleMouseEnter:()=>_(!0),handleMouseLeave:()=>_(!1)}};function LiveIndicator(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{color:"red.500",display:"flex",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(Box,{w:"8px",h:"8px",borderRadius:"full",bg:"red.500",animation:"pulse 2s infinite"}),jsxRuntimeExports.jsx(Text,{fontSize:"sm",children:i("sidebar.live")})]})}function CameraPlaceholder(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{position:"absolute",display:"flex",flexDirection:"column",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(FiCamera,{size:24}),jsxRuntimeExports.jsx(Text,{color:"whiteAlpha.600",fontSize:"sm",textAlign:"center",children:i("footer.cameraControl")})]})}function VideoStream$1({videoRef:i,isStreaming:o}){return jsxRuntimeExports.jsx("video",{ref:i,autoPlay:!0,playsInline:!0,muted:!0,style:sidebarStyles.cameraPanel.video,...o?{}:{display:"none"}})}function CameraPanel(){const{t:i}=useTranslation(),{videoRef:o,error:s,isHovering:a,isStreaming:_,stream:$,toggleCamera:_e,handleMouseEnter:tt,handleMouseLeave:st}=useCameraPanel();return reactExports.useEffect(()=>{o.current&&(o.current.srcObject=$)},[$]),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.cameraPanel.container,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.cameraPanel.header,children:_&&jsxRuntimeExports.jsx(LiveIndicator,{})}),jsxRuntimeExports.jsx(Tooltip,{showArrow:!0,content:i(_?"footer.cameraStopping":"footer.cameraControl"),open:a&&!s,children:jsxRuntimeExports.jsx(Box,{...sidebarStyles.cameraPanel.videoContainer,onClick:_e,onMouseEnter:tt,onMouseLeave:st,cursor:"pointer",position:"relative",_hover:{bg:"whiteAlpha.100"},children:s?jsxRuntimeExports.jsx(Text,{color:"red.300",fontSize:"sm",textAlign:"center",children:s}):jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment,{children:[jsxRuntimeExports.jsx(VideoStream$1,{videoRef:o,isStreaming:_}),!_&&jsxRuntimeExports.jsx(CameraPlaceholder,{})]})})})]})}function useCaptureScreen(){const i=reactExports.useRef(null),[o,s]=reactExports.useState(!1),{stream:a,isStreaming:_,error:$,startCapture:_e,stopCapture:tt}=useScreenCaptureContext(),st=()=>{_?tt():_e()},it=()=>s(!0),nt=()=>s(!1);return reactExports.useEffect(()=>{i.current&&(i.current.srcObject=a)},[a]),{videoRef:i,error:$,isHovering:o,isStreaming:_,stream:a,toggleCapture:st,handleMouseEnter:it,handleMouseLeave:nt}}function ScreenIndicator(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{color:"red.500",display:"flex",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(Box,{w:"8px",h:"8px",borderRadius:"full",bg:"red.500",animation:"pulse 2s infinite"}),jsxRuntimeExports.jsx(Text,{fontSize:"sm",children:i("sidebar.screen")})]})}function ScreenPlaceholder(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{position:"absolute",display:"flex",flexDirection:"column",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(FiMonitor,{size:24}),jsxRuntimeExports.jsx(Text,{color:"whiteAlpha.600",fontSize:"sm",textAlign:"center",children:i("footer.screenControl")})]})}function VideoStream({videoRef:i,isStreaming:o}){return jsxRuntimeExports.jsx("video",{ref:i,autoPlay:!0,playsInline:!0,muted:!0,style:sidebarStyles.screenPanel.video,...o?{}:{display:"none"}})}function ScreenPanel(){const{t:i}=useTranslation(),{videoRef:o,error:s,isHovering:a,isStreaming:_,toggleCapture:$,handleMouseEnter:_e,handleMouseLeave:tt}=useCaptureScreen();return jsxRuntimeExports.jsxs(Box,{...sidebarStyles.screenPanel.container,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.screenPanel.header,children:_&&jsxRuntimeExports.jsx(ScreenIndicator,{})}),jsxRuntimeExports.jsx(Tooltip,{showArrow:!0,content:i(_?"footer.screenStopping":"footer.screenControl"),open:a&&!s,children:jsxRuntimeExports.jsx(Box,{...sidebarStyles.screenPanel.screenContainer,onClick:$,onMouseEnter:_e,onMouseLeave:tt,cursor:"pointer",position:"relative",_hover:{bg:"whiteAlpha.100"},children:s?jsxRuntimeExports.jsx(Text,{color:"red.300",fontSize:"sm",textAlign:"center",children:s}):jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment,{children:[jsxRuntimeExports.jsx(VideoStream,{videoRef:o,isStreaming:_}),!_&&jsxRuntimeExports.jsx(ScreenPlaceholder,{})]})})})]})}const BrowserContext=reactExports.createContext({browserViewData:null,setBrowserViewData:()=>{},clearBrowserViewData:()=>{}});function BrowserProvider({children:i}){const[o,s]=reactExports.useState(null),a=reactExports.useCallback($=>{s($)},[]),_=reactExports.useCallback(()=>{s(null)},[]);return jsxRuntimeExports.jsx(BrowserContext.Provider,{value:{browserViewData:o,setBrowserViewData:a,clearBrowserViewData:_},children:i})}function useBrowser(){const i=reactExports.useContext(BrowserContext);if(!i)throw new Error("useBrowser must be used within a BrowserProvider");return i}function BrowserPlaceholder(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(Box,{position:"absolute",display:"flex",flexDirection:"column",alignItems:"center",gap:2,children:[jsxRuntimeExports.jsx(FiGlobe,{size:24}),jsxRuntimeExports.jsx(Text,{color:"whiteAlpha.600",fontSize:"sm",textAlign:"center",children:i("sidebar.noBrowserSession")})]})}function BrowserPanel(){const{t:i}=useTranslation(),{browserViewData:o}=useBrowser(),[s,a]=reactExports.useState(!1),_=()=>a(!0),$=()=>a(!1);return jsxRuntimeExports.jsxs(Box,{...sidebarStyles.browserPanel.container,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.browserPanel.header,children:o&&jsxRuntimeExports.jsx(Text,{fontSize:"sm",color:"blue.300",children:i("sidebar.browserSession")})}),jsxRuntimeExports.jsx(Tooltip,{showArrow:!0,content:o?"Interactive browser view":i("sidebar.noBrowserSession"),open:s,children:jsxRuntimeExports.jsx(Box,{...sidebarStyles.browserPanel.browserContainer,onMouseEnter:_,onMouseLeave:$,position:"relative",children:o?jsxRuntimeExports.jsx("iframe",{src:o.debuggerFullscreenUrl,style:sidebarStyles.browserPanel.iframe,sandbox:"allow-same-origin allow-scripts",allow:"clipboard-read; clipboard-write"}):jsxRuntimeExports.jsx(BrowserPlaceholder,{})})})]})}function BottomTab(){const{t:i}=useTranslation();return jsxRuntimeExports.jsxs(TabsRoot,{defaultValue:"camera",variant:"plain",...sidebarStyles.bottomTab.container,children:[jsxRuntimeExports.jsxs(TabsList,{...sidebarStyles.bottomTab.list,children:[jsxRuntimeExports.jsxs(TabsTrigger,{value:"camera",...sidebarStyles.bottomTab.trigger,children:[jsxRuntimeExports.jsx(FiCamera,{}),i("sidebar.camera")]}),jsxRuntimeExports.jsxs(TabsTrigger,{value:"screen",...sidebarStyles.bottomTab.trigger,children:[jsxRuntimeExports.jsx(FiMonitor,{}),i("sidebar.screen")]}),jsxRuntimeExports.jsxs(TabsTrigger,{value:"browser",...sidebarStyles.bottomTab.trigger,children:[jsxRuntimeExports.jsx(FiGlobe,{}),i("sidebar.browser")]})]}),jsxRuntimeExports.jsx(TabsContent,{value:"camera",children:jsxRuntimeExports.jsx(CameraPanel,{})}),jsxRuntimeExports.jsx(TabsContent,{value:"screen",children:jsxRuntimeExports.jsx(ScreenPanel,{})}),jsxRuntimeExports.jsx(TabsContent,{value:"browser",children:jsxRuntimeExports.jsx(BrowserPanel,{})})]})}const minutesInMonth=43200,minutesInDay=1440,constructFromSymbol=Symbol.for("constructDateFrom");function constructFrom(i,o){return typeof i=="function"?i(o):i&&typeof i=="object"&&constructFromSymbol in i?i[constructFromSymbol](o):i instanceof Date?new i.constructor(o):new Date(o)}function toDate(i,o){return constructFrom(i,i)}let defaultOptions={};function getDefaultOptions(){return defaultOptions}function getTimezoneOffsetInMilliseconds(i){const o=toDate(i),s=new Date(Date.UTC(o.getFullYear(),o.getMonth(),o.getDate(),o.getHours(),o.getMinutes(),o.getSeconds(),o.getMilliseconds()));return s.setUTCFullYear(o.getFullYear()),+i-+s}function normalizeDates(i,...o){const s=constructFrom.bind(null,i||o.find(a=>typeof a=="object"));return o.map(s)}function compareAsc(i,o){const s=+toDate(i)-+toDate(o);return s<0?-1:s>0?1:s}function constructNow(i){return constructFrom(i,Date.now())}function differenceInCalendarMonths(i,o,s){const[a,_]=normalizeDates(s==null?void 0:s.in,i,o),$=a.getFullYear()-_.getFullYear(),_e=a.getMonth()-_.getMonth();return $*12+_e}function getRoundingMethod(i){return o=>{const a=(i?Math[i]:Math.trunc)(o);return a===0?0:a}}function differenceInMilliseconds(i,o){return+toDate(i)-+toDate(o)}function endOfDay(i,o){const s=toDate(i);return s.setHours(23,59,59,999),s}function endOfMonth(i,o){const s=toDate(i),a=s.getMonth();return s.setFullYear(s.getFullYear(),a+1,0),s.setHours(23,59,59,999),s}function isLastDayOfMonth(i,o){const s=toDate(i);return+endOfDay(s)==+endOfMonth(s)}function differenceInMonths(i,o,s){const[a,_,$]=normalizeDates(s==null?void 0:s.in,i,i,o),_e=compareAsc(_,$),tt=Math.abs(differenceInCalendarMonths(_,$));if(tt<1)return 0;_.getMonth()===1&&_.getDate()>27&&_.setDate(30),_.setMonth(_.getMonth()-_e*tt);let st=compareAsc(_,$)===-_e;isLastDayOfMonth(a)&&tt===1&&compareAsc(a,$)===1&&(st=!1);const it=_e*(tt-+st);return it===0?0:it}function differenceInSeconds(i,o,s){const a=differenceInMilliseconds(i,o)/1e3;return getRoundingMethod(s==null?void 0:s.roundingMethod)(a)}const formatDistanceLocale={lessThanXSeconds:{one:"less than a second",other:"less than {{count}} seconds"},xSeconds:{one:"1 second",other:"{{count}} seconds"},halfAMinute:"half a minute",lessThanXMinutes:{one:"less than a minute",other:"less than {{count}} minutes"},xMinutes:{one:"1 minute",other:"{{count}} minutes"},aboutXHours:{one:"about 1 hour",other:"about {{count}} hours"},xHours:{one:"1 hour",other:"{{count}} hours"},xDays:{one:"1 day",other:"{{count}} days"},aboutXWeeks:{one:"about 1 week",other:"about {{count}} weeks"},xWeeks:{one:"1 week",other:"{{count}} weeks"},aboutXMonths:{one:"about 1 month",other:"about {{count}} months"},xMonths:{one:"1 month",other:"{{count}} months"},aboutXYears:{one:"about 1 year",other:"about {{count}} years"},xYears:{one:"1 year",other:"{{count}} years"},overXYears:{one:"over 1 year",other:"over {{count}} years"},almostXYears:{one:"almost 1 year",other:"almost {{count}} years"}},formatDistance$1=(i,o,s)=>{let a;const _=formatDistanceLocale[i];return typeof _=="string"?a=_:o===1?a=_.one:a=_.other.replace("{{count}}",o.toString()),s!=null&&s.addSuffix?s.comparison&&s.comparison>0?"in "+a:a+" ago":a};function buildFormatLongFn(i){return(o={})=>{const s=o.width?String(o.width):i.defaultWidth;return i.formats[s]||i.formats[i.defaultWidth]}}const dateFormats={full:"EEEE, MMMM do, y",long:"MMMM do, y",medium:"MMM d, y",short:"MM/dd/yyyy"},timeFormats={full:"h:mm:ss a zzzz",long:"h:mm:ss a z",medium:"h:mm:ss a",short:"h:mm a"},dateTimeFormats={full:"{{date}} 'at' {{time}}",long:"{{date}} 'at' {{time}}",medium:"{{date}}, {{time}}",short:"{{date}}, {{time}}"},formatLong={date:buildFormatLongFn({formats:dateFormats,defaultWidth:"full"}),time:buildFormatLongFn({formats:timeFormats,defaultWidth:"full"}),dateTime:buildFormatLongFn({formats:dateTimeFormats,defaultWidth:"full"})},formatRelativeLocale={lastWeek:"'last' eeee 'at' p",yesterday:"'yesterday at' p",today:"'today at' p",tomorrow:"'tomorrow at' p",nextWeek:"eeee 'at' p",other:"P"},formatRelative=(i,o,s,a)=>formatRelativeLocale[i];function buildLocalizeFn(i){return(o,s)=>{const a=s!=null&&s.context?String(s.context):"standalone";let _;if(a==="formatting"&&i.formattingValues){const _e=i.defaultFormattingWidth||i.defaultWidth,tt=s!=null&&s.width?String(s.width):_e;_=i.formattingValues[tt]||i.formattingValues[_e]}else{const _e=i.defaultWidth,tt=s!=null&&s.width?String(s.width):i.defaultWidth;_=i.values[tt]||i.values[_e]}const $=i.argumentCallback?i.argumentCallback(o):o;return _[$]}}const eraValues={narrow:["B","A"],abbreviated:["BC","AD"],wide:["Before Christ","Anno Domini"]},quarterValues={narrow:["1","2","3","4"],abbreviated:["Q1","Q2","Q3","Q4"],wide:["1st quarter","2nd quarter","3rd quarter","4th quarter"]},monthValues={narrow:["J","F","M","A","M","J","J","A","S","O","N","D"],abbreviated:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],wide:["January","February","March","April","May","June","July","August","September","October","November","December"]},dayValues={narrow:["S","M","T","W","T","F","S"],short:["Su","Mo","Tu","We","Th","Fr","Sa"],abbreviated:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],wide:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},dayPeriodValues={narrow:{am:"a",pm:"p",midnight:"mi",noon:"n",morning:"morning",afternoon:"afternoon",evening:"evening",night:"night"},abbreviated:{am:"AM",pm:"PM",midnight:"midnight",noon:"noon",morning:"morning",afternoon:"afternoon",evening:"evening",night:"night"},wide:{am:"a.m.",pm:"p.m.",midnight:"midnight",noon:"noon",morning:"morning",afternoon:"afternoon",evening:"evening",night:"night"}},formattingDayPeriodValues={narrow:{am:"a",pm:"p",midnight:"mi",noon:"n",morning:"in the morning",afternoon:"in the afternoon",evening:"in the evening",night:"at night"},abbreviated:{am:"AM",pm:"PM",midnight:"midnight",noon:"noon",morning:"in the morning",afternoon:"in the afternoon",evening:"in the evening",night:"at night"},wide:{am:"a.m.",pm:"p.m.",midnight:"midnight",noon:"noon",morning:"in the morning",afternoon:"in the afternoon",evening:"in the evening",night:"at night"}},ordinalNumber=(i,o)=>{const s=Number(i),a=s%100;if(a>20||a<10)switch(a%10){case 1:return s+"st";case 2:return s+"nd";case 3:return s+"rd"}return s+"th"},localize={ordinalNumber,era:buildLocalizeFn({values:eraValues,defaultWidth:"wide"}),quarter:buildLocalizeFn({values:quarterValues,defaultWidth:"wide",argumentCallback:i=>i-1}),month:buildLocalizeFn({values:monthValues,defaultWidth:"wide"}),day:buildLocalizeFn({values:dayValues,defaultWidth:"wide"}),dayPeriod:buildLocalizeFn({values:dayPeriodValues,defaultWidth:"wide",formattingValues:formattingDayPeriodValues,defaultFormattingWidth:"wide"})};function buildMatchFn(i){return(o,s={})=>{const a=s.width,_=a&&i.matchPatterns[a]||i.matchPatterns[i.defaultMatchWidth],$=o.match(_);if(!$)return null;const _e=$[0],tt=a&&i.parsePatterns[a]||i.parsePatterns[i.defaultParseWidth],st=Array.isArray(tt)?findIndex(tt,et=>et.test(_e)):findKey(tt,et=>et.test(_e));let it;it=i.valueCallback?i.valueCallback(st):st,it=s.valueCallback?s.valueCallback(it):it;const nt=o.slice(_e.length);return{value:it,rest:nt}}}function findKey(i,o){for(const s in i)if(Object.prototype.hasOwnProperty.call(i,s)&&o(i[s]))return s}function findIndex(i,o){for(let s=0;s<i.length;s++)if(o(i[s]))return s}function buildMatchPatternFn(i){return(o,s={})=>{const a=o.match(i.matchPattern);if(!a)return null;const _=a[0],$=o.match(i.parsePattern);if(!$)return null;let _e=i.valueCallback?i.valueCallback($[0]):$[0];_e=s.valueCallback?s.valueCallback(_e):_e;const tt=o.slice(_.length);return{value:_e,rest:tt}}}const matchOrdinalNumberPattern=/^(\d+)(th|st|nd|rd)?/i,parseOrdinalNumberPattern=/\d+/i,matchEraPatterns={narrow:/^(b|a)/i,abbreviated:/^(b\.?\s?c\.?|b\.?\s?c\.?\s?e\.?|a\.?\s?d\.?|c\.?\s?e\.?)/i,wide:/^(before christ|before common era|anno domini|common era)/i},parseEraPatterns={any:[/^b/i,/^(a|c)/i]},matchQuarterPatterns={narrow:/^[1234]/i,abbreviated:/^q[1234]/i,wide:/^[1234](th|st|nd|rd)? quarter/i},parseQuarterPatterns={any:[/1/i,/2/i,/3/i,/4/i]},matchMonthPatterns={narrow:/^[jfmasond]/i,abbreviated:/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i,wide:/^(january|february|march|april|may|june|july|august|september|october|november|december)/i},parseMonthPatterns={narrow:[/^j/i,/^f/i,/^m/i,/^a/i,/^m/i,/^j/i,/^j/i,/^a/i,/^s/i,/^o/i,/^n/i,/^d/i],any:[/^ja/i,/^f/i,/^mar/i,/^ap/i,/^may/i,/^jun/i,/^jul/i,/^au/i,/^s/i,/^o/i,/^n/i,/^d/i]},matchDayPatterns={narrow:/^[smtwf]/i,short:/^(su|mo|tu|we|th|fr|sa)/i,abbreviated:/^(sun|mon|tue|wed|thu|fri|sat)/i,wide:/^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)/i},parseDayPatterns={narrow:[/^s/i,/^m/i,/^t/i,/^w/i,/^t/i,/^f/i,/^s/i],any:[/^su/i,/^m/i,/^tu/i,/^w/i,/^th/i,/^f/i,/^sa/i]},matchDayPeriodPatterns={narrow:/^(a|p|mi|n|(in the|at) (morning|afternoon|evening|night))/i,any:/^([ap]\.?\s?m\.?|midnight|noon|(in the|at) (morning|afternoon|evening|night))/i},parseDayPeriodPatterns={any:{am:/^a/i,pm:/^p/i,midnight:/^mi/i,noon:/^no/i,morning:/morning/i,afternoon:/afternoon/i,evening:/evening/i,night:/night/i}},match={ordinalNumber:buildMatchPatternFn({matchPattern:matchOrdinalNumberPattern,parsePattern:parseOrdinalNumberPattern,valueCallback:i=>parseInt(i,10)}),era:buildMatchFn({matchPatterns:matchEraPatterns,defaultMatchWidth:"wide",parsePatterns:parseEraPatterns,defaultParseWidth:"any"}),quarter:buildMatchFn({matchPatterns:matchQuarterPatterns,defaultMatchWidth:"wide",parsePatterns:parseQuarterPatterns,defaultParseWidth:"any",valueCallback:i=>i+1}),month:buildMatchFn({matchPatterns:matchMonthPatterns,defaultMatchWidth:"wide",parsePatterns:parseMonthPatterns,defaultParseWidth:"any"}),day:buildMatchFn({matchPatterns:matchDayPatterns,defaultMatchWidth:"wide",parsePatterns:parseDayPatterns,defaultParseWidth:"any"}),dayPeriod:buildMatchFn({matchPatterns:matchDayPeriodPatterns,defaultMatchWidth:"any",parsePatterns:parseDayPeriodPatterns,defaultParseWidth:"any"})},enUS={code:"en-US",formatDistance:formatDistance$1,formatLong,formatRelative,localize,match,options:{weekStartsOn:0,firstWeekContainsDate:1}};function formatDistance(i,o,s){const a=getDefaultOptions(),_=(s==null?void 0:s.locale)??a.locale??enUS,$=2520,_e=compareAsc(i,o);if(isNaN(_e))throw new RangeError("Invalid time value");const tt=Object.assign({},s,{addSuffix:s==null?void 0:s.addSuffix,comparison:_e}),[st,it]=normalizeDates(s==null?void 0:s.in,..._e>0?[o,i]:[i,o]),nt=differenceInSeconds(it,st),et=(getTimezoneOffsetInMilliseconds(it)-getTimezoneOffsetInMilliseconds(st))/1e3,j=Math.round((nt-et)/60);let rt;if(j<2)return s!=null&&s.includeSeconds?nt<5?_.formatDistance("lessThanXSeconds",5,tt):nt<10?_.formatDistance("lessThanXSeconds",10,tt):nt<20?_.formatDistance("lessThanXSeconds",20,tt):nt<40?_.formatDistance("halfAMinute",0,tt):nt<60?_.formatDistance("lessThanXMinutes",1,tt):_.formatDistance("xMinutes",1,tt):j===0?_.formatDistance("lessThanXMinutes",1,tt):_.formatDistance("xMinutes",j,tt);if(j<45)return _.formatDistance("xMinutes",j,tt);if(j<90)return _.formatDistance("aboutXHours",1,tt);if(j<minutesInDay){const ot=Math.round(j/60);return _.formatDistance("aboutXHours",ot,tt)}else{if(j<$)return _.formatDistance("xDays",1,tt);if(j<minutesInMonth){const ot=Math.round(j/minutesInDay);return _.formatDistance("xDays",ot,tt)}else if(j<minutesInMonth*2)return rt=Math.round(j/minutesInMonth),_.formatDistance("aboutXMonths",rt,tt)}if(rt=differenceInMonths(it,st),rt<12){const ot=Math.round(j/minutesInMonth);return _.formatDistance("xMonths",ot,tt)}else{const ot=rt%12,at=Math.trunc(rt/12);return ot<3?_.formatDistance("aboutXYears",at,tt):ot<9?_.formatDistance("overXYears",at,tt):_.formatDistance("almostXYears",at+1,tt)}}function formatDistanceToNow(i,o){return formatDistance(i,constructNow(i),o)}const DrawerContent=reactExports.forwardRef((i,o)=>{const{children:s,portalled:a=!0,portalRef:_,offset:$,..._e}=i;return jsxRuntimeExports.jsx(Portal,{disabled:!a,container:_,children:jsxRuntimeExports.jsx(DrawerPositioner,{padding:$,children:jsxRuntimeExports.jsx(DrawerContent$1,{ref:o,..._e,asChild:!1,children:s})})})}),DrawerCloseTrigger=reactExports.forwardRef((i,o)=>jsxRuntimeExports.jsx(DrawerCloseTrigger$1,{position:"absolute",top:"2",insetEnd:"2",...i,asChild:!0,children:jsxRuntimeExports.jsx(CloseButton,{size:"sm",ref:o})})),DrawerTrigger=DrawerTrigger$1,DrawerRoot=DrawerRoot$1,DrawerFooter=DrawerFooter$1,DrawerHeader=DrawerHeader$1,DrawerBody=DrawerBody$1,DrawerBackdrop=DrawerBackdrop$1,DrawerTitle=DrawerTitle$1,DrawerActionTrigger=DrawerActionTrigger$1,useHistoryDrawer=()=>{const{t:i}=useTranslation(),[o,s]=reactExports.useState(!1),{historyList:a,currentHistoryUid:_,setCurrentHistoryUid:$,setHistoryList:_e,messages:tt,updateHistoryList:st}=useChatHistory(),{sendMessage:it}=useWebSocket();return{open:o,setOpen:s,historyList:a,currentHistoryUid:_,fetchAndSetHistory:rt=>{if(!(!rt||rt===_)){if(_&&tt.length>0){const ot=tt[tt.length-1];st(_,ot)}$(rt),it({type:"fetch-and-set-history",history_uid:rt})}},deleteHistory:rt=>{if(rt===_){toaster.create({title:i("error.cannotDeleteCurrentHistory"),type:"warning",duration:2e3});return}it({type:"delete-history",history_uid:rt}),_e(a.filter(ot=>ot.uid!==rt))},getLatestMessageContent:rt=>{var ot;if(rt.uid===_&&tt.length>0){const at=tt[tt.length-1];return{content:at.content,timestamp:at.timestamp}}return{content:((ot=rt.latest_message)==null?void 0:ot.content)||"",timestamp:rt.timestamp}}}},HistoryItem=reactExports.memo(({isSelected:i,latestMessage:o,onSelect:s,onDelete:a,isDeleteDisabled:_})=>{const{t:$}=useTranslation();return jsxRuntimeExports.jsxs(Box,{...sidebarStyles.historyDrawer.historyItem,...i?sidebarStyles.historyDrawer.historyItemSelected:{},onClick:s,children:[jsxRuntimeExports.jsxs(Box,{...sidebarStyles.historyDrawer.historyHeader,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.historyDrawer.timestamp,children:o.timestamp?formatDistanceToNow(new Date(o.timestamp),{addSuffix:!0}):$("history.noMessages")}),jsxRuntimeExports.jsx(Button$2,{onClick:a,disabled:_,...sidebarStyles.historyDrawer.deleteButton,children:jsxRuntimeExports.jsx(FiTrash2,{})})]}),o.content&&jsxRuntimeExports.jsx(Box,{...sidebarStyles.historyDrawer.messagePreview,children:o.content})]})});HistoryItem.displayName="HistoryItem";function HistoryDrawer({children:i}){const{t:o}=useTranslation(),{open:s,setOpen:a,historyList:_,currentHistoryUid:$,fetchAndSetHistory:_e,deleteHistory:tt,getLatestMessageContent:st}=useHistoryDrawer();return jsxRuntimeExports.jsxs(DrawerRoot,{open:s,onOpenChange:it=>a(it.open),placement:"start",children:[jsxRuntimeExports.jsx(DrawerBackdrop,{}),jsxRuntimeExports.jsx(DrawerTrigger,{asChild:!0,children:i}),jsxRuntimeExports.jsxs(DrawerContent,{style:sidebarStyles.historyDrawer.drawer.content,children:[jsxRuntimeExports.jsxs(DrawerHeader,{children:[jsxRuntimeExports.jsx(DrawerTitle,{style:sidebarStyles.historyDrawer.drawer.title,children:o("history.chatHistoryList")}),jsxRuntimeExports.jsx(DrawerCloseTrigger,{style:sidebarStyles.historyDrawer.drawer.closeButton})]}),jsxRuntimeExports.jsx(DrawerBody,{children:jsxRuntimeExports.jsx(Box,{...sidebarStyles.historyDrawer.listContainer,children:_.map(it=>jsxRuntimeExports.jsx(HistoryItem,{isSelected:$===it.uid,latestMessage:st(it),onSelect:()=>_e(it.uid),onDelete:nt=>{nt.stopPropagation(),tt(it.uid)},isDeleteDisabled:$===it.uid},it.uid))})}),jsxRuntimeExports.jsx(DrawerFooter,{children:jsxRuntimeExports.jsx(DrawerActionTrigger,{asChild:!0,children:jsxRuntimeExports.jsx(Button$2,{...sidebarStyles.historyDrawer.drawer.actionButton,children:o("common.close")})})})]})]})}const useSidebar=()=>{const i=useDisclosure(),{sendMessage:o}=useWebSocket(),{interrupt:s}=useInterrupt(),{currentHistoryUid:a,messages:_,updateHistoryList:$}=useChatHistory(),{setMode:_e,mode:tt,isElectron:st}=useMode(),it=()=>{if(a&&_.length>0){const nt=_[_.length-1];$(a,nt)}s(),o({type:"create-new-history"})};return{settingsOpen:i.open,onSettingsOpen:i.onOpen,onSettingsClose:i.onClose,createNewHistory:it,setMode:_e,currentMode:tt,isElectron:st}},ClipboardIcon=reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardIndicator,{copied:jsxRuntimeExports.jsx(LuCheck,{}),...o,ref:s,children:jsxRuntimeExports.jsx(LuClipboard,{})})}),ClipboardCopyText=reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardIndicator,{copied:"Copied",...o,ref:s,children:"Copy"})});reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardLabel,{textStyle:"sm",fontWeight:"medium",display:"inline-block",mb:"1",...o,ref:s})});const ClipboardButton=reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardTrigger,{asChild:!0,children:jsxRuntimeExports.jsxs(Button$2,{ref:s,size:"sm",variant:"surface",...o,children:[jsxRuntimeExports.jsx(ClipboardIcon,{}),jsxRuntimeExports.jsx(ClipboardCopyText,{})]})})});reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardTrigger,{asChild:!0,children:jsxRuntimeExports.jsxs(Button$2,{unstyled:!0,variant:"plain",size:"xs",display:"inline-flex",alignItems:"center",gap:"2",ref:s,...o,children:[jsxRuntimeExports.jsx(LuLink,{}),jsxRuntimeExports.jsx(ClipboardCopyText,{})]})})});reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardTrigger,{asChild:!0,children:jsxRuntimeExports.jsxs(IconButton,{ref:s,size:"xs",variant:"subtle",...o,children:[jsxRuntimeExports.jsx(ClipboardIcon,{}),jsxRuntimeExports.jsx(ClipboardCopyText,{srOnly:!0})]})})});reactExports.forwardRef(function i(o,s){return jsxRuntimeExports.jsx(ClipboardInput,{asChild:!0,children:jsxRuntimeExports.jsx(Input$1,{ref:s,...o})})});const ClipboardRoot=ClipboardRoot$1,useGroupDrawer=()=>{const{t:i}=useTranslation(),[o,s]=reactExports.useState(!1),[a,_]=reactExports.useState(""),{sendMessage:$}=useWebSocket(),_e=reactExports.useCallback(()=>{$({type:"request-group-info"})},[$]),tt=reactExports.useCallback(async()=>{if(!a.trim()){toaster.create({title:i("error.enterValidUuid"),type:"error",duration:2e3});return}$({type:"add-client-to-group",invitee_uid:a.trim()}),_(""),setTimeout(_e,100)},[a,$,_e,i]),st=reactExports.useCallback(nt=>{$({type:"remove-client-from-group",target_uid:nt}),setTimeout(_e,100)},[$,_e]),it=reactExports.useCallback(nt=>{$({type:"remove-client-from-group",target_uid:nt}),setTimeout(_e,100)},[$,_e]);return{isOpen:o,setIsOpen:s,inviteUid:a,setInviteUid:_,handleInvite:tt,handleRemove:st,handleLeaveGroup:it,requestGroupInfo:_e}},GroupContext=reactExports.createContext(null);function GroupProvider({children:i}){const[o,s]=reactExports.useState(""),[a,_]=reactExports.useState([]),[$,_e]=reactExports.useState(!1),tt=()=>{_([]),_e(!1)},st=reactExports.useMemo(()=>a.includes(o)?[o,...a.filter(it=>it!==o)]:a,[a,o]);return jsxRuntimeExports.jsx(GroupContext.Provider,{value:{selfUid:o,groupMembers:a,isOwner:$,setSelfUid:s,setGroupMembers:_,setIsOwner:_e,sortedGroupMembers:st,resetGroupState:tt},children:i})}function useGroup(){const i=reactExports.useContext(GroupContext);if(!i)throw new Error("useGroup must be used within a GroupProvider");return i}function GroupDrawer({children:i}){const{t:o}=useTranslation(),{selfUid:s,sortedGroupMembers:a,isOwner:_}=useGroup(),{isOpen:$,setIsOpen:_e,inviteUid:tt,setInviteUid:st,handleInvite:it,handleRemove:nt,handleLeaveGroup:et,requestGroupInfo:j}=useGroupDrawer();return jsxRuntimeExports.jsxs(DrawerRoot,{open:$,onOpenChange:rt=>{_e(rt.open),rt.open&&j()},placement:"start",children:[jsxRuntimeExports.jsx(DrawerBackdrop,{}),jsxRuntimeExports.jsx(DrawerTrigger,{asChild:!0,children:i}),jsxRuntimeExports.jsxs(DrawerContent,{style:sidebarStyles.historyDrawer.drawer.content,children:[jsxRuntimeExports.jsxs(DrawerHeader,{children:[jsxRuntimeExports.jsx(DrawerTitle,{style:sidebarStyles.historyDrawer.drawer.title,children:o("group.management")}),jsxRuntimeExports.jsx(DrawerCloseTrigger,{style:sidebarStyles.historyDrawer.drawer.closeButton})]}),jsxRuntimeExports.jsx(DrawerBody,{children:jsxRuntimeExports.jsxs(Box,{...sidebarStyles.historyDrawer.listContainer,children:[jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.section,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.sectionTitle,children:o("group.yourUuid")}),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.memberItem,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.memberText,children:s}),jsxRuntimeExports.jsx(ClipboardRoot,{value:s,children:jsxRuntimeExports.jsx(ClipboardButton,{...sidebarStyles.groupDrawer.clipboardButton,size:"sm"})})]})]}),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.section,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.sectionTitle,children:o("group.inviteMember")}),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.inviteBox,children:[jsxRuntimeExports.jsx(Input$1,{value:tt,onChange:rt=>st(rt.target.value),placeholder:o("group.enterMemberUuid"),...sidebarStyles.groupDrawer.input}),jsxRuntimeExports.jsx(Button$2,{onClick:it,...sidebarStyles.groupDrawer.button,children:o("group.invite")})]})]}),jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.section,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.sectionTitle,children:o("group.members")}),jsxRuntimeExports.jsx(Box,{...sidebarStyles.groupDrawer.memberList,children:a.map(rt=>jsxRuntimeExports.jsxs(Box,{...sidebarStyles.groupDrawer.memberItem,children:[jsxRuntimeExports.jsx(Text,{...sidebarStyles.groupDrawer.memberText,children:rt===s?`${rt} (${o("group.you")})`:rt}),(_&&rt!==s||!_&&rt===s)&&jsxRuntimeExports.jsx(IconButton,{"aria-label":o(rt===s?"group.leaveGroup":"group.removeMember"),onClick:()=>rt===s?et(s):nt(rt),...sidebarStyles.groupDrawer.removeButton,size:"sm",title:o(rt===s?"group.leaveGroup":"group.removeMember"),children:rt===s?o("group.leave"):jsxRuntimeExports.jsx(FiX,{})})]},rt))})]})]})}),jsxRuntimeExports.jsx(DrawerFooter,{children:jsxRuntimeExports.jsx(DrawerActionTrigger,{asChild:!0,children:jsxRuntimeExports.jsx(Button$2,{...sidebarStyles.historyDrawer.drawer.actionButton,children:o("common.close")})})})]})]})}const ToggleButton$1=reactExports.memo(({isCollapsed:i,onToggle:o})=>jsxRuntimeExports.jsx(Box,{...sidebarStyles.sidebar.toggleButton,style:{transform:i?"rotate(180deg)":"rotate(0deg)"},onClick:o,children:jsxRuntimeExports.jsx(FiChevronLeft,{})}));ToggleButton$1.displayName="ToggleButton";const ModeMenu=reactExports.memo(({setMode:i,currentMode:o,isElectron:s})=>jsxRuntimeExports.jsxs(MenuRoot,{children:[jsxRuntimeExports.jsx(MenuTrigger,{as:Button$2,"aria-label":"Mode Menu",title:"Change Mode",children:jsxRuntimeExports.jsx(FiLayers,{})}),jsxRuntimeExports.jsx(MenuPositioner,{children:jsxRuntimeExports.jsx(MenuContent,{children:jsxRuntimeExports.jsxs(MenuRadioItemGroup,{value:o,children:[jsxRuntimeExports.jsxs(MenuRadioItem,{value:"window",onClick:()=>i("window"),children:[jsxRuntimeExports.jsx(MenuItemIndicator,{}),"Live Mode"]}),jsxRuntimeExports.jsxs(MenuRadioItem,{value:"pet",onClick:()=>{s&&i("pet")},disabled:!s,title:s?void 0:"Pet mode is only available in desktop app",children:[jsxRuntimeExports.jsx(MenuItemIndicator,{}),"Pet Mode"]})]})})})]}));ModeMenu.displayName="ModeMenu";const HeaderButtons=reactExports.memo(({onSettingsOpen:i,onNewHistory:o,setMode:s,currentMode:a,isElectron:_})=>jsxRuntimeExports.jsxs(Box,{display:"flex",gap:1,children:[jsxRuntimeExports.jsx(Button$2,{onClick:i,children:jsxRuntimeExports.jsx(FiSettings,{})}),jsxRuntimeExports.jsx(GroupDrawer,{children:jsxRuntimeExports.jsx(Button$2,{children:jsxRuntimeExports.jsx(FiUsers,{})})}),jsxRuntimeExports.jsx(HistoryDrawer,{children:jsxRuntimeExports.jsx(Button$2,{children:jsxRuntimeExports.jsx(FiClock,{})})}),jsxRuntimeExports.jsx(Button$2,{onClick:o,children:jsxRuntimeExports.jsx(FiPlus,{})}),jsxRuntimeExports.jsx(ModeMenu,{setMode:s,currentMode:a,isElectron:_})]}));HeaderButtons.displayName="HeaderButtons";const SidebarContent=reactExports.memo(({onSettingsOpen:i,onNewHistory:o,setMode:s,currentMode:a,isElectron:_})=>jsxRuntimeExports.jsxs(Box,{...sidebarStyles.sidebar.content,children:[jsxRuntimeExports.jsx(Box,{...sidebarStyles.sidebar.header,children:jsxRuntimeExports.jsx(HeaderButtons,{onSettingsOpen:i,onNewHistory:o,setMode:s,currentMode:a,isElectron:_})}),jsxRuntimeExports.jsx(ChatHistoryPanel,{}),jsxRuntimeExports.jsx(BottomTab,{})]}));SidebarContent.displayName="SidebarContent";function Sidebar({isCollapsed:i=!1,onToggle:o}){const{settingsOpen:s,onSettingsOpen:a,onSettingsClose:_,createNewHistory:$,setMode:_e,currentMode:tt,isElectron:st}=useSidebar();reactExports.useEffect(()=>{const h=ev=>{if(ev&&ev.detail&&ev.detail.openSettings){a()}};window.addEventListener("olv-open-settings-tab",h);return()=>window.removeEventListener("olv-open-settings-tab",h)},[a]);return jsxRuntimeExports.jsxs(Box,{...sidebarStyles.sidebar.container(i),children:[jsxRuntimeExports.jsx(ToggleButton$1,{isCollapsed:i,onToggle:o}),!i&&jsxRuntimeExports.jsx(SidebarContent,{onSettingsOpen:a,onNewHistory:$,setMode:_e,currentMode:tt,isElectron:st}),s&&jsxRuntimeExports.jsx(SettingUI,{open:s,onClose:_,onToggle:o})]})}function BsMicFill(i){return GenIcon({attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"},child:[]},{tag:"path",attr:{d:"M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"},child:[]}]})(i)}function BsMicMuteFill(i){return GenIcon({attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M13 8c0 .564-.094 1.107-.266 1.613l-.814-.814A4 4 0 0 0 12 8V7a.5.5 0 0 1 1 0zm-5 4c.818 0 1.578-.245 2.212-.667l.718.719a5 5 0 0 1-2.43.923V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 1 0v1a4 4 0 0 0 4 4m3-9v4.879L5.158 2.037A3.001 3.001 0 0 1 11 3"},child:[]},{tag:"path",attr:{d:"M9.486 10.607 5 6.12V8a3 3 0 0 0 4.486 2.607m-7.84-9.253 12 12 .708-.708-12-12z"},child:[]}]})(i)}function BsPaperclip(i){return GenIcon({attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M4.5 3a2.5 2.5 0 0 1 5 0v9a1.5 1.5 0 0 1-3 0V5a.5.5 0 0 1 1 0v7a.5.5 0 0 0 1 0V3a1.5 1.5 0 1 0-3 0v9a2.5 2.5 0 0 0 5 0V5a.5.5 0 0 1 1 0v7a3.5 3.5 0 1 1-7 0z"},child:[]}]})(i)}function IoHandRightSharp(i){return GenIcon({attr:{viewBox:"0 0 512 512"},child:[{tag:"path",attr:{d:"M82.42 209.08c15.06-6.62 32.38 1.31 38.5 17.62L156 312h11.27V80c0-17.6 13.3-32 29.55-32 16.26 0 29.55 14.4 29.55 32v151.75l14.78.25V32c0-17.6 13.3-32 29.55-32 16.3 0 29.55 14.4 29.55 32v199.75L315 232V64c0-17.6 13.3-32 29.55-32 16.26 0 29.55 14.4 29.55 32v183.75l14.78.25V128c0-17.6 13.3-32 29.55-32C434.7 96 448 110.4 448 128v216c0 75.8-37.13 168-169 168-40.8 0-79.42-7-100.66-21a121.41 121.41 0 0 1-33.72-33.31 138 138 0 0 1-16-31.78L66.16 250.77c-6.11-16.31 1.2-35.06 16.26-41.69z"},child:[]}]})(i)}const InputGroup=reactExports.forwardRef((i,o)=>{const{startElement:s,startElementProps:a,endElement:_,endElementProps:$,children:_e,startOffset:tt="6px",endOffset:st="6px",...it}=i,nt=reactExports.Children.only(_e);return jsxRuntimeExports.jsxs(Group,{ref:o,...it,children:[s&&jsxRuntimeExports.jsx(InputElement,{pointerEvents:"none",...a,children:s}),reactExports.cloneElement(nt,{...s&&{ps:`calc(var(--input-height) - ${tt})`},..._&&{pe:`calc(var(--input-height) - ${st})`},..._e.props}),_&&jsxRuntimeExports.jsx(InputElement,{placement:"end",...$,children:_})]})}),footerStyles={footer:{container:i=>({bg:i?"transparent":"rgba(14, 18, 29, 0.92)",backdropFilter:i?"none":"blur(12px)",borderTop:i?"none":"1px solid rgba(255, 255, 255, 0.12)",borderTopRadius:i?"none":"16px",boxShadow:i?"none":"0 -10px 30px rgba(0, 0, 0, 0.4)",transform:i?"translateY(calc(100% - 24px))":"translateY(0)",transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",height:"100%",position:"relative",overflow:i?"visible":"hidden",pb:"4"}),toggleButton:{height:"24px",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:"whiteAlpha.700",_hover:{color:"white"},bg:"transparent",transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"},actionButton:{borderRadius:"12px",width:"50px",height:"50px",minW:"50px"},input:{bg:"gray.700",border:"none",height:"80px",borderRadius:"12px",fontSize:"18px",pl:"12",pr:"4",color:"whiteAlpha.900",_placeholder:{color:"whiteAlpha.500"},_focus:{border:"none",bg:"gray.700"},resize:"none",minHeight:"80px",maxHeight:"80px",py:"0",display:"flex",alignItems:"center",paddingTop:"28px",lineHeight:"1.4"},attachButton:{position:"absolute",left:"1",top:"50%",transform:"translateY(-50%)",color:"whiteAlpha.700",zIndex:2,_hover:{bg:"transparent",color:"white"}}},aiIndicator:{container:{bg:"#7C5CFF",color:"white",width:"110px",height:"30px",borderRadius:"12px",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 2px 6px rgba(0,0,0,0.1)",overflow:"hidden"},text:{fontSize:"12px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}};function AIStateIndicator(){const{t:i}=useTranslation(),{aiState:o}=useAiState(),s=footerStyles.aiIndicator;return jsxRuntimeExports.jsx(Box,{...s.container,children:jsxRuntimeExports.jsx(Text,{...s.text,children:i(`aiState.${o}`)})})}function useTextInput(){const[i,o]=reactExports.useState(""),[s,a]=reactExports.useState(!1),_=useWebSocket(),{aiState:$}=useAiState(),{interrupt:_e}=useInterrupt(),{appendHumanMessage:tt}=useChatHistory(),{stopMic:st,autoStopMic:it}=useVAD(),{captureAllMedia:nt}=useMediaCapture(),et=lt=>{o(lt.target.value)},j=async()=>{if(!i.trim()||!_)return;$==="thinking-speaking"&&_e();const lt=await nt();tt(i.trim()),_.sendMessage({type:"text-input",text:i.trim(),images:lt}),it&&st(),o("")};return{inputText:i,setInputText:et,handleSend:j,handleKeyPress:lt=>{s||lt.key==="Enter"&&!lt.shiftKey&&(lt.preventDefault(),j())},handleCompositionStart:()=>a(!0),handleCompositionEnd:()=>a(!1)}}const useFooter=()=>{const{inputText:i,setInputText:o,handleKeyPress:s,handleCompositionStart:a,handleCompositionEnd:_}=useTextInput(),{interrupt:$}=useInterrupt(),{startMic:_e,autoStartMicOn:tt}=useVAD(),{handleMicToggle:st,micOn:it}=useMicToggle(),{setAiState:nt,aiState:et}=useAiState(),{sendTriggerSignal:j}=useTriggerSpeak(),{settings:rt}=useProactiveSpeak();return{inputValue:i,handleInputChange:ut=>{o({target:{value:ut.target.value}}),nt(AiStateEnum.WAITING)},handleKeyPress:ut=>{s(ut)},handleCompositionStart:a,handleCompositionEnd:_,handleInterrupt:()=>{et===AiStateEnum.THINKING_SPEAKING?($(),tt&&_e()):rt.allowButtonTrigger&&j(-1)},handleMicToggle:st,micOn:it}},ToggleButton=reactExports.memo(({isCollapsed:i,onToggle:o})=>jsxRuntimeExports.jsx(Box,{...footerStyles.footer.toggleButton,onClick:o,color:"whiteAlpha.500",style:{transform:i?"rotate(180deg)":"rotate(0deg)"},children:jsxRuntimeExports.jsx(FiChevronDown,{})}));ToggleButton.displayName="ToggleButton";const ActionButtons=reactExports.memo(({micOn:i,onMicToggle:o,onInterrupt:s})=>jsxRuntimeExports.jsxs(HStack,{gap:2,children:[jsxRuntimeExports.jsx(IconButton,{bg:i?"green.500":"red.500",...footerStyles.footer.actionButton,onClick:o,children:i?jsxRuntimeExports.jsx(BsMicFill,{}):jsxRuntimeExports.jsx(BsMicMuteFill,{})}),jsxRuntimeExports.jsx(IconButton,{"aria-label":"Raise hand",bg:"yellow.500",...footerStyles.footer.actionButton,onClick:s,children:jsxRuntimeExports.jsx(IoHandRightSharp,{size:"24"})})]}));ActionButtons.displayName="ActionButtons";const MessageInput=reactExports.memo(({value:i,onChange:o,onKeyDown:s,onCompositionStart:a,onCompositionEnd:_})=>{const{t:$}=useTranslation();return jsxRuntimeExports.jsx(InputGroup,{flex:1,children:jsxRuntimeExports.jsxs(Box,{position:"relative",width:"100%",children:[jsxRuntimeExports.jsx(IconButton,{"aria-label":"Attach file",variant:"ghost",...footerStyles.footer.attachButton,children:jsxRuntimeExports.jsx(BsPaperclip,{size:"24"})}),jsxRuntimeExports.jsx(Textarea,{value:i,onChange:o,onKeyDown:s,onCompositionStart:a,onCompositionEnd:_,placeholder:$("footer.typeYourMessage"),...footerStyles.footer.input})]})})});MessageInput.displayName="MessageInput";function Footer({isCollapsed:i=!1,onToggle:o}){const{inputValue:s,handleInputChange:a,handleKeyPress:_,handleCompositionStart:$,handleCompositionEnd:_e,handleInterrupt:tt,handleMicToggle:st,micOn:it}=useFooter();return jsxRuntimeExports.jsxs(Box,{...footerStyles.footer.container(i),children:[jsxRuntimeExports.jsx(ToggleButton,{isCollapsed:i,onToggle:o}),jsxRuntimeExports.jsx(Box,{pt:"0",px:"4",children:jsxRuntimeExports.jsxs(HStack,{width:"100%",gap:4,children:[jsxRuntimeExports.jsxs(Box,{children:[jsxRuntimeExports.jsx(Box,{mb:"1.5",children:jsxRuntimeExports.jsx(AIStateIndicator,{})}),jsxRuntimeExports.jsx(ActionButtons,{micOn:it,onMicToggle:st,onInterrupt:tt})]}),jsxRuntimeExports.jsx(MessageInput,{value:s,onChange:a,onKeyDown:_,onCompositionStart:$,onCompositionEnd:_e})]})})]})}const isElectron=window.api!==void 0,getAppHeight=()=>typeof window<"u"&&/Mobi|Android/i.test(navigator.userAgent)?`${window.innerHeight}px`:isElectron?"calc(100vh - 30px)":"100vh",layoutStyles={appContainer:{width:"100vw",height:getAppHeight(),bg:"gray.900",color:"white",overflow:"hidden",position:"relative",display:"flex",flexDirection:{base:"column",md:"row"},mt:isElectron?"30px":"0"},sidebar:{position:"relative",width:{base:"100%",md:"440px"},height:{base:"auto",md:"100%"},bg:"gray.800",borderRight:"1px solid",borderColor:"whiteAlpha.200",overflow:"hidden",flexShrink:0,transition:"all 0.2s"},mainContent:{flex:1,height:{base:"calc(100% - 120px)",md:"100%"},position:"relative",display:"flex",flexDirection:"column",transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",width:"100%",overflow:"hidden"},footer:{width:"100%",height:{base:"100px",md:"120px"},transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",willChange:"transform",position:"relative",zIndex:1},collapsedFooter:{height:{base:"20px",md:"24px"},transition:"all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"},windowsTitleBar:{position:"fixed",top:0,left:0,width:"100vw",display:"flex",alignItems:"center",justifyContent:"space-between",height:"30px",backgroundColor:"gray.800",paddingX:"10px",zIndex:1e3,css:{"-webkit-app-region":"drag"}},macTitleBar:{position:"fixed",top:0,left:0,width:"100vw",display:"flex",alignItems:"center",justifyContent:"center",height:"30px",backgroundColor:"gray.800",zIndex:1e3,css:{"-webkit-app-region":"drag","-webkit-user-select":"none"}},titleBarTitle:{fontSize:"sm",color:"whiteAlpha.800",textAlign:"center"},titleBarButtons:{display:"flex",gap:"1"},titleBarButton:{size:"sm",variant:"ghost",color:"whiteAlpha.800",css:{"-webkit-app-region":"no-drag"},_hover:{backgroundColor:"whiteAlpha.200"}},closeButton:{size:"sm",variant:"ghost",color:"whiteAlpha.800",css:{"-webkit-app-region":"no-drag"},_hover:{backgroundColor:"red.500"}}};function WebSocketHandler({children:i}){const{t:o}=useTranslation(),[s,a]=reactExports.useState("CLOSED"),[_,$]=useLocalStorage("wsUrl",defaultWsUrl),[_e,tt]=useLocalStorage("baseUrl",defaultBaseUrl),{aiState:st,setAiState:it,backendSynthComplete:nt,setBackendSynthComplete:et}=useAiState(),{setModelInfo:j}=useLive2DConfig(),{setSubtitleText:rt}=useSubtitle(),{clearResponse:ot,setForceNewMessage:at,appendHumanMessage:lt,appendOrUpdateToolCallMessage:ut}=useChatHistory(),{addAudioTask:ct}=useAudioTask(),dt=useBgUrl(),{confUid:ft,setConfName:ht,setConfUid:bt,setConfigFiles:yt}=useConfig(),[mt,gt]=reactExports.useState(void 0),{setSelfUid:vt,setGroupMembers:wt,setIsOwner:Ct}=useGroup(),{startMic:kt,stopMic:It,autoStartMicOnConvEnd:Pt}=useVAD(),St=reactExports.useRef(Pt),{interrupt:Rt}=useInterrupt(),{setBrowserViewData:At}=useBrowser();reactExports.useEffect(()=>{St.current=Pt},[Pt]),reactExports.useEffect(()=>{mt&&ft&&(j(mt),gt(void 0))},[mt,j,ft]);const{setCurrentHistoryUid:Mt,setMessages:jt,setHistoryList:Yt}=useChatHistory(),Kt=reactExports.useCallback(Gt=>{switch(Gt){case"start-mic":console.log("Starting microphone..."),kt();break;case"stop-mic":console.log("Stopping microphone..."),It();break;case"conversation-chain-start":it("thinking-speaking"),audioTaskQueue.clearQueue(),ot();break;case"conversation-chain-end":audioTaskQueue.addTask(()=>new Promise(Qt=>{it(tr=>tr==="thinking-speaking"?(St.current&&kt(),"idle"):tr),Qt()}));break;default:console.warn("Unknown control command:",Gt)}},[it,ot,at,kt,It]),sr=reactExports.useCallback(Gt=>{var Qt,tr;switch(console.log("Received message from server:",Gt),Gt.type){case"control":Gt.text&&Kt(Gt.text);break;case"set-model-and-conf":if(it("loading"),Gt.conf_name&&ht(Gt.conf_name),Gt.conf_uid&&(bt(Gt.conf_uid),console.log("confUid",Gt.conf_uid)),Gt.client_uid&&vt(Gt.client_uid),gt(Gt.model_info),Gt.model_info&&!Gt.model_info.url.startsWith("http")){const Vt=_e+Gt.model_info.url;Gt.model_info.url=Vt}it("idle");break;case"full-text":Gt.text&&rt(Gt.text);break;case"config-files":Gt.configs&&yt(Gt.configs);break;case"config-switched":it("idle"),rt(o("notification.characterLoaded")),toaster.create({title:o("notification.characterSwitched"),type:"success",duration:2e3}),wsService.sendMessage({type:"fetch-history-list"}),wsService.sendMessage({type:"create-new-history"});break;case"background-files":Gt.files&&(dt==null||dt.setBackgroundFiles(Gt.files));break;case"audio":st==="interrupted"||st==="listening"?console.log("Audio playback intercepted. Sentence:",(Qt=Gt.display_text)==null?void 0:Qt.text):(console.log("actions",Gt.actions),ct({audioBase64:Gt.audio||"",volumes:Gt.volumes||[],sliceLength:Gt.slice_length||0,displayText:Gt.display_text||null,expressions:((tr=Gt.actions)==null?void 0:tr.expressions)||null,forwarded:Gt.forwarded||!1}));break;case"history-data":Gt.messages&&jt(Gt.messages),toaster.create({title:o("notification.historyLoaded"),type:"success",duration:2e3});break;case"new-history-created":if(it("idle"),rt(o("notification.newConversation")),Gt.history_uid){Mt(Gt.history_uid),jt([]);const Vt={uid:Gt.history_uid,latest_message:null,timestamp:new Date().toISOString()};Yt(Xt=>[Vt,...Xt]),toaster.create({title:o("notification.newChatHistory"),type:"success",duration:2e3})}break;case"history-deleted":toaster.create({title:Gt.success?o("notification.historyDeleteSuccess"):o("notification.historyDeleteFail"),type:Gt.success?"success":"error",duration:2e3});break;case"history-list":Gt.histories&&(Yt(Gt.histories),Gt.histories.length>0&&Mt(Gt.histories[0].uid));break;case"user-input-transcription":console.log("user-input-transcription: ",Gt.text),Gt.text&&lt(Gt.text);break;case"error":toaster.create({title:Gt.message,type:"error",duration:2e3});break;case"group-update":console.log("Received group-update:",Gt.members),Gt.members&&wt(Gt.members),Gt.is_owner!==void 0&&Ct(Gt.is_owner);break;case"group-operation-result":toaster.create({title:Gt.message,type:Gt.success?"success":"error",duration:2e3});break;case"backend-synth-complete":et(!0);break;case"conversation-chain-end":audioTaskQueue.hasTask()||it(Vt=>Vt==="thinking-speaking"?"idle":Vt);break;case"force-new-message":at(!0);break;case"interrupt-signal":Rt(!1);break;case"tool_call_status":Gt.tool_id&&Gt.tool_name&&Gt.status?(Gt.browser_view&&(console.log("Browser view data received:",Gt.browser_view),At(Gt.browser_view)),ut({id:Gt.tool_id,type:"tool_call_status",role:"ai",tool_id:Gt.tool_id,tool_name:Gt.tool_name,name:Gt.name,status:Gt.status,content:Gt.content||"",artifacts:Array.isArray(Gt.artifacts)?Gt.artifacts:[],timestamp:Gt.timestamp||new Date().toISOString()})):console.warn("Received incomplete tool_call_status message:",Gt);break;default:console.warn("Unknown message type:",Gt.type)}},[st,ct,lt,_e,dt,it,ht,bt,yt,Mt,Yt,jt,j,rt,kt,It,vt,wt,Ct,nt,et,ot,Kt,ut,Rt,At,o]);reactExports.useEffect(()=>{wsService.connect(_)},[_]),reactExports.useEffect(()=>{const Gt=wsService.onStateChange(a),Qt=wsService.onMessage(sr);return()=>{Gt.unsubscribe(),Qt.unsubscribe()}},[_,sr]);const ar=reactExports.useMemo(()=>({sendMessage:wsService.sendMessage.bind(wsService),wsState:s,reconnect:()=>wsService.connect(_),wsUrl:_,setWsUrl:$,baseUrl:_e,setBaseUrl:tt}),[s,_,_e]);return jsxRuntimeExports.jsx(WebSocketContext.Provider,{value:ar,children:i})}function TitleBar(){var st;const[i,o]=reactExports.useState(!1),[s,a]=reactExports.useState(!1),_=((st=window.electron)==null?void 0:st.process.platform)==="darwin";reactExports.useEffect(()=>{var et,j;const it=(rt,ot)=>{o(ot)},nt=(rt,ot)=>{a(ot)};return(et=window.electron)==null||et.ipcRenderer.on("window-maximized-change",it),(j=window.electron)==null||j.ipcRenderer.on("window-fullscreen-change",nt),()=>{var rt,ot;(rt=window.electron)==null||rt.ipcRenderer.removeAllListeners("window-maximized-change"),(ot=window.electron)==null||ot.ipcRenderer.removeAllListeners("window-fullscreen-change")}},[]);const $=()=>{var it,nt;s?(it=window.electron)==null||it.ipcRenderer.send("window-unfullscreen"):(nt=window.electron)==null||nt.ipcRenderer.send("window-maximize")},_e=()=>s?"Exit Full Screen":i?"Restore":"Maximize",tt=()=>s?jsxRuntimeExports.jsx(FiChevronsDown,{}):i?jsxRuntimeExports.jsx(FiMinimize2,{}):jsxRuntimeExports.jsx(FiMaximize2,{});return _?jsxRuntimeExports.jsx(Box,{...layoutStyles.macTitleBar,children:jsxRuntimeExports.jsx(Box,{...layoutStyles.titleBarTitle,children:"Open LLM VTuber"})}):jsxRuntimeExports.jsxs(Box,{...layoutStyles.windowsTitleBar,children:[jsxRuntimeExports.jsx(Box,{...layoutStyles.titleBarTitle,children:"Open LLM VTuber"}),jsxRuntimeExports.jsxs(Box,{...layoutStyles.titleBarButtons,children:[jsxRuntimeExports.jsx(IconButton,{...layoutStyles.titleBarButton,onClick:()=>{var it;return(it=window.electron)==null?void 0:it.ipcRenderer.send("window-minimize")},"aria-label":"Minimize",children:jsxRuntimeExports.jsx(FiMinus,{})}),jsxRuntimeExports.jsx(IconButton,{...layoutStyles.titleBarButton,onClick:$,"aria-label":_e(),children:tt()}),jsxRuntimeExports.jsx(IconButton,{...layoutStyles.closeButton,onClick:()=>{var it;return(it=window.electron)==null?void 0:it.ipcRenderer.send("window-close")},"aria-label":"Close",children:jsxRuntimeExports.jsx(FiX,{})})]})]})}function useInputSubtitle(){const{inputText:i,setInputText:o,handleKeyPress:s,handleCompositionStart:a,handleCompositionEnd:_,handleSend:$}=useTextInput(),{messages:_e}=useChatHistory(),{startMic:tt,autoStartMicOn:st}=useVAD(),{handleMicToggle:it,micOn:nt}=useMicToggle(),{aiState:et,setAiState:j}=useAiState(),{interrupt:rt}=useInterrupt(),ot=_e.filter(dt=>dt.role==="ai").slice(-1).map(dt=>dt.content)[0],at=_e.some(dt=>dt.role==="ai");return{inputValue:i,handleInputChange:dt=>{o({target:{value:dt.target.value}}),j(AiStateEnum.WAITING)},handleKeyPress:dt=>{s(dt)},handleCompositionStart:a,handleCompositionEnd:_,handleInterrupt:()=>{rt(),st&&tt()},handleMicToggle:it,lastAIMessage:ot,hasAIMessages:at,aiState:et,micOn:nt,handleSend:$}}function useDraggable({componentId:i}){const{mode:o}=useMode(),s=o==="pet",[a,_]=reactExports.useState(!1),$=reactExports.useRef({x:0,y:0}),_e=reactExports.useRef({x:0,y:0}),tt=reactExports.useRef(null);return{elementRef:tt,isDragging:a,handleMouseDown:et=>{_(!0),_e.current={x:et.clientX-$.current.x,y:et.clientY-$.current.y};const j=ot=>{if(!tt.current)return;const at={x:ot.clientX-_e.current.x,y:ot.clientY-_e.current.y};$.current=at,tt.current.style.transform=`translateX(-50%) translate(${$.current.x}px, ${$.current.y}px)`},rt=()=>{_(!1),document.removeEventListener("mousemove",j,!0),document.removeEventListener("mouseup",rt,!0)};document.addEventListener("mousemove",j,!0),document.addEventListener("mouseup",rt,!0)},handleMouseEnter:()=>{var et;s&&((et=window.api)==null||et.updateComponentHover(i,!0))},handleMouseLeave:()=>{var et;s&&!a&&((et=window.api)==null||et.updateComponentHover(i,!1))}}}const inputSubtitleStyles={container:{display:"flex",alignItems:"flex-end",justifyContent:"center",maxW:"fit-content",position:"absolute",bottom:"120px",left:"50%",transform:"translateX(-50%)",zIndex:1e3,userSelect:"none",willChange:"transform",padding:0},box:{w:"400px",rounded:"xl",overflow:"hidden",boxShadow:"lg",bg:"blackAlpha.700",backdropFilter:"blur(8px)",css:{WebkitUserSelect:"none"}},messageStack:{p:"3",gap:1,alignItems:"stretch",justify:"flex-end"},messageText:{color:"white",fontSize:"sm",lineHeight:"1.5",transition:"all 0.3s"},statusBox:{bg:"blackAlpha.600",p:"3",borderTop:"1px",borderColor:"whiteAlpha.200"},statusText:{fontSize:"xs",color:"whiteAlpha.800",transition:"all 0.3s"},iconButton:{size:"xs",variant:"ghost",color:"whiteAlpha.800",_hover:{bg:"whiteAlpha.200"}},inputBox:{bg:"blackAlpha.600",borderTop:"1px",borderColor:"whiteAlpha.200"},input:{size:"sm",bg:"blackAlpha.500",color:"white",_placeholder:{color:"whiteAlpha.500"},borderColor:"whiteAlpha.300",_focus:{borderColor:"whiteAlpha.500",outline:"none"},flex:"1"},sendButton:{p:"1.5",bg:"blackAlpha.500",rounded:"lg",_hover:{bg:"blackAlpha.600"},transition:"colors",color:"whiteAlpha.800",size:"sm"},draggableContainer:i=>({cursor:i?"grabbing":"grab",transition:i?"none":"transform 0.1s ease",_active:{cursor:"grabbing"}}),closeButton:{position:"absolute",top:0,right:0,size:"2xs",minW:"6",height:"6",padding:0,variant:"ghost",color:"whiteAlpha.400",bg:"transparent",_hover:{bg:"blackAlpha.300",color:"whiteAlpha.800"},zIndex:10}};function InputSubtitle(){const{inputValue:i,handleInputChange:o,handleKeyPress:s,handleCompositionStart:a,handleCompositionEnd:_,handleInterrupt:$,handleMicToggle:_e,handleSend:tt,lastAIMessage:st,hasAIMessages:it,aiState:nt,micOn:et}=useInputSubtitle(),{mode:j}=useMode(),rt=j==="pet",{elementRef:ot,isDragging:at,handleMouseDown:lt,handleMouseEnter:ut,handleMouseLeave:ct}=useDraggable({componentId:"input-subtitle"}),[dt,ft]=reactExports.useState(!0),ht=reactExports.useCallback(()=>{var yt;rt&&((yt=window.api)==null||yt.updateComponentHover("input-subtitle",!1)),ft(!1)},[rt]),bt=()=>{ft(!0)};return reactExports.useEffect(()=>{var yt;if(rt){const mt=(yt=window.api)==null?void 0:yt.onToggleInputSubtitle(()=>{dt?ht():bt()});return()=>mt==null?void 0:mt()}return()=>{}},[ht,rt,dt]),reactExports.useEffect(()=>(window.inputSubtitle={open:bt,close:ht},()=>{delete window.inputSubtitle}),[rt,ht]),dt?jsxRuntimeExports.jsx(Box,{ref:ot,...inputSubtitleStyles.container,...inputSubtitleStyles.draggableContainer(at),onMouseDown:lt,onMouseEnter:ut,onMouseLeave:ct,children:jsxRuntimeExports.jsxs(Box,{...inputSubtitleStyles.box,children:[jsxRuntimeExports.jsx(IconButton,{"aria-label":"Close subtitle",onClick:ht,...inputSubtitleStyles.closeButton,children:jsxRuntimeExports.jsx(LuX,{size:12})}),it&&jsxRuntimeExports.jsx(VStack,{minH:st?"32px":"0px",...inputSubtitleStyles.messageStack,children:st&&jsxRuntimeExports.jsx(Text,{...inputSubtitleStyles.messageText,children:st})}),jsxRuntimeExports.jsx(Box,{...inputSubtitleStyles.statusBox,children:jsxRuntimeExports.jsxs(Flex,{align:"center",justify:"space-between",color:"whiteAlpha.700",children:[jsxRuntimeExports.jsxs(Flex,{align:"center",gap:"2",children:[jsxRuntimeExports.jsx(LuBell,{size:16}),jsxRuntimeExports.jsx(Text,{...inputSubtitleStyles.statusText,children:nt})]}),jsxRuntimeExports.jsxs(Flex,{gap:"2",children:[jsxRuntimeExports.jsx(IconButton,{"aria-label":"Toggle microphone",onClick:_e,...inputSubtitleStyles.iconButton,children:et?jsxRuntimeExports.jsx(LuMic,{size:16}):jsxRuntimeExports.jsx(LuMicOff,{size:16})}),jsxRuntimeExports.jsx(IconButton,{"aria-label":"Interrupt",onClick:$,...inputSubtitleStyles.iconButton,children:jsxRuntimeExports.jsx(LuHand,{size:16})})]})]})}),jsxRuntimeExports.jsx(Box,{...inputSubtitleStyles.inputBox,children:jsxRuntimeExports.jsxs(Stack,{direction:"row",gap:"2",p:"2",children:[jsxRuntimeExports.jsx(Input$1,{value:i,onChange:o,onKeyDown:s,onCompositionStart:a,onCompositionEnd:_,placeholder:"Type your message...",...inputSubtitleStyles.input}),jsxRuntimeExports.jsx(Button$2,{onClick:tt,...inputSubtitleStyles.sendButton,children:jsxRuntimeExports.jsx(LuSend,{size:16})})]})})]})}):null}const canvasStyles={background:{container:{position:"relative",width:"100%",height:"100%",overflow:"hidden",pointerEvents:"auto"},image:{position:"absolute",top:"0",left:"0",width:"100%",height:"100%",objectFit:"cover",zIndex:1},video:{position:"absolute",top:"0",left:"0",width:"100%",height:"100%",objectFit:"cover",zIndex:1,transform:"scaleX(-1)"}},subtitle:{container:{backgroundColor:"rgba(11, 15, 25, 0.84)",backdropFilter:"blur(10px)",border:"1px solid rgba(255, 255, 255, 0.14)",boxShadow:"0 12px 32px rgba(0, 0, 0, 0.55)",padding:"14px 28px",borderRadius:"16px",minWidth:"60%",maxWidth:"95%"},text:{color:"#f8fafc",fontSize:"1.35rem",fontWeight:"600",textAlign:"center",lineHeight:"1.45",whiteSpace:"pre-wrap"}},wsStatus:{container:{position:"relative",zIndex:2,padding:"8px 16px",borderRadius:"20px",fontSize:"14px",fontWeight:"medium",color:"white",transition:"all 0.2s",cursor:"pointer",userSelect:"none",_hover:{opacity:.8}}}},Background=reactExports.memo(({children:i})=>{const o=reactExports.useRef(null),{backgroundStream:s,isBackgroundStreaming:a,startBackgroundCamera:_,stopBackgroundCamera:$}=useCamera(),{useCameraBackground:_e,backgroundUrl:tt}=useBgUrl();return reactExports.useEffect(()=>{_e?_():$()},[_e,_,$]),reactExports.useEffect(()=>{o.current&&s&&(o.current.srcObject=s)},[s]),jsxRuntimeExports.jsxs(Box,{...canvasStyles.background.container,children:[_e?jsxRuntimeExports.jsx("video",{ref:o,autoPlay:!0,playsInline:!0,muted:!0,style:{...canvasStyles.background.video,display:a?"block":"none",transform:"scaleX(-1)"}}):jsxRuntimeExports.jsx(Image$1,{...canvasStyles.background.image,src:tt,alt:"background"}),i]})});Background.displayName="Background";const useWSStatus=()=>{const{wsState:i,reconnect:o}=useWebSocket(),s=reactExports.useCallback(()=>{i!=="OPEN"&&i!=="CONNECTING"&&o()},[i,o]);return reactExports.useMemo(()=>{switch(i){case"OPEN":return{color:"green.500",textKey:"wsStatus.connected",isDisconnected:!1,handleClick:s};case"CONNECTING":return{color:"yellow.500",textKey:"wsStatus.connecting",isDisconnected:!1,handleClick:s};default:return{color:"red.500",textKey:"wsStatus.clickToReconnect",isDisconnected:!0,handleClick:s}}},[i,s])},StatusContent=({textKey:i})=>{const{t:o}=useTranslation();return o(i)},MemoizedStatusContent=reactExports.memo(StatusContent),WebSocketStatus=reactExports.memo(()=>{
+  const{color:i,textKey:o,handleClick:s,isDisconnected:a}=useWSStatus();
+  const{confName:cName}=useConfig();
+  const{modelInfo:mInfo}=useLive2DConfig();
+  const[activeLlm,setActiveLlm]=reactExports.useState("Default YAML");
+  const[activeTts,setActiveTts]=reactExports.useState("Default YAML");
+  const fetchHudBadges=reactExports.useCallback(async()=>{
+    try{
+      const base=((localStorage.getItem("baseUrl")||"").trim().replace(/^['"]+|['"]+$/g,"").trim()||"http://127.0.0.1:12393").replace(/\/+$/,"");
+      const key=typeof window.__olvGetApiKey==="function"?window.__olvGetApiKey():(localStorage.getItem("vtuberApiKey")||"").trim();
+      if(!key)return;
+      const headers={Authorization:`Bearer ${key}`};
+      const[rLlm,rTts]=await Promise.all([
+        fetch(`${base}/llm/providers`,{headers,cache:"no-store"}).catch(()=>null),
+        fetch(`${base}/tts/providers`,{headers,cache:"no-store"}).catch(()=>null)
+      ]);
+      if(rLlm&&rLlm.ok){
+        const d=await rLlm.json();
+        const act=(d.providers||[]).find(p=>p.provider_id===d.active_provider_id);
+        setActiveLlm(act?`${act.name}${act.model?` (${act.model})`:""}`:"YAML Config");
+      }
+      if(rTts&&rTts.ok){
+        const d=await rTts.json();
+        const act=(d.providers||[]).find(p=>p.provider_id===d.active_provider_id);
+        setActiveTts(act?`${act.name}${act.voice?` (${act.voice})`:""}`:"YAML Config");
+      }
+    }catch(_err){}
+  },[]);
+  reactExports.useEffect(()=>{
+    fetchHudBadges();
+    const h=()=>fetchHudBadges();
+    window.addEventListener("olv-provider-updated",h);
+    return()=>window.removeEventListener("olv-provider-updated",h);
+  },[fetchHudBadges]);
+  const openTab=tab=>{
+    window.__olvInitialSettingsTab=tab;
+    window.dispatchEvent(new CustomEvent("olv-open-settings-tab",{detail:{tab,openSettings:true}}));
+  };
+  const avatarLabel=cName||(mInfo&&mInfo.name)||"Default";
+  const e=React.createElement;
+  return e("div",{
+    "data-hud-bar":"top-status",
+    style:{
+      display:"flex",
+      alignItems:"center",
+      flexWrap:"wrap",
+      gap:8,
+      padding:"6px 10px",
+      borderRadius:999,
+      background:"rgba(13, 17, 27, 0.84)",
+      backdropFilter:"blur(10px)",
+      border:"1px solid rgba(255, 255, 255, 0.14)",
+      boxShadow:"0 10px 30px rgba(0, 0, 0, 0.45)",
+      zIndex:15,
+    }
+  },
+    jsxRuntimeExports.jsx(Box,{
+      ...canvasStyles.wsStatus.container,
+      backgroundColor:i,
+      onClick:s,
+      cursor:a?"pointer":"default",
+      style:{padding:"4px 12px",borderRadius:999,fontSize:12,fontWeight:700},
+      _hover:{opacity:a?.85:1},
+      children:jsxRuntimeExports.jsx(MemoizedStatusContent,{textKey:o})
+    }),
+    e("button",{
+      type:"button",
+      onClick:()=>openTab("live2d"),
+      title:"Click to open Characters & Avatars settings",
+      style:{
+        padding:"4px 11px",
+        borderRadius:999,
+        fontSize:11.5,
+        fontWeight:600,
+        color:"#f1f5f9",
+        background:"rgba(255,255,255,0.08)",
+        border:"1px solid rgba(255,255,255,0.16)",
+        cursor:"pointer",
+      }
+    },`Avatar: ${avatarLabel}`),
+    e("button",{
+      type:"button",
+      onClick:()=>openTab("llm"),
+      title:"Click to open LLM Providers settings",
+      style:{
+        padding:"4px 11px",
+        borderRadius:999,
+        fontSize:11.5,
+        fontWeight:600,
+        color:"#bfdbfe",
+        background:"rgba(59,130,246,0.16)",
+        border:"1px solid rgba(96,165,250,0.38)",
+        cursor:"pointer",
+        maxWidth:220,
+        overflow:"hidden",
+        textOverflow:"ellipsis",
+        whiteSpace:"nowrap",
+      }
+    },`LLM: ${activeLlm}`),
+    e("button",{
+      type:"button",
+      onClick:()=>openTab("tts"),
+      title:"Click to open TTS Providers settings",
+      style:{
+        padding:"4px 11px",
+        borderRadius:999,
+        fontSize:11.5,
+        fontWeight:600,
+        color:"#e9d5ff",
+        background:"rgba(168,85,247,0.18)",
+        border:"1px solid rgba(192,132,252,0.4)",
+        cursor:"pointer",
+        maxWidth:220,
+        overflow:"hidden",
+        textOverflow:"ellipsis",
+        whiteSpace:"nowrap",
+      }
+    },`TTS: ${activeTts}`)
+  );
+});WebSocketStatus.displayName="WebSocketStatus";const useSubtitleDisplay=()=>{const i=useSubtitle();return{subtitleText:reactExports.useMemo(()=>i?i.subtitleText:null,[i==null?void 0:i.subtitleText]),isLoaded:!!i}},SubtitleText=reactExports.memo(({text:i})=>jsxRuntimeExports.jsx(Text,{...canvasStyles.subtitle.text,children:i}));SubtitleText.displayName="SubtitleText";const Subtitle=reactExports.memo(()=>{const{subtitleText:i,isLoaded:o}=useSubtitleDisplay(),{showSubtitle:s}=useSubtitle();return!o||!i||!s?null:jsxRuntimeExports.jsx(Box,{...canvasStyles.subtitle.container,children:jsxRuntimeExports.jsx(SubtitleText,{text:i})})});Subtitle.displayName="Subtitle";function WorkspacePanel(){
   const {baseUrl}=useWebSocket();
   const [open,setOpen]=reactExports.useState(false);
   const [data,setData]=reactExports.useState({workspaces:[],total_size:0,max_total_size:0});
