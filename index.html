@@ -2,9 +2,115 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Open-LLM-Vtuber</title>
     <script>
       window.vtuberVolume = parseFloat(localStorage.getItem('vtuberVolume') || '1.0');
+      (function () {
+        function isLoopbackHost(host) {
+          var h = String(host || '').toLowerCase();
+          return h === '127.0.0.1' || h === 'localhost' || h === '[::1]';
+        }
+        function stripJsonString(val) {
+          if (!val) return '';
+          var s = String(val).trim();
+          try {
+            var p = JSON.parse(s);
+            if (typeof p === 'string') s = p.trim();
+          } catch (_) {}
+          return s.replace(/^['"]+|['"]+$/g, '').trim();
+        }
+        function extractCurrentApiKey() {
+          try {
+            var qKey = new URLSearchParams(window.location.search || '').get('api_key');
+            if (qKey && qKey.trim()) {
+              var cleanQ = qKey.trim();
+              localStorage.setItem('vtuberApiKey', cleanQ);
+              try {
+                var cleanUrl = new URL(window.location.href);
+                cleanUrl.searchParams.delete('api_key');
+                window.history.replaceState({}, document.title, cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+              } catch (_) {}
+              return cleanQ;
+            }
+          } catch (_) {}
+          try {
+            var storedKey = stripJsonString(localStorage.getItem('vtuberApiKey'));
+            if (storedKey) return storedKey;
+          } catch (_) {}
+          try {
+            var rawWs = stripJsonString(localStorage.getItem('wsUrl'));
+            if (rawWs) {
+              var u = new URL(rawWs.replace(/^ws(s?):\/\//i, 'http$1://'), window.location.origin);
+              var wsKey = (u.searchParams.get('api_key') || '').trim();
+              if (wsKey) {
+                localStorage.setItem('vtuberApiKey', wsKey);
+                return wsKey;
+              }
+            }
+          } catch (_) {}
+          return '';
+        }
+        window.__olvResolveBaseUrl = function () {
+          try {
+            var loc = window.location;
+            if (loc && (loc.protocol === 'http:' || loc.protocol === 'https:')) {
+              return loc.origin;
+            }
+          } catch (_) {}
+          return 'http://127.0.0.1:12393';
+        };
+        window.__olvResolveWsUrl = function () {
+          var key = extractCurrentApiKey();
+          var qs = key ? ('?api_key=' + encodeURIComponent(key)) : '';
+          try {
+            var loc = window.location;
+            if (loc && (loc.protocol === 'http:' || loc.protocol === 'https:')) {
+              var wsProto = loc.protocol === 'https:' ? 'wss://' : 'ws://';
+              return wsProto + loc.host + '/client-ws' + qs;
+            }
+          } catch (_) {}
+          return 'ws://127.0.0.1:12393/client-ws' + qs;
+        };
+        try {
+          var activeKey = extractCurrentApiKey();
+          var loc = window.location;
+          if (loc && (loc.protocol === 'http:' || loc.protocol === 'https:')) {
+            var pageIsLoopback = isLoopbackHost(loc.hostname);
+            var pageIsHttps = loc.protocol === 'https:';
+            var rawBase = localStorage.getItem('baseUrl');
+            if (rawBase) {
+              var parsedBase = stripJsonString(rawBase);
+              if (parsedBase) {
+                var uBase = new URL(parsedBase, loc.origin);
+                if ((!pageIsLoopback && isLoopbackHost(uBase.hostname)) || (pageIsHttps && uBase.protocol === 'http:')) {
+                  localStorage.setItem('baseUrl', JSON.stringify(window.__olvResolveBaseUrl()));
+                }
+              }
+            }
+            var rawWs = localStorage.getItem('wsUrl');
+            if (rawWs) {
+              var parsedWs = stripJsonString(rawWs);
+              if (parsedWs) {
+                var uWs = new URL(parsedWs.replace(/^ws(s?):\/\//i, 'http$1://'), loc.origin);
+                var existingWsKey = (uWs.searchParams.get('api_key') || '').trim();
+                var keyToUse = existingWsKey || activeKey;
+                var needsHostOrProtoMigration = (!pageIsLoopback && isLoopbackHost(uWs.hostname)) || (pageIsHttps && /^ws:\/\//i.test(parsedWs));
+                var needsKeyAppend = Boolean(keyToUse && !existingWsKey);
+                if (needsHostOrProtoMigration || needsKeyAppend) {
+                  var targetProto = pageIsHttps ? 'wss://' : (uWs.protocol === 'https:' ? 'wss://' : 'ws://');
+                  var targetHost = needsHostOrProtoMigration ? loc.host : uWs.host;
+                  var targetPath = uWs.pathname || '/client-ws';
+                  if (keyToUse) uWs.searchParams.set('api_key', keyToUse);
+                  var qsStr = uWs.searchParams.toString();
+                  var rebuilt = targetProto + targetHost + targetPath + (qsStr ? ('?' + qsStr) : '');
+                  localStorage.setItem('wsUrl', JSON.stringify(rebuilt));
+                }
+              }
+            }
+          }
+        } catch (_) {}
+      })();
     </script>
     <script src="./libs/avatar-runtime.js"></script>
     <script type="module" crossorigin src="./assets/main-llmprovider-stage4.2.js"></script>
@@ -12,6 +118,11 @@
     <style id="olv-studio-scrollbar-theme">
       :root, html, body {
         color-scheme: dark;
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      canvas {
+        touch-action: none;
       }
       * {
         scrollbar-width: thin;
@@ -40,6 +151,64 @@
       }
       *::-webkit-scrollbar-corner {
         background: transparent;
+      }
+      @media (max-width: 767px) {
+        [data-hud-bar="top-status"] {
+          max-width: calc(100vw - 96px) !important;
+          flex-wrap: wrap !important;
+          padding: 6px 10px !important;
+          gap: 6px !important;
+          border-radius: 16px !important;
+        }
+        [data-hud-bar="top-status"] > * {
+          flex-shrink: 0;
+        }
+        [data-studio-modal="centered"] {
+          padding: 12px 10px !important;
+        }
+        [data-studio-modal="centered"] > div {
+          width: min(94vw, 520px) !important;
+          height: min(88dvh, 780px) !important;
+          max-height: 88dvh !important;
+          border-radius: 16px !important;
+        }
+        [data-studio-header="bar"] {
+          padding: 13px 16px !important;
+          gap: 10px !important;
+        }
+        [data-studio-badge="control-center"] {
+          display: none !important;
+        }
+        [data-studio-body="split"] {
+          flex-direction: column !important;
+        }
+        [data-studio-nav="rail"] {
+          width: 100% !important;
+          flex-direction: row !important;
+          flex-wrap: wrap !important;
+          overflow-x: hidden !important;
+          overflow-y: visible !important;
+          border-right: none !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
+          padding: 10px 12px !important;
+          gap: 6px !important;
+        }
+        [data-studio-nav="rail"] > button {
+          width: auto !important;
+          flex: 1 1 calc(50% - 6px) !important;
+          min-width: 128px !important;
+          white-space: nowrap !important;
+          padding: 8px 11px 8px 13px !important;
+        }
+        [data-studio-nav="rail"] > button > div:last-child {
+          display: none !important;
+        }
+        [data-studio-content="pane"] {
+          padding: 14px 16px !important;
+        }
+        [data-tts-studio="managed-tts-providers"] > div[style*="minmax(225px"] {
+          grid-template-columns: 1fr !important;
+        }
       }
     </style>
   </head>

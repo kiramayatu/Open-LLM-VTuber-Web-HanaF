@@ -399,15 +399,25 @@
     }
 
     _bindInteraction(canvas) {
+      canvas.style.touchAction = "none";
+      const activePointers = new Map();
+      let lastPinchDist = 0;
       let dragging = false;
       let lastX = 0;
       let lastY = 0;
 
       canvas.addEventListener("pointerdown", (e) => {
-        if (e.button !== 0) return;
-        dragging = true;
-        lastX = e.clientX;
-        lastY = e.clientY;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (activePointers.size === 2) {
+          const pts = Array.from(activePointers.values());
+          lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          dragging = false;
+        } else if (activePointers.size === 1) {
+          dragging = true;
+          lastX = e.clientX;
+          lastY = e.clientY;
+        }
         canvas.style.cursor = "grabbing";
         try {
           canvas.setPointerCapture(e.pointerId);
@@ -415,6 +425,19 @@
       });
 
       canvas.addEventListener("pointermove", (e) => {
+        if (activePointers.has(e.pointerId)) {
+          activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        }
+        if (activePointers.size === 2) {
+          const pts = Array.from(activePointers.values());
+          const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          if (lastPinchDist > 5 && dist > 5) {
+            const ratio = dist / lastPinchDist;
+            this.scale = Math.max(0.15, Math.min(6.0, this.scale * ratio));
+          }
+          lastPinchDist = dist;
+          return;
+        }
         if (!dragging) return;
         const w = Math.max(1, canvas.clientWidth || window.innerWidth);
         const h = Math.max(1, canvas.clientHeight || window.innerHeight);
@@ -425,9 +448,17 @@
       });
 
       const stopDrag = (e) => {
-        if (!dragging) return;
-        dragging = false;
-        canvas.style.cursor = "grab";
+        activePointers.delete(e.pointerId);
+        lastPinchDist = 0;
+        if (activePointers.size === 1) {
+          const remaining = Array.from(activePointers.values())[0];
+          lastX = remaining.x;
+          lastY = remaining.y;
+          dragging = true;
+        } else {
+          dragging = false;
+          canvas.style.cursor = "grab";
+        }
         try {
           canvas.releasePointerCapture(e.pointerId);
         } catch (_) {}
@@ -635,15 +666,25 @@
     }
 
     _bindInteraction(canvas) {
+      canvas.style.touchAction = "none";
+      const activePointers = new Map();
+      let lastPinchDist = 0;
       let dragging = false;
       let lastX = 0;
       let lastY = 0;
 
       canvas.addEventListener("pointerdown", (e) => {
-        if (e.button !== 0) return;
-        dragging = true;
-        lastX = e.clientX;
-        lastY = e.clientY;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (activePointers.size === 2) {
+          const pts = Array.from(activePointers.values());
+          lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          dragging = false;
+        } else if (activePointers.size === 1) {
+          dragging = true;
+          lastX = e.clientX;
+          lastY = e.clientY;
+        }
         canvas.style.cursor = "grabbing";
         try {
           canvas.setPointerCapture(e.pointerId);
@@ -651,6 +692,19 @@
       });
 
       canvas.addEventListener("pointermove", (e) => {
+        if (activePointers.has(e.pointerId)) {
+          activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        }
+        if (activePointers.size === 2) {
+          const pts = Array.from(activePointers.values());
+          const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          if (lastPinchDist > 5 && dist > 5) {
+            const ratio = dist / lastPinchDist;
+            this.scale = Math.max(0.15, Math.min(6.0, this.scale * ratio));
+          }
+          lastPinchDist = dist;
+          return;
+        }
         if (!dragging) return;
         const w = Math.max(1, canvas.clientWidth || window.innerWidth);
         const h = Math.max(1, canvas.clientHeight || window.innerHeight);
@@ -661,9 +715,17 @@
       });
 
       const stopDrag = (e) => {
-        if (!dragging) return;
-        dragging = false;
-        canvas.style.cursor = "grab";
+        activePointers.delete(e.pointerId);
+        lastPinchDist = 0;
+        if (activePointers.size === 1) {
+          const remaining = Array.from(activePointers.values())[0];
+          lastX = remaining.x;
+          lastY = remaining.y;
+          dragging = true;
+        } else {
+          dragging = false;
+          canvas.style.cursor = "grab";
+        }
         try {
           canvas.releasePointerCapture(e.pointerId);
         } catch (_) {}
@@ -830,6 +892,11 @@
     }
 
     _bindInteraction(canvas) {
+      canvas.style.touchAction = "none";
+      const activePointers = new Map();
+      let lastPinchDist = 0;
+      let lastPinchMidX = 0;
+      let lastPinchMidY = 0;
       let dragging = false;
       let rotateMode = false;
       let lastX = 0;
@@ -838,11 +905,20 @@
       canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
       canvas.addEventListener("pointerdown", (e) => {
-        if (e.button !== 0 && e.button !== 2) return;
-        dragging = true;
-        rotateMode = e.button === 2 || e.shiftKey;
-        lastX = e.clientX;
-        lastY = e.clientY;
+        if (e.pointerType === "mouse" && e.button !== 0 && e.button !== 2) return;
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (activePointers.size === 2) {
+          const pts = Array.from(activePointers.values());
+          lastPinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          lastPinchMidX = (pts[0].x + pts[1].x) * 0.5;
+          lastPinchMidY = (pts[0].y + pts[1].y) * 0.5;
+          dragging = false;
+        } else if (activePointers.size === 1) {
+          dragging = true;
+          rotateMode = e.button === 2 || e.shiftKey;
+          lastX = e.clientX;
+          lastY = e.clientY;
+        }
         canvas.style.cursor = "grabbing";
         try {
           canvas.setPointerCapture(e.pointerId);
@@ -850,6 +926,28 @@
       });
 
       canvas.addEventListener("pointermove", (e) => {
+        if (activePointers.has(e.pointerId)) {
+          activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        }
+        if (activePointers.size === 2) {
+          const pts = Array.from(activePointers.values());
+          const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+          const midX = (pts[0].x + pts[1].x) * 0.5;
+          const midY = (pts[0].y + pts[1].y) * 0.5;
+          if (lastPinchDist > 5 && dist > 5) {
+            const ratio = dist / lastPinchDist;
+            this.scale = Math.max(0.1, Math.min(10.0, this.scale * ratio));
+          }
+          // Two-finger twist / drag also orbits 3D yaw & pitch smoothly on mobile
+          const mdx = midX - lastPinchMidX;
+          const mdy = midY - lastPinchMidY;
+          this.userYaw += mdx * 0.008;
+          this.userPitch = Math.max(-0.8, Math.min(0.8, this.userPitch + mdy * 0.006));
+          lastPinchDist = dist;
+          lastPinchMidX = midX;
+          lastPinchMidY = midY;
+          return;
+        }
         if (!dragging) return;
         const dx = e.clientX - lastX;
         const dy = e.clientY - lastY;
@@ -869,9 +967,17 @@
       });
 
       const stopDrag = (e) => {
-        if (!dragging) return;
-        dragging = false;
-        canvas.style.cursor = "grab";
+        activePointers.delete(e.pointerId);
+        lastPinchDist = 0;
+        if (activePointers.size === 1) {
+          const remaining = Array.from(activePointers.values())[0];
+          lastX = remaining.x;
+          lastY = remaining.y;
+          dragging = true;
+        } else {
+          dragging = false;
+          canvas.style.cursor = "grab";
+        }
         try {
           canvas.releasePointerCapture(e.pointerId);
         } catch (_) {}
@@ -1930,6 +2036,32 @@
     }
 
     _initPointerTracking() {
+      const unlockMobileAudio = () => {
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          if (!this.lipSyncAnalyzer.ctx) {
+            this.lipSyncAnalyzer.ctx = new AudioCtx();
+          }
+          if (this.lipSyncAnalyzer.ctx.state === "suspended") {
+            this.lipSyncAnalyzer.ctx.resume().catch(() => {});
+          }
+          // Play a 1-sample silent buffer to unlock iOS Safari / Android Chrome Web Audio
+          const ctx = this.lipSyncAnalyzer.ctx;
+          const buf = ctx.createBuffer(1, 1, 22050);
+          const src = ctx.createBufferSource();
+          src.buffer = buf;
+          src.connect(ctx.destination);
+          if (src.start) src.start(0);
+        } catch (_) {}
+        window.removeEventListener("touchstart", unlockMobileAudio);
+        window.removeEventListener("pointerdown", unlockMobileAudio);
+        window.removeEventListener("click", unlockMobileAudio);
+      };
+      window.addEventListener("touchstart", unlockMobileAudio, { passive: true });
+      window.addEventListener("pointerdown", unlockMobileAudio, { passive: true });
+      window.addEventListener("click", unlockMobileAudio, { passive: true });
+
       window.addEventListener(
         "pointermove",
         (e) => {
